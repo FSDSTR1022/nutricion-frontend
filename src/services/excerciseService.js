@@ -1,6 +1,7 @@
 let URLnuevoEjercicio = "http://localhost:3000/Ejercicios/NuevoEjercicio";
+let URLejercicios = "http://localhost:3000/Ejercicios";
 
-const getAtributosEjercicios = function () {
+const getExcerciseAtribut = function () {
   return fetch(URLnuevoEjercicio)
     .then((response) => response.json())
     .then((jsonData) => {
@@ -13,4 +14,41 @@ const getAtributosEjercicios = function () {
     });
 };
 
-module.exports = { getAtributosEjercicios };
+const saveExcercise = function (data) {
+  const excercise = JSON.stringify(data);
+
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: excercise,
+  };
+  fetch(URLnuevoEjercicio, requestOptions)
+    .then((response) => response.json())
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => {
+      return error;
+    });
+};
+
+const getExcercise = function(){
+  
+  return fetch(URLejercicios)
+    .then((response) => response.json())
+    .then((jsonData) => {
+      console.log("EN servicio",jsonData)
+      return jsonData;
+    })
+    .catch((e) => {
+      console.log(e);
+      return e;
+    });
+}
+
+function createData(name, calories, fat, carbs, protein) {
+  return { name, calories, fat, carbs, protein };
+}
+
+
+module.exports = { getExcerciseAtribut, saveExcercise,getExcercise };
