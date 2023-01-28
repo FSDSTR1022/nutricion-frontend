@@ -37,7 +37,7 @@ const getExcercise = function(){
   return fetch(URLejercicios)
     .then((response) => response.json())
     .then((jsonData) => {
-      console.log("EN servicio",jsonData)
+      //console.log("EN servicio",jsonData)
       return jsonData;
     })
     .catch((e) => {
@@ -45,10 +45,5 @@ const getExcercise = function(){
       return e;
     });
 }
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
 
 module.exports = { getExcerciseAtribut, saveExcercise,getExcercise };
