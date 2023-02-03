@@ -4,6 +4,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
 import { useTheme } from "@mui/material/styles";
+import {useNavigate} from "react-router-dom"
 import {
   Table,
   TableBody,
@@ -19,14 +20,14 @@ import {
   Select,
   MenuItem,
   OutlinedInput,
-  Button,
-  Grid,
-  Paper
+  Paper,
+  ImageList,
+ ImageListItem,
+ Button
 } from '@mui/material';
 
 
-
-const ListExercises = () =>{
+const ExercisesList = () =>{
   const [isLoadingExercise, setIsLoadingExcersice] = useState(true);
   const [isLoadingExerciseAtributes, setIsLoadingExcersiceAtributes] = useState(true);
   const [excerciseListUS,setExcerciseListUS] = useState();
@@ -36,7 +37,12 @@ const ListExercises = () =>{
   const [exerciseDifficulSearchtUS, setExerciseDifficulSearchUS] = useState("");
   const [exerciseMuclesSearchUS, setExerciseMuclesSearchUS] = useState([]);
   const [exerciseEquipmentsSearchUS, setExerciseEquipmentsSearchUS] = useState([]);
-  const [exerciseNameSeachUS, setExerciseSearchNameUS] = useState();
+  const [exerciseNameSeachUS, setExerciseNameSearchUS] = useState("");
+
+  const navigate = useNavigate();
+
+
+ 
   
   const theme = useTheme();
   const ITEM_HEIGHT = 48;
@@ -50,6 +56,12 @@ const ListExercises = () =>{
     },
   };
 
+ /* 
+https://images.unsplash.com/photo-1516802273409-68526ee1bdd6
+https://images.unsplash.com/photo-1589118949245-7d38baf380d6 
+https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC5cFhphukFT-h24CWqwycbNcvVutbJeGlueYS4zwVmBzJVyiaz-QHbRCufuJJKe8_5SEVROgxGAKk9YlzyGlxBFX-Uyl0CIxObBSXxvow
+*/
+
   useEffect(() => {
     getExcerciseAtribut().then((data) => {
       setExerciseAtributesUS(data);
@@ -62,12 +74,34 @@ const ListExercises = () =>{
     });    
   }, []);
 
-  const handleClickView = (evento)=>{
-    console.log("Vista: ",evento)
+  const handleClickNewExcerciseButton=(event)=>{
+    navigate("/Ejercicios/Ejercicio",
+      {state:{action:"newExercise"}}
+    )
   }
 
+  const handleClickView = (evento)=>{
+    //console.log("Vista: ",evento)
+    let e= excerciseListUS.find((element)=>{
+      return element._id===evento
+    })
+     
+    navigate("/Ejercicios/Ejercicio",
+      {state:{action:"editExercise",excercise:e}
+    }   
+    )
+  }
+    
   const handleClickEdit = (evento)=>{
-    console.log("edición: ",evento)
+ 
+    let e= excerciseListUS.find((element)=>{
+      return element._id===evento
+    })
+    
+     navigate("/Ejercicios/Ejercicio",
+      {state:{action:"editExercise",excercise:e}
+    }   
+    ) 
   }
 
   const handleClickDelte = (evento)=>{
@@ -75,7 +109,25 @@ const ListExercises = () =>{
   }
 
   const handleChangeExerciseNameInput = (event) => {
-    setExerciseSearchNameUS(event.target.value);
+    
+    setExerciseNameSearchUS(event.target.value);
+
+    if(event.target.value==="")
+    {
+      excerciseListUS.map((excercise)=>{
+        excercise.show = true;
+      })
+    }
+    else{
+      excerciseListUS.map((excercise)=>{
+        if(excercise.name.includes(event.target.value)){
+          excercise.show = true;
+        }
+        else{
+          excercise.show = false;
+        }        
+      })
+    }
   };
 
   const handleChangeExerciseTypeSearch = (event) => {
@@ -130,18 +182,16 @@ const ListExercises = () =>{
   const handleChangeBodyPartSelector = (event) => {
 
     const quitarSeleccion=event.target.value.some((valor)=>{
-      console.log(valor)
       return valor==="quitarSeleccion" 
     })
 
     if(quitarSeleccion || event.target.value.length===0)
     {
-      console.log("Entro en SI")
       excerciseListUS.map((excercise)=>{
         excercise.show = true;
-      })
-      setExcersiseBodyPartsSearchUS([])
-     
+        })
+
+        setExcersiseBodyPartsSearchUS([])     
     }      
     else{
         
@@ -165,27 +215,82 @@ const ListExercises = () =>{
           }
         });
       }
-    }
-
-
-    
+    }    
   
   const handleChangeMuscleSelector = (event) => {
-    const {
-     target: { value },
-   } = event;
-   setExerciseMuclesSearchUS(
-     typeof value === "string" ? value.split(",") : value
-   );
+   
+   const quitarSeleccion=event.target.value.some((valor)=>{
+    return valor==="quitarSeleccion" 
+    })
+
+  if(quitarSeleccion || event.target.value.length===0)
+  {
+    excerciseListUS.map((excercise)=>{
+      excercise.show = true;
+      })
+
+      setExerciseMuclesSearchUS([])     
+  }      
+  else{
+
+    const {target: { value },} = event;
+    setExerciseMuclesSearchUS(
+        typeof value === "string" ? value.split(",") : value,
+    );
+
+      excerciseListUS.map((excercise)=>{     
+        const mostrarEjercicio = excercise.muscles.some((muscle)=>{
+          return event.target.value.some((valor)=>{
+            return muscle.muscle===valor
+          })
+        })
+
+       if(mostrarEjercicio){
+        excercise.show = true;
+      }
+       else{
+          excercise.show = false;
+        }
+      });
+    }
  };
 
  const handleChangeEquipamiento = (event) => {
-  const {
-    target: { value },
-  } = event;
-  setExerciseEquipmentsSearchUS(
-    typeof value === "string" ? value.split(",") : value
-  );
+  
+  const quitarSeleccion=event.target.value.some((valor)=>{
+    return valor==="quitarSeleccion" 
+    })
+
+  if(quitarSeleccion || event.target.value.length===0)
+  {
+    excerciseListUS.map((excercise)=>{
+      excercise.show = true;
+      })
+      
+      setExerciseEquipmentsSearchUS([])     
+  }      
+  else{
+
+    const {target: { value },} = event;
+    setExerciseEquipmentsSearchUS(
+        typeof value === "string" ? value.split(",") : value,
+    );
+
+      excerciseListUS.map((excercise)=>{     
+        const mostrarEjercicio = excercise.equipments.some((equipment)=>{
+          return event.target.value.some((valor)=>{
+             return equipment.exerciseEquipment===valor
+          })
+        })
+
+       if(mostrarEjercicio){
+        excercise.show = true;
+      }
+       else{
+          excercise.show = false;
+        }
+      });
+    }
 };
 
  function getStylesItemSelector(name, partesCuerpo, theme) {
@@ -239,7 +344,28 @@ const drawTableRows = (excercise)=>{
       </Box></TableCell>
     <TableCell align="center">{excercise.explanation}</TableCell>
     <TableCell align="center">{excercise.precautions}</TableCell>
-    <TableCell align="center">{excercise.video + excercise.photo }</TableCell>
+    {/* <TableCell align="center">{excercise.video + excercise.photo }</TableCell> */}
+    <TableCell align="center">{
+      <ImageList sx={{ width: 250, height: 100 }} cols={2} rowHeight={100}>
+        <ImageListItem key={"photo:"+excercise._id}>
+            <img
+              src={excercise.photo}
+              srcSet={excercise.photo}
+              alt={"Foto"}
+              loading="Cargando..."
+            />
+          </ImageListItem>
+          <ImageListItem key={"video:"+excercise._id}>
+            <img
+              src={excercise.video}
+              srcSet={excercise.video}
+              alt={"Video"}
+              loading="Cargando..."
+            />
+          </ImageListItem>      
+    </ImageList>
+
+    }</TableCell>
     <TableCell align="center">
       <SearchIcon 
         onClick={() => (excerciseListUS ? handleClickView(excercise._id) : null)}/>
@@ -254,18 +380,28 @@ const drawTableRows = (excercise)=>{
    )
   }
 
-
+  const getMenuItemQuitarSeleccion = ()=>{
+    return (
+      <MenuItem value={"quitarSeleccion"} sx={{ color: "red"}}>
+      Quitar Selección
+    </MenuItem> 
+    )
+  }
 
 if (!isLoadingExercise && !isLoadingExerciseAtributes) {
     return(
       <div>
-        {console.log(excerciseListUS)} 
+        {/* //{console.log(excerciseListUS)}  */}
         <h1>Listado de ejercicios!</h1>
 
+{/* ///////////////////// BOTON NUEVO  ///////////////////// */}
+<div style={{display: "flex", justifyContent: "flex-end"}}>
+  <Button variant="contained" onClick={handleClickNewExcerciseButton}>Nuevo Ejercicio</Button>
+</div>
+ 
+
 {/* ///////////////////// FILTROS  ///////////////////// */}
-        <div style={{color: 'blue', border:'solid'}}>
-          Filtros
-          <br></br>
+        <div>
 
       {/* ///////////////////// FILTRO NOMBRE EJERCICIO ///////////////////// */}     
           <FormControl  sx={{ m: 1, minWidth: 200}}>
@@ -289,14 +425,13 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
                 onChange={handleChangeExerciseTypeSearch}
                 input={<OutlinedInput id="excersiceTypeSearch" label="Tipo de Ejercicio "/>}
               >
+                {exerciseTypeSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():console.log()}
                 {exerciseAtributsUS.exerciseType.map((te, id) => (
                   <MenuItem value={te.exerciseType} key={id}>
                     {te.exerciseType}
                   </MenuItem>
                 ))}
-                <MenuItem value={"quitarSeleccion"}>
-                    Quitar Selección
-                  </MenuItem>
+                
               </Select>
             </FormControl>
 
@@ -312,14 +447,13 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
                 input={ <OutlinedInput id="dificultadEjercicioSelect" label="Dificultad de Ejercicio"/>}
                 
               >
+                {exerciseDifficulSearchtUS.length !== 0 ? getMenuItemQuitarSeleccion():console.log()}
                 {exerciseAtributsUS.exerciseDifficult.map((de, id) => (
                   <MenuItem value={de.exerciseDifficulty} key={id}>
                     {de.exerciseDifficulty}
                   </MenuItem>
                 ))}
-                 <MenuItem value={"quitarSeleccion"}>
-                    Quitar Selección
-                  </MenuItem>
+                 
               </Select>
             </FormControl>
 
@@ -347,6 +481,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
               )}
               MenuProps={MenuProps}
             >
+              {exerciseBodyPartsSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():console.log()}
               {exerciseAtributsUS.bodyParts.map((part) => (
                 <MenuItem
                   key={part._id}
@@ -356,9 +491,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
                   {part.bodyPart}
                 </MenuItem>
               ))}
-                <MenuItem value={"quitarSeleccion"}>
-                    Quitar Selección
-                  </MenuItem> 
+                
             </Select>
           </FormControl>
 
@@ -380,7 +513,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
                     <Chip 
                     key={value} 
                     label={ exerciseAtributsUS.exerciseMucles.map((muscle)=>{
-                          if(muscle._id===value) return muscle.muscle
+                          if(muscle.muscle===value) return muscle.muscle
                     }) } 
                   /> 
                   ))}
@@ -388,15 +521,17 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
               )}
               MenuProps={MenuProps}
             >
+              {exerciseMuclesSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():console.log()}
               {exerciseAtributsUS.exerciseMucles.map((muscle) => (
                 <MenuItem
-                  key={muscle._id}
-                  value={muscle._id}
-                  style={getStylesItemSelector(muscle._id,exerciseMuclesSearchUS,theme)}
+                  key={muscle.muscle}
+                  value={muscle.muscle}
+                  style={getStylesItemSelector(muscle.muscle,exerciseMuclesSearchUS,theme)}
                 >
                   {muscle.muscle}
                 </MenuItem>
               ))}
+              
             </Select>
           </FormControl>
 
@@ -416,7 +551,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
                     <Chip 
                       key={value} 
                      label={exerciseAtributsUS.exerciseEquipments.map((equipment)=>{
-                          if(equipment._id===value) return equipment.exerciseEquipment
+                          if(equipment.exerciseEquipment===value) return equipment.exerciseEquipment
                     }) } 
                   /> 
                   ))}
@@ -424,27 +559,27 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
               )}
               MenuProps={MenuProps}
             >
+              {exerciseEquipmentsSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():console.log()}
               {exerciseAtributsUS.exerciseEquipments.map((equipment) => (
                 <MenuItem
                   key={equipment._id}
-                  value={equipment._id}
+                  value={equipment.exerciseEquipment}
                   style={getStylesItemSelector(
-                    equipment._id,
+                    equipment.exerciseEquipment,
                     exerciseEquipmentsSearchUS,
                     theme
                   )}
                 >
                   {equipment.exerciseEquipment}
                 </MenuItem>
-              ))}
-            </Select>
+              ))
+              }
+              </Select>
           </FormControl>
-
-          </div>
+        </div>
 
 {/* ///////////////////// TABLA  ///////////////////// */}          
-        <div style={{color: 'blue', border:'solid'}}>
-          Tabla
+        <div>          
           <TableContainer component={Paper} >
             <Table sx={{ minWidth: 650}} aria-label="simple table">
               <TableHead>
@@ -464,16 +599,12 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {excerciseListUS.map((excercise) =>{
-                  if(excercise.show===undefined){
+              {excerciseListUS.map((excercise) =>{
+                  if(excercise.show===undefined ||excercise.show===true){
                     return drawTableRows(excercise)
-                  }
-                  else if(excercise.show===true){
-                    return drawTableRows(excercise)
-                  }
+                  }                  
                 })}
-              </TableBody>
-              
+              </TableBody>              
             </Table>
           </TableContainer> 
         </div> 
@@ -483,11 +614,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
   else {
     return <h1>CARGANDO</h1>;
   }
-
-  
-  
-
     
 }
 
-export default ListExercises;
+export default ExercisesList;

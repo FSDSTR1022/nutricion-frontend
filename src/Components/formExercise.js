@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getExcerciseAtribut,saveExcercise } from "../services/excerciseService";
+import { getExcerciseAtribut,saveExcercise,updateExcercise } from "../services/excerciseService";
 import {
   TextField,
   FormControl,
@@ -16,6 +16,8 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTheme } from "@mui/material/styles";
 import { styled } from '@mui/material/styles';
+import {useParams, useLocation,useNavigate} from 'react-router-dom'
+import { ConstructionOutlined } from "@mui/icons-material";
 
 const FormExercise = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -30,6 +32,15 @@ const FormExercise = () => {
   const [exercisePrecautionsUS, setExercisePrecautionsUS] = useState();
   const [imagenEjercicio, setImagenEjercicio] = useState();
   const [videoEjercicio, setVideoEjercicio] = useState();
+
+  const [errorsUS, setErrorsUS] = useState({})
+  
+  const [actionUS,setActionUS] = useState()
+  const [excerciseToEditODeleteUS,setExcerciseToEditODeleteUS] = useState();
+
+  const {state} = useLocation(); // hook para la navegacion
+
+  const navigate = useNavigate();
 
   const theme = useTheme();
   const ITEM_HEIGHT = 48;
@@ -50,13 +61,43 @@ const FormExercise = () => {
     });
   }, []);
 
+   if(!actionUS)
+   {
+    setActionUS(state.action)
+    
+  /*   console.log("ejercicio:",state.excercise)  */
+    
+     if(state.excercise !== undefined)
+    {
+      setExcerciseToEditODeleteUS(state.excercise)
+
+      setExerciseNameUS(state.excercise.name) 
+      setExerciseTypeUS(state.excercise.exerciseType._id)
+      setExerciseDifficultUS(state.excercise.difficulty._id)
+      setExcersiseBodyPartsUS(
+        state.excercise.bodyParts.map((part)=>{
+          return part._id
+      }))
+      setExerciseMuclesUS(
+        state.excercise.muscles.map((part)=>{
+          return part._id
+      }))
+      setExerciseEquipmentsUS(
+        state.excercise.equipments.map((part)=>{
+          return part._id
+      }))
+      setExerciseNameUS(state.excercise.name)
+      setExerciseExplanationUS(state.excercise.explanation)
+      setExercisePrecautionsUS(state.excercise.precautions)
+    }         
+   }
+
   const handleChangeExerciseNameInput = (event) => {
     setExerciseNameUS(event.target.value);
   };
 
   const handleChangeExerciseType = (event) => {
    setExerciseTypeUS(event.target.value)
-
   };
 
   const handleChangeExerciseDificultSelector = (event) => {
@@ -99,7 +140,9 @@ const FormExercise = () => {
     setExercisePrecautionsUS(event.target.value);
   };
 
-  const handleSaveButton = ()=>{
+  const handleClickSaveButton = ()=>{
+     checkForm()
+    
       let exerciseToSave={}
 
        exerciseToSave.name = exerciseNameUS
@@ -110,12 +153,45 @@ const FormExercise = () => {
        exerciseToSave.equipments = exerciseEquipmentsUS
        exerciseToSave.explanation = exerciseExplanationUS
        exerciseToSave.precautions = exercisePrecautionsUS
+       exerciseToSave.photo = "https://images.unsplash.com/photo-1516802273409-68526ee1bdd6"
+       exerciseToSave.video = "https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC5cFhphukFT-h24CWqwycbNcvVutbJeGlueYS4zwVmBzJVyiaz-QHbRCufuJJKe8_5SEVROgxGAKk9YlzyGlxBFX-Uyl0CIxObBSXxvow"
 
       //console.log(exerciseToSave)
-
-      console.log(saveExcercise(exerciseToSave))
+      switch (actionUS) {
+        case "newExercise":
+            let resultado = saveExcercise(exerciseToSave)
+            console.log("RESULTADO: ",resultado)
+            navigate("/Ejercicios")
+          break;
+        case "editExercise":
+          
+         exerciseToSave._id = excerciseToEditODeleteUS._id
+          console.log("Ejercicio en FOrmulario: ",exerciseToSave)
+          let resultado2 = updateExcercise(exerciseToSave)
+            console.log("RESULTADO: ",resultado2)
+            navigate("/Ejercicios") 
+          break;
+      }
      
   };
+
+  const checkForm=()=>{
+   
+    if(exerciseNameUS===undefined ||exerciseNameUS==="")
+    {
+      console.log("Nombre: ",exerciseNameUS)
+      console.log("ERROR al Nombre: ")
+      errorsUS.ExcersiceName = true
+    } 
+
+//    errorsUS.ExcersiceName ? console.log("True"): console.log("false")
+
+
+
+    console.log("ERRORS: ",errorsUS)
+
+
+  }
   
   function getStylesItemSelector(name, partesCuerpo, theme) {
     return {
@@ -134,13 +210,36 @@ const FormExercise = () => {
     /*  color: theme.palette.text.secondary  */
   }));
   
+  function getByTitle(){
+   
+      /* return (
+      <h1>Nuevo Ejercicio2</h1>
+      ) */
+    
+     switch (actionUS) {
+      case "newExercise":
+        return <h1>Nuevo Ejercicio</h1>
+      case "editExercise":
+        return <h1>Modificar Ejercicio</h1>
+      } 
+  }
 
   if (!isLoading) {
     return (
       <div>
         <form>
-          <h1>Nuevo Ejercicio</h1>
+{/*           {console.log(getByTitle().props.children)} */}
+          <h1>{getByTitle().props.children}</h1> 
+          {/* {getByTitle().props.children} */}
+           
+          {/* <h1>Nuevo Ejercicio</h1> */}
+         {/*  <h1>Nuevo Ejercicio</h1> */}
           {/* {console.log("Hola", atributosEjercicio)} */}
+
+          <Button variant="contained" 
+             onClick={() => {
+              handleClickSaveButton()                      
+            }}>Guardar Ejercicio</Button>
 
 {/* Campo ejercicio */}          
           <FormControl  fullWidth sx={{ m: 1}}>
@@ -149,9 +248,12 @@ const FormExercise = () => {
               label="Nombre Ejercicio"
               variant="outlined"
               required
+              errro={errorsUS.ExcersiceName}
               value={exerciseNameUS}
               onChange={handleChangeExerciseNameInput}
             />
+            {errorsUS.ExcersiceName ? <span style={{color:"red"}}>Este campo es obligatorio</span> :<span></span>} 
+            {/* {errorsUS.ExcersiceName ? console.log("Hola:", errorsUS.ExcersiceName):console.log("chau:", errorsUS.ExcersiceName)} */}
           </FormControl>
 
 {/* Selectot Tipo Ejercicio */}                  
@@ -391,7 +493,7 @@ const FormExercise = () => {
 
           <Button variant="contained" 
              onClick={() => {
-              handleSaveButton()                      
+              handleClickSaveButton()                      
             }}>Guardar Ejercicio</Button>
         </form>
       </div>

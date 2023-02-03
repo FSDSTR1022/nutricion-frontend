@@ -1,11 +1,13 @@
-let URLnuevoEjercicio = "http://localhost:3000/Ejercicios/NuevoEjercicio";
+let URLEjercicio = "http://localhost:3000/Ejercicios/Ejercicio";
 let URLejercicios = "http://localhost:3000/Ejercicios";
 
+/* Devuelve  
+ */
 const getExcerciseAtribut = function () {
-  return fetch(URLnuevoEjercicio)
+  return fetch(URLEjercicio)
     .then((response) => response.json())
     .then((jsonData) => {
-      //console.log("EN servicio",jsonData)
+     // console.log("EN servicio. Atributos Ejercicio",jsonData)
       return jsonData;
     })
     .catch((e) => {
@@ -22,9 +24,11 @@ const saveExcercise = function (data) {
     headers: { "Content-Type": "application/json" },
     body: excercise,
   };
-  fetch(URLnuevoEjercicio, requestOptions)
+
+  return fetch(URLEjercicio, requestOptions)
     .then((response) => response.json())
     .then((data) => {
+      //console.log("DATA en service:",data)
       return data;
     })
     .catch((error) => {
@@ -46,4 +50,30 @@ const getExcercise = function(){
     });
 }
 
-module.exports = { getExcerciseAtribut, saveExcercise,getExcercise };
+const updateExcercise = function(data){
+  const excercise = JSON.stringify(data);
+
+  console.log("EJERCICIO en SERVICIO: ",excercise)
+
+  const requestOptions = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: excercise,
+  };
+
+  //URLEjercicio=URLEjercicio+"?id="+data._id
+  let URLEjercicio2 = "http://localhost:3000/Ejercicios/Ejercicio?id="+data._id;
+
+return fetch(URLEjercicio2, requestOptions)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("DATA en service:",data)
+      return data;
+    })
+    .catch((error) => {
+      return error;
+    });
+
+}
+
+module.exports = { getExcerciseAtribut, saveExcercise,getExcercise,updateExcercise};
