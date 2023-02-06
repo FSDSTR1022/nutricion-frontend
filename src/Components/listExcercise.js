@@ -1,10 +1,12 @@
-import { getExcercise, getExcerciseAtribut} from "../services/excerciseService";
+import * as React from 'react';
+import { getExcercise, getExcerciseAtribut,deleteExcercise} from "../services/excerciseService";
 import { useEffect, useState } from "react";
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
 import { useTheme } from "@mui/material/styles";
-import {useNavigate} from "react-router-dom"
+import {useNavigate,useLocation} from "react-router-dom"
+import CloseIcon from '@mui/icons-material/Close';
 import {
   Table,
   TableBody,
@@ -23,7 +25,15 @@ import {
   Paper,
   ImageList,
  ImageListItem,
- Button
+ Button,
+ Alert,
+  Snackbar,
+  IconButton,
+  Dialog,
+         DialogContent,
+         DialogTitle,
+         DialogActions,
+         DialogContentText
 } from '@mui/material';
 
 
@@ -39,10 +49,21 @@ const ExercisesList = () =>{
   const [exerciseEquipmentsSearchUS, setExerciseEquipmentsSearchUS] = useState([]);
   const [exerciseNameSeachUS, setExerciseNameSearchUS] = useState("");
 
+  const [mostroMensaje, setMostroMensaje] = useState(false);
+  
+  const [openMessage, setOpenMessage] = useState(false);
+  const [openConfirmation, setOpenConfirmation] = useState(false);
+  
   const navigate = useNavigate();
+  const {state} = useLocation(); // hook para la navegacion
 
+  
+ /*  if(state!==null && mostroMensaje===false){ 
+    console.log("ENTRANDO A SETEAR EN TRUE")
+    setOpenMessage(state.openMessage)
+    setMostroMensaje(true)
+  } */
 
- 
   
   const theme = useTheme();
   const ITEM_HEIGHT = 48;
@@ -63,6 +84,12 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
 */
 
   useEffect(() => {
+    
+    if(state!==null && mostroMensaje===false){
+      setOpenMessage(state.openMessage)
+      setMostroMensaje(true)
+    }
+    
     getExcerciseAtribut().then((data) => {
       setExerciseAtributesUS(data);
       setIsLoadingExcersiceAtributes(false);
@@ -76,12 +103,15 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
 
   const handleClickNewExcerciseButton=(event)=>{
     navigate("/Ejercicios/Ejercicio",
-      {state:{action:"newExercise"}}
+      {state:
+        {
+          action:"newExercise"
+        }
+      }
     )
   }
 
   const handleClickView = (evento)=>{
-    //console.log("Vista: ",evento)
     let e= excerciseListUS.find((element)=>{
       return element._id===evento
     })
@@ -94,18 +124,52 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
     
   const handleClickEdit = (evento)=>{
  
-    let e= excerciseListUS.find((element)=>{
+    let excersiceToEdit= excerciseListUS.find((element)=>{
       return element._id===evento
     })
     
      navigate("/Ejercicios/Ejercicio",
-      {state:{action:"editExercise",excercise:e}
+      {state:{action:"editExercise",excercise:excersiceToEdit}
     }   
     ) 
   }
 
   const handleClickDelte = (evento)=>{
-    console.log("borrar: ",evento)
+
+  
+     if(evento.target=== undefined)
+    {
+      console.log("Icono")
+      setOpenConfirmation(true);
+
+      let excersiceToDelete= excerciseListUS.find((element)=>{
+        return element._id===evento
+      })
+
+      deleteExcercise(excersiceToDelete).then((data) =>{
+
+        if(data._id!==null){
+          //mensale se elimino con exito
+        }
+        else{
+          //mensaje hubo problema para eliminar
+        }
+      })
+      return      
+    }
+    else if(evento.target.value==="aceptar")
+    {
+      console.log("Boton Aceptar")
+      setOpenConfirmation(false);
+      return
+    }
+    else if(evento.target.value==="cancelar")
+    {
+      console.log("boton Cancelar")
+      setOpenConfirmation(false);
+      return      
+    }
+ 
   }
 
   const handleChangeExerciseNameInput = (event) => {
@@ -293,6 +357,25 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
     }
 };
 
+const handleCloseMessage = (event, reason) => {
+ 
+  if (reason === 'clickaway') {
+    setOpenMessage(false);
+  }  
+  setOpenMessage(false);
+};
+
+/* const handleCloseConfirmation = (event) => {
+  console.log(event)
+  console.log(event.target.value)
+  setOpenConfirmation(false);
+}; */
+
+
+const handleClickOpenBoton = () => {
+  setOpenConfirmation(true);
+}; 
+
  function getStylesItemSelector(name, partesCuerpo, theme) {
   return {
     fontWeight:
@@ -367,8 +450,7 @@ const drawTableRows = (excercise)=>{
 
     }</TableCell>
     <TableCell align="center">
-      <SearchIcon 
-        onClick={() => (excerciseListUS ? handleClickView(excercise._id) : null)}/>
+      <SearchIcon onClick={() => (excerciseListUS ? handleClickView(excercise._id) : null)}/>
     </TableCell>
     <TableCell align="center">
       <EditIcon onClick={() => (excerciseListUS ? handleClickEdit(excercise._id) : null)}/>
@@ -397,6 +479,11 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
 {/* ///////////////////// BOTON NUEVO  ///////////////////// */}
 <div style={{display: "flex", justifyContent: "flex-end"}}>
   <Button variant="contained" onClick={handleClickNewExcerciseButton}>Nuevo Ejercicio</Button>
+
+  <Button variant="outlined" onClick={handleClickOpenBoton}>
+        Open alert dialog
+      </Button>
+
 </div>
  
 
@@ -607,7 +694,38 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
               </TableBody>              
             </Table>
           </TableContainer> 
-        </div> 
+        </div>
+        {/* Mensaje de confirmación*/}     
+         <Snackbar open={openMessage} autoHideDuration={6000} onClose={handleCloseMessage}>
+          <Alert variant="filled" onClose={handleCloseMessage} severity="success" sx={{ width: '100%' }}>
+          Mensaje!
+             {/* {state.typeMessage==="guardoConExito" ? "Se guardo correctament el ejercicio":"Se actualizó correctametne el ejercicio"} */}
+          </Alert>
+       </Snackbar>
+
+        <Dialog
+            open={openConfirmation}
+            onClose={handleClickDelte}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"Eliminar Ejercicio"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                ¿Desea eliminar el ejercicio?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button value="aceptar" onClick={handleClickDelte}>Acepter</Button>
+              <Button value="cancelar" onClick={handleClickDelte} autoFocus> Cancelar </Button>
+            </DialogActions>
+         </Dialog> 
+        
+         
+      
+ 
       </div>
     )
   }

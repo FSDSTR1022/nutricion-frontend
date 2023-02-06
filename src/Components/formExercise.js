@@ -11,7 +11,10 @@ import {
   Chip,
   Button,
   Grid,
-  Paper
+  Paper,
+  Stack,
+  Alert,
+  Snackbar
 } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTheme } from "@mui/material/styles";
@@ -39,8 +42,8 @@ const FormExercise = () => {
   const [excerciseToEditODeleteUS,setExcerciseToEditODeleteUS] = useState();
 
   const {state} = useLocation(); // hook para la navegacion
-
   const navigate = useNavigate();
+
 
   const theme = useTheme();
   const ITEM_HEIGHT = 48;
@@ -59,77 +62,102 @@ const FormExercise = () => {
       setExerciseAtributesUS(data);
       setIsLoading(false);
     });
+
+    if(!actionUS){
+
+      setActionUS(state.action)    
+      
+       if(state.excercise !== undefined){
+        
+        setExcerciseToEditODeleteUS(state.excercise)
+        setExerciseNameUS(state.excercise.name) 
+        setExerciseTypeUS(state.excercise.exerciseType._id)
+        setExerciseDifficultUS(state.excercise.difficulty._id)
+        setExcersiseBodyPartsUS(
+          state.excercise.bodyParts.map((part)=>{
+            return part._id
+        }))
+        setExerciseMuclesUS(
+          state.excercise.muscles.map((part)=>{
+            return part._id
+        }))
+        setExerciseEquipmentsUS(
+          state.excercise.equipments.map((part)=>{
+            return part._id
+        }))
+        setExerciseNameUS(state.excercise.name)
+        setExerciseExplanationUS(state.excercise.explanation)
+        setExercisePrecautionsUS(state.excercise.precautions)
+      }         
+     }
   }, []);
-
-   if(!actionUS)
-   {
-    setActionUS(state.action)
-    
-  /*   console.log("ejercicio:",state.excercise)  */
-    
-     if(state.excercise !== undefined)
-    {
-      setExcerciseToEditODeleteUS(state.excercise)
-
-      setExerciseNameUS(state.excercise.name) 
-      setExerciseTypeUS(state.excercise.exerciseType._id)
-      setExerciseDifficultUS(state.excercise.difficulty._id)
-      setExcersiseBodyPartsUS(
-        state.excercise.bodyParts.map((part)=>{
-          return part._id
-      }))
-      setExerciseMuclesUS(
-        state.excercise.muscles.map((part)=>{
-          return part._id
-      }))
-      setExerciseEquipmentsUS(
-        state.excercise.equipments.map((part)=>{
-          return part._id
-      }))
-      setExerciseNameUS(state.excercise.name)
-      setExerciseExplanationUS(state.excercise.explanation)
-      setExercisePrecautionsUS(state.excercise.precautions)
-    }         
-   }
 
   const handleChangeExerciseNameInput = (event) => {
     setExerciseNameUS(event.target.value);
+    setErrorsUS(errorsUS =>({
+      ...errorsUS,
+      excersiceName:false
+    }))
   };
 
   const handleChangeExerciseType = (event) => {
    setExerciseTypeUS(event.target.value)
+   setErrorsUS(errorsUS =>({
+    ...errorsUS,
+    excersiceType:false
+  }))
+
   };
 
   const handleChangeExerciseDificultSelector = (event) => {
-    setExerciseDifficultUS(event.target.value);
+    setExerciseDifficultUS(event.target.value)
+    setErrorsUS(errorsUS =>({
+      ...errorsUS,
+      excersiceDificult:false
+    }))
+  
   };
 
   const handleChangeBodyPartSelector = (event) => {
-     const {
-      target: { value },
-    } = event;
+     const { target: { value },} = event;
 
     setExcersiseBodyPartsUS(
       typeof value === "string" ? value.split(",") : value,
     );
+
+    setErrorsUS(errorsUS =>({
+      ...errorsUS,
+      excersiceBodyParts:false
+    }))
   };
 
   const handleChangeEquipamiento = (event) => {
     const {
       target: { value },
     } = event;
+
     setExerciseEquipmentsUS(
       typeof value === "string" ? value.split(",") : value
     );
+    
+    setErrorsUS(errorsUS =>({
+      ...errorsUS,
+      excersiceEquipment:false
+    }))
+
   };
 
   const handleChangeMuscleSelector = (event) => {
-     const {
-      target: { value },
-    } = event;
+     const {target: { value },} = event;
+
     setExerciseMuclesUS(
       typeof value === "string" ? value.split(",") : value
     );
+
+    setErrorsUS(errorsUS =>({
+      ...errorsUS,
+      excersiceMuscles:false
+    }))
   };
 
   const handleChangeExplanationInput = (event) => {
@@ -141,8 +169,8 @@ const FormExercise = () => {
   };
 
   const handleClickSaveButton = ()=>{
-     checkForm()
-    
+    if(checkForm())
+     {
       let exerciseToSave={}
 
        exerciseToSave.name = exerciseNameUS
@@ -156,41 +184,111 @@ const FormExercise = () => {
        exerciseToSave.photo = "https://images.unsplash.com/photo-1516802273409-68526ee1bdd6"
        exerciseToSave.video = "https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC5cFhphukFT-h24CWqwycbNcvVutbJeGlueYS4zwVmBzJVyiaz-QHbRCufuJJKe8_5SEVROgxGAKk9YlzyGlxBFX-Uyl0CIxObBSXxvow"
 
-      //console.log(exerciseToSave)
       switch (actionUS) {
         case "newExercise":
-            let resultado = saveExcercise(exerciseToSave)
-            console.log("RESULTADO: ",resultado)
-            navigate("/Ejercicios")
-          break;
+
+          saveExcercise(exerciseToSave).then((data) =>{
+
+            //hay que hacer bien esta comprobación
+            if(data._id!==null){
+              navigate("/Ejercicios",
+                {state:{action:"newExercise",typeMessage:"guardoConExito",openMessage:true}}
+             ) 
+            }
+            else{
+              console.log("Hubo problemas para guardar")
+            }}) 
+            
+            break;
+
         case "editExercise":
-          
-         exerciseToSave._id = excerciseToEditODeleteUS._id
-          console.log("Ejercicio en FOrmulario: ",exerciseToSave)
-          let resultado2 = updateExcercise(exerciseToSave)
-            console.log("RESULTADO: ",resultado2)
-            navigate("/Ejercicios") 
-          break;
-      }
-     
-  };
+           
+          exerciseToSave._id = excerciseToEditODeleteUS._id
+          updateExcercise(exerciseToSave).then((data) =>{
+
+              if(data._id!==null){
+
+                navigate("/Ejercicios",
+                  {state:{action:"editExercise",typeMessage:"modificadoConExito",openMessage:true}}) 
+            
+              }
+              else{
+                console.log("Hubo problemas para editar")
+              }
+          })
+        break;          
+    }}};
+
 
   const checkForm=()=>{
+    
+    let errors = true
    
-    if(exerciseNameUS===undefined ||exerciseNameUS==="")
+    if(exerciseNameUS===undefined || exerciseNameUS==="")
     {
-      console.log("Nombre: ",exerciseNameUS)
-      console.log("ERROR al Nombre: ")
-      errorsUS.ExcersiceName = true
-    } 
+      setErrorsUS(errorsUS =>({
+        ...errorsUS,
+        excersiceName:true
+      }))
 
-//    errorsUS.ExcersiceName ? console.log("True"): console.log("false")
+      errors = false 
+    }
+    if(exerciseTypeUS===undefined || exerciseTypeUS==="")
+    {
+      setErrorsUS(errorsUS =>({
+        ...errorsUS,
+        excersiceType:true
+      }))
 
+      errors = false
+    }
+    if(exerciseDifficultUS===undefined || exerciseDifficultUS==="")
+    {
+      setErrorsUS(errorsUS =>({
+        ...errorsUS,
+        excersiceDificult:true
+      }))
 
+      errors = false
+    }
 
-    console.log("ERRORS: ",errorsUS)
+    if(exerciseBodyPartsUS.length===0)
+    {
+      setErrorsUS(errorsUS =>({
+        ...errorsUS,
+        excersiceBodyParts:true
+      }))
 
+      errors = false
+    }
 
+    if(exerciseMuclesUS.length===0)
+    {
+      setErrorsUS(errorsUS =>({
+        ...errorsUS,
+        excersiceMuscles:true
+      }))
+
+      errors = false
+    }
+
+    if(exerciseEquipmentsUS.length===0)
+    {
+      setErrorsUS(errorsUS =>({
+        ...errorsUS,
+        excersiceEquipment:true
+      }))
+
+      errors = false
+    }
+    
+    return errors
+
+  }
+
+  const mostrarErrores=()=>{
+    console.log(errorsUS)
+   /*  console.log(errorsUS.objeto) */
   }
   
   function getStylesItemSelector(name, partesCuerpo, theme) {
@@ -228,32 +326,34 @@ const FormExercise = () => {
     return (
       <div>
         <form>
-{/*           {console.log(getByTitle().props.children)} */}
           <h1>{getByTitle().props.children}</h1> 
-          {/* {getByTitle().props.children} */}
-           
-          {/* <h1>Nuevo Ejercicio</h1> */}
-         {/*  <h1>Nuevo Ejercicio</h1> */}
-          {/* {console.log("Hola", atributosEjercicio)} */}
 
           <Button variant="contained" 
              onClick={() => {
               handleClickSaveButton()                      
             }}>Guardar Ejercicio</Button>
 
-{/* Campo ejercicio */}          
+{/* <Stack sx={{ width: '100%' }} spacing={2}>
+      <Alert severity="error">This is an error alert — check it out!</Alert>
+      <Alert severity="warning">This is a warning alert — check it out!</Alert>
+      <Alert severity="info">This is an info alert — check it out!</Alert>
+      <Alert severity="success">This is a success alert — check it out!</Alert>
+    </Stack> */}
+           
+{/* Campo nombre ejercicio */}          
           <FormControl  fullWidth sx={{ m: 1}}>
             <TextField
               id="standard-basic"
               label="Nombre Ejercicio"
               variant="outlined"
               required
-              errro={errorsUS.ExcersiceName}
+              error={!errorsUS.excersiceName ? false:true} 
+             /*  error = "false" */
               value={exerciseNameUS}
               onChange={handleChangeExerciseNameInput}
             />
-            {errorsUS.ExcersiceName ? <span style={{color:"red"}}>Este campo es obligatorio</span> :<span></span>} 
-            {/* {errorsUS.ExcersiceName ? console.log("Hola:", errorsUS.ExcersiceName):console.log("chau:", errorsUS.ExcersiceName)} */}
+            {errorsUS.excersiceName ? <span style={{color:"red"}}>El nombre del ejercicio es obligatorio</span> :<span></span>} 
+            
           </FormControl>
 
 {/* Selectot Tipo Ejercicio */}                  
@@ -265,6 +365,7 @@ const FormExercise = () => {
                 value={exerciseTypeUS}
                 label="Dificultad"
                 onChange={handleChangeExerciseType}
+                error={!errorsUS.excersiceType ? false:true} 
                                 
               >
                 {exerciseAtributsUS.exerciseType.map((te, id) => (
@@ -273,6 +374,7 @@ const FormExercise = () => {
                   </MenuItem>
                 ))}
               </Select>
+              {errorsUS.excersiceType ? <span style={{color:"red"}}>El tipo de ejercicio es obligatorio</span> :<span></span>} 
             </FormControl>
          
 
@@ -285,6 +387,7 @@ const FormExercise = () => {
                 value={exerciseDifficultUS}
                 label="Dificultad Ejercicio"
                 onChange={handleChangeExerciseDificultSelector}
+                error={!errorsUS.excersiceDificult ? false:true}                
               >
                 {exerciseAtributsUS.exerciseDifficult.map((de, id) => (
                   <MenuItem value={de._id} key={id}>
@@ -292,6 +395,7 @@ const FormExercise = () => {
                   </MenuItem>
                 ))}
               </Select>
+              {errorsUS.excersiceDificult ? <span style={{color:"red"}}>La dificultad del ejercicio es obligatorio</span> :<span></span>} 
             </FormControl>
       
 
@@ -318,6 +422,7 @@ const FormExercise = () => {
                 </Box>
               )}
               MenuProps={MenuProps}
+              error={!errorsUS.excersiceBodyParts ? false : true}              
             >
               {exerciseAtributsUS.bodyParts.map((part) => (
                 <MenuItem
@@ -329,6 +434,7 @@ const FormExercise = () => {
                 </MenuItem>
               ))}
             </Select>
+            {errorsUS.excersiceBodyParts ? <span style={{color:"red"}}>Las partes del ejercicio son obligatorias</span> :<span></span>} 
           </FormControl>
 
           <br></br>
@@ -360,6 +466,7 @@ const FormExercise = () => {
                 </Box>
               )}
               MenuProps={MenuProps}
+              error={!errorsUS.excersiceMuscles ? false : true}     
             >
               {exerciseAtributsUS.exerciseMucles.map((muscle) => (
                 <MenuItem
@@ -371,6 +478,7 @@ const FormExercise = () => {
                 </MenuItem>
               ))}
             </Select>
+            {errorsUS.excersiceMuscles ? <span style={{color:"red"}}>Las partes del ejercicio son obligatorias</span> :<span></span>} 
           </FormControl>
 
           <br></br>
@@ -402,6 +510,7 @@ const FormExercise = () => {
                 </Box>
               )}
               MenuProps={MenuProps}
+              error={!errorsUS.excersiceEquipment ? false : true}  
             >
               {exerciseAtributsUS.exerciseEquipments.map((equipment) => (
                 <MenuItem
@@ -417,6 +526,7 @@ const FormExercise = () => {
                 </MenuItem>
               ))}
             </Select>
+            {errorsUS.excersiceEquipment ? <span style={{color:"red"}}>El equipamiento del ejercicio es obligatorio</span> :<span></span>} 
           </FormControl>
 
  {/* Campo Explicación*/}      
@@ -438,8 +548,8 @@ const FormExercise = () => {
           <p>
             Especifique las precauciones a tener en cuenta al momento de realizar el ejercicio </p>
           <TextField
-            id="explicaciónEjercicio"
-            label="Explicación Ejercicio"
+            id="precaucionesEjercicio"
+            label="Precauciones del Ejercicio"
             multiline
             rows={5}
             value={exercisePrecautionsUS}
@@ -450,7 +560,7 @@ const FormExercise = () => {
           <br></br>
 
  {/* Fotos y videos*/}
- <Box sx={{ flexGrow: 1 }}>
+           <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         <Grid >
           <Item>
@@ -487,7 +597,7 @@ const FormExercise = () => {
 
        
       </Grid>
-    </Box>
+           </Box>
 
   {/* Boton Guardar*/}             
 
@@ -496,6 +606,7 @@ const FormExercise = () => {
               handleClickSaveButton()                      
             }}>Guardar Ejercicio</Button>
         </form>
+
       </div>
     );
   } else {
