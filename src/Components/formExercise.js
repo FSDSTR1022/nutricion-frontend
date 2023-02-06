@@ -35,6 +35,9 @@ const FormExercise = () => {
   const [exercisePrecautionsUS, setExercisePrecautionsUS] = useState();
   const [imagenEjercicio, setImagenEjercicio] = useState();
   const [videoEjercicio, setVideoEjercicio] = useState();
+  
+  const [openMessage, setOpenMessage] = useState(false);
+  const [mensajeAMostrar, setMensajeAMostrar] = useState("")
 
   const [errorsUS, setErrorsUS] = useState({})
   
@@ -192,11 +195,12 @@ const FormExercise = () => {
             //hay que hacer bien esta comprobación
             if(data._id!==null){
               navigate("/Ejercicios",
-                {state:{action:"newExercise",typeMessage:"guardoConExito",openMessage:true}}
+                {state:{action:"newExercise",typeMessage:"guardoConExito"}}
              ) 
             }
             else{
-              console.log("Hubo problemas para guardar")
+              setOpenMessage(true)
+              setMensajeAMostrar("No se pudo guardar el ejercicio")
             }}) 
             
             break;
@@ -209,15 +213,25 @@ const FormExercise = () => {
               if(data._id!==null){
 
                 navigate("/Ejercicios",
-                  {state:{action:"editExercise",typeMessage:"modificadoConExito",openMessage:true}}) 
+                  {state:{action:"editExercise",typeMessage:"modificadoConExito"}}) 
             
               }
               else{
-                console.log("Hubo problemas para editar")
+                setOpenMessage(true)
+                setMensajeAMostrar("No se pudo editar el ejercicio")
               }
           })
         break;          
     }}};
+
+
+    const handleCloseMessage = (event, reason) => {
+ 
+      if (reason === 'clickaway') {
+        setOpenMessage(false);
+      }  
+      setOpenMessage(false);
+    };
 
 
   const checkForm=()=>{
@@ -286,10 +300,6 @@ const FormExercise = () => {
 
   }
 
-  const mostrarErrores=()=>{
-    console.log(errorsUS)
-   /*  console.log(errorsUS.objeto) */
-  }
   
   function getStylesItemSelector(name, partesCuerpo, theme) {
     return {
@@ -310,11 +320,7 @@ const FormExercise = () => {
   
   function getByTitle(){
    
-      /* return (
-      <h1>Nuevo Ejercicio2</h1>
-      ) */
-    
-     switch (actionUS) {
+    switch (actionUS) {
       case "newExercise":
         return <h1>Nuevo Ejercicio</h1>
       case "editExercise":
@@ -333,13 +339,7 @@ const FormExercise = () => {
               handleClickSaveButton()                      
             }}>Guardar Ejercicio</Button>
 
-{/* <Stack sx={{ width: '100%' }} spacing={2}>
-      <Alert severity="error">This is an error alert — check it out!</Alert>
-      <Alert severity="warning">This is a warning alert — check it out!</Alert>
-      <Alert severity="info">This is an info alert — check it out!</Alert>
-      <Alert severity="success">This is a success alert — check it out!</Alert>
-    </Stack> */}
-           
+         
 {/* Campo nombre ejercicio */}          
           <FormControl  fullWidth sx={{ m: 1}}>
             <TextField
@@ -606,6 +606,15 @@ const FormExercise = () => {
               handleClickSaveButton()                      
             }}>Guardar Ejercicio</Button>
         </form>
+
+
+{/* ///////////////////// Boton Guardar/////////////////////  */}
+
+        <Snackbar open={openMessage} autoHideDuration={6000} onClose={handleCloseMessage}>
+          <Alert variant="filled" onClose={handleCloseMessage} severity="error" sx={{ width: '100%' }}>
+            {mensajeAMostrar}
+          </Alert>
+        </Snackbar>
 
       </div>
     );

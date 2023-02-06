@@ -49,7 +49,10 @@ const ExercisesList = () =>{
   const [exerciseEquipmentsSearchUS, setExerciseEquipmentsSearchUS] = useState([]);
   const [exerciseNameSeachUS, setExerciseNameSearchUS] = useState("");
 
-  const [mostroMensaje, setMostroMensaje] = useState(false);
+  const [exerciseToDelete, setExerciseToDelete] = useState("");
+
+  const [mensajeAMostrar, setMensajeAMostrar] = useState("")
+  const [tipoMensajeAMostrar, setTipoMensajeAMostrar] = useState("")
   
   const [openMessage, setOpenMessage] = useState(false);
   const [openConfirmation, setOpenConfirmation] = useState(false);
@@ -57,14 +60,7 @@ const ExercisesList = () =>{
   const navigate = useNavigate();
   const {state} = useLocation(); // hook para la navegacion
 
-  
- /*  if(state!==null && mostroMensaje===false){ 
-    console.log("ENTRANDO A SETEAR EN TRUE")
-    setOpenMessage(state.openMessage)
-    setMostroMensaje(true)
-  } */
-
-  
+    
   const theme = useTheme();
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -85,12 +81,23 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
 
   useEffect(() => {
     
-    if(state!==null && mostroMensaje===false){
-      setOpenMessage(state.openMessage)
-      setMostroMensaje(true)
+    if(state!==null && mensajeAMostrar===""){
+      
+      switch (state.typeMessage) {
+        case "guardoConExito":
+          setMensajeAMostrar("Se guardo correctamente el ejercicio")
+          setTipoMensajeAMostrar("success") //"success":"error"
+          break;
+        case "modificadoConExito":
+          setMensajeAMostrar("Se modifico correctamente el ejercicio")
+          setTipoMensajeAMostrar("success") //"success":"error" 
+          break
+      }
+      
+      setOpenMessage(true)
     }
-    
-    getExcerciseAtribut().then((data) => {
+        
+      getExcerciseAtribut().then((data) => {
       setExerciseAtributesUS(data);
       setIsLoadingExcersiceAtributes(false);
     });
@@ -99,7 +106,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
       setExcerciseListUS(data);
       setIsLoadingExcersice(false);
     });    
-  }, []);
+  }, [openMessage]);
 
   const handleClickNewExcerciseButton=(event)=>{
     navigate("/Ejercicios/Ejercicio",
@@ -122,7 +129,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
     )
   }
     
-  const handleClickEdit = (evento)=>{
+  const handleClickEditExcercise = (evento)=>{
  
     let excersiceToEdit= excerciseListUS.find((element)=>{
       return element._id===evento
@@ -134,42 +141,50 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
     ) 
   }
 
-  const handleClickDelte = (evento)=>{
+  const handleClickDelteExcercise = (evento)=>{
 
-  
-     if(evento.target=== undefined)
-    {
-      console.log("Icono")
-      setOpenConfirmation(true);
+    let excersiceToDelete= excerciseListUS.find((excercise)=>{
+      return excercise._id===evento
+    })
 
-      let excersiceToDelete= excerciseListUS.find((element)=>{
-        return element._id===evento
-      })
-
-      deleteExcercise(excersiceToDelete).then((data) =>{
-
-        if(data._id!==null){
-          //mensale se elimino con exito
-        }
-        else{
-          //mensaje hubo problema para eliminar
-        }
-      })
-      return      
-    }
-    else if(evento.target.value==="aceptar")
-    {
-      console.log("Boton Aceptar")
-      setOpenConfirmation(false);
-      return
-    }
-    else if(evento.target.value==="cancelar")
-    {
-      console.log("boton Cancelar")
-      setOpenConfirmation(false);
-      return      
-    }
+    setExerciseToDelete(excersiceToDelete);
+    setOpenConfirmation(true); 
  
+  }
+
+  const handleClickAceptDelteExcercise = (event) =>{
+
+   if(event.target.value==="aceptar")
+    {
+            
+        deleteExcercise(exerciseToDelete).then((response) =>{
+
+            if(response.status===200){
+              setMensajeAMostrar("Se elimino el ejercicio")
+              setTipoMensajeAMostrar("success") //"success":"error"
+              setOpenMessage(true)
+            }
+            else{
+              setMensajeAMostrar("No se pudo eliminar el ejercicio")
+              setTipoMensajeAMostrar("success") //"success":"error"
+              setOpenMessage(true)
+            }
+      }).catch((error) => {
+            setMensajeAMostrar("No se pudo eliminar el ejercicio"+error)
+            setTipoMensajeAMostrar("error") //"success":"error"
+            setOpenMessage(true)
+      });
+
+      setOpenConfirmation(false);
+      return  
+    }
+    else if(event.target.value==="cancelar")
+    {
+      setOpenConfirmation(false);
+      setExerciseToDelete()
+      return      
+    } 
+
   }
 
   const handleChangeExerciseNameInput = (event) => {
@@ -365,13 +380,6 @@ const handleCloseMessage = (event, reason) => {
   setOpenMessage(false);
 };
 
-/* const handleCloseConfirmation = (event) => {
-  console.log(event)
-  console.log(event.target.value)
-  setOpenConfirmation(false);
-}; */
-
-
 const handleClickOpenBoton = () => {
   setOpenConfirmation(true);
 }; 
@@ -453,27 +461,26 @@ const drawTableRows = (excercise)=>{
       <SearchIcon onClick={() => (excerciseListUS ? handleClickView(excercise._id) : null)}/>
     </TableCell>
     <TableCell align="center">
-      <EditIcon onClick={() => (excerciseListUS ? handleClickEdit(excercise._id) : null)}/>
+      <EditIcon onClick={() => (excerciseListUS ? handleClickEditExcercise(excercise._id) : null)}/>
       </TableCell>
     <TableCell align="center">
-      <DeleteOutlinedIcon onClick={() => (excerciseListUS ? handleClickDelte(excercise._id) : null) }/>
+      <DeleteOutlinedIcon onClick={() => (excerciseListUS ? handleClickDelteExcercise(excercise._id) : null) }/>
       </TableCell>               
   </TableRow>
    )
   }
 
-  const getMenuItemQuitarSeleccion = ()=>{
+const getMenuItemQuitarSeleccion = ()=>{
     return (
       <MenuItem value={"quitarSeleccion"} sx={{ color: "red"}}>
       Quitar Selección
     </MenuItem> 
     )
-  }
+}
 
 if (!isLoadingExercise && !isLoadingExerciseAtributes) {
     return(
       <div>
-        {/* //{console.log(excerciseListUS)}  */}
         <h1>Listado de ejercicios!</h1>
 
 {/* ///////////////////// BOTON NUEVO  ///////////////////// */}
@@ -512,7 +519,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
                 onChange={handleChangeExerciseTypeSearch}
                 input={<OutlinedInput id="excersiceTypeSearch" label="Tipo de Ejercicio "/>}
               >
-                {exerciseTypeSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():console.log()}
+                {exerciseTypeSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():null}
                 {exerciseAtributsUS.exerciseType.map((te, id) => (
                   <MenuItem value={te.exerciseType} key={id}>
                     {te.exerciseType}
@@ -534,7 +541,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
                 input={ <OutlinedInput id="dificultadEjercicioSelect" label="Dificultad de Ejercicio"/>}
                 
               >
-                {exerciseDifficulSearchtUS.length !== 0 ? getMenuItemQuitarSeleccion():console.log()}
+                {exerciseDifficulSearchtUS.length !== 0 ? getMenuItemQuitarSeleccion():null}
                 {exerciseAtributsUS.exerciseDifficult.map((de, id) => (
                   <MenuItem value={de.exerciseDifficulty} key={id}>
                     {de.exerciseDifficulty}
@@ -568,7 +575,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
               )}
               MenuProps={MenuProps}
             >
-              {exerciseBodyPartsSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():console.log()}
+              {exerciseBodyPartsSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():null}
               {exerciseAtributsUS.bodyParts.map((part) => (
                 <MenuItem
                   key={part._id}
@@ -608,7 +615,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
               )}
               MenuProps={MenuProps}
             >
-              {exerciseMuclesSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():console.log()}
+              {exerciseMuclesSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():null}
               {exerciseAtributsUS.exerciseMucles.map((muscle) => (
                 <MenuItem
                   key={muscle.muscle}
@@ -646,7 +653,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
               )}
               MenuProps={MenuProps}
             >
-              {exerciseEquipmentsSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():console.log()}
+              {exerciseEquipmentsSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():null}
               {exerciseAtributsUS.exerciseEquipments.map((equipment) => (
                 <MenuItem
                   key={equipment._id}
@@ -695,17 +702,19 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
             </Table>
           </TableContainer> 
         </div>
-        {/* Mensaje de confirmación*/}     
-         <Snackbar open={openMessage} autoHideDuration={6000} onClose={handleCloseMessage}>
-          <Alert variant="filled" onClose={handleCloseMessage} severity="success" sx={{ width: '100%' }}>
-          Mensaje!
-             {/* {state.typeMessage==="guardoConExito" ? "Se guardo correctament el ejercicio":"Se actualizó correctametne el ejercicio"} */}
-          </Alert>
-       </Snackbar>
 
+      
+{/* ///////////////////// Mensaje de resultado  ///////////////////// */}              
+        <Snackbar open={openMessage} autoHideDuration={6000} onClose={handleCloseMessage}>
+          <Alert variant="filled" onClose={handleCloseMessage} severity={tipoMensajeAMostrar} sx={{ width: '100%' }}>
+            {mensajeAMostrar}
+          </Alert>
+        </Snackbar>
+
+{/* ///////////////////// Dialogo de confirmación  ///////////////////// */}   
         <Dialog
             open={openConfirmation}
-            onClose={handleClickDelte}
+            onClose={handleClickDelteExcercise}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
@@ -718,12 +727,11 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button value="aceptar" onClick={handleClickDelte}>Acepter</Button>
-              <Button value="cancelar" onClick={handleClickDelte} autoFocus> Cancelar </Button>
+              <Button value="aceptar" onClick={handleClickAceptDelteExcercise}>Aceptar</Button>
+              <Button value="cancelar" onClick={handleClickAceptDelteExcercise}> Cancelar </Button>
             </DialogActions>
          </Dialog> 
-        
-         
+               
       
  
       </div>

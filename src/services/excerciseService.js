@@ -1,13 +1,11 @@
 let URLEjercicio = "http://localhost:3000/Ejercicios/Ejercicio";
 let URLejercicios = "http://localhost:3000/Ejercicios";
 
-/* Devuelve  
- */
+
 const getExcerciseAtribut = function () {
   return fetch(URLEjercicio)
     .then((response) => response.json())
     .then((jsonData) => {
-     // console.log("EN servicio. Atributos Ejercicio",jsonData)
       return jsonData;
     })
     .catch((e) => {
@@ -18,7 +16,6 @@ const getExcerciseAtribut = function () {
 
 const saveExcercise = function (data) {
   const excercise = JSON.stringify(data);
-
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -34,8 +31,8 @@ const saveExcercise = function (data) {
     .catch((error) => {
       return error;
     });
-};
-
+};  
+ 
 const getExcercise = function(){
   
   return fetch(URLejercicios)
@@ -53,27 +50,40 @@ const getExcercise = function(){
 const updateExcercise = function(data){
   const excercise = JSON.stringify(data);
 
-  console.log("EJERCICIO en SERVICIO: ",excercise)
-
   const requestOptions = {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: excercise,
   };
 
-  //URLEjercicio=URLEjercicio+"?id="+data._id
   let URLEjercicio2 = "http://localhost:3000/Ejercicios/Ejercicio?id="+data._id;
 
-return fetch(URLEjercicio2, requestOptions)
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("DATA en service:",data)
-      return data;
-    })
-    .catch((error) => {
-      return error;
-    });
-
+  return fetch(URLEjercicio2, requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        return data;
+      })
+      .catch((error) => {
+        return error;
+      });
 }
 
-module.exports = { getExcerciseAtribut, saveExcercise,getExcercise,updateExcercise};
+const deleteExcercise = function(data){
+  const excercise = JSON.stringify(data);
+
+  const requestOptions = {
+    method: "DELETE",
+    headers: {'Content-Type': 'application/json'},
+    body: excercise,
+  };
+
+  let URLEjercicio2 = "http://localhost:3000/Ejercicios/Ejercicio?_id="+data._id;
+
+  return fetch(URLEjercicio2, requestOptions)
+    .then((response) => ({data:response.json(),status:response.status})) 
+    .catch((error) => {
+    return error;
+  });
+}
+
+module.exports = { getExcerciseAtribut, saveExcercise,getExcercise,updateExcercise,deleteExcercise};
