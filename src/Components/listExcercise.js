@@ -486,13 +486,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
 {/* ///////////////////// BOTON NUEVO  ///////////////////// */}
 <div style={{display: "flex", justifyContent: "flex-end"}}>
   <Button variant="contained" onClick={handleClickNewExcerciseButton}>Nuevo Ejercicio</Button>
-
-  <Button variant="outlined" onClick={handleClickOpenBoton}>
-        Open alert dialog
-      </Button>
-
 </div>
- 
 
 {/* ///////////////////// FILTROS  ///////////////////// */}
         <div>
