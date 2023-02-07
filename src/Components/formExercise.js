@@ -12,15 +12,13 @@ import {
   Button,
   Grid,
   Paper,
-  Stack,
   Alert,
   Snackbar
 } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTheme } from "@mui/material/styles";
 import { styled } from '@mui/material/styles';
-import {useParams, useLocation,useNavigate} from 'react-router-dom'
-import { ConstructionOutlined } from "@mui/icons-material";
+import {useLocation,useNavigate} from 'react-router-dom'
 
 const FormExercise = () => {
   const [isLoading, setIsLoading] = useState(true);
