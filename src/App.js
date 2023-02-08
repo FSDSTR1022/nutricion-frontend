@@ -1,15 +1,19 @@
 import './App.css';
 import FormExercise from "./Components/formExercise"
 import ListExercises from "./Components/listExcercise"
-import Button from '@mui/material/Button';
-import { border } from '@mui/system';
+import HomePage from "./Components/homePage"
+import { Route, Routes,BrowserRouter } from  "react-router-dom"
 
 function App() {
   return (
     <div>
-      {/* //<Button variant="contained">Hello World</Button> */}
-    <ListExercises/>
-    <FormExercise/>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage/>}/>
+        <Route path="/Ejercicios" element={<ListExercises/>}/>
+        <Route path="/Ejercicios/Ejercicio" element={<FormExercise/>}/>
+      </Routes>
+    </BrowserRouter>
      
     </div>
   );

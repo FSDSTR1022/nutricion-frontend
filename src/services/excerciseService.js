@@ -1,5 +1,5 @@
-let URLEjercicio = "http://localhost:3000/Ejercicios/Ejercicio";
-let URLejercicios = "http://localhost:3000/Ejercicios";
+const URLEjercicio = "http://localhost:3000/Ejercicios/Ejercicio";
+const URLejercicios = "http://localhost:3000/Ejercicios";
 
 
 const getExcerciseAtribut = function () {
@@ -25,7 +25,6 @@ const saveExcercise = function (data) {
   return fetch(URLEjercicio, requestOptions)
     .then((response) => response.json())
     .then((data) => {
-      //console.log("DATA en service:",data)
       return data;
     })
     .catch((error) => {
@@ -38,7 +37,6 @@ const getExcercise = function(){
   return fetch(URLejercicios)
     .then((response) => response.json())
     .then((jsonData) => {
-      //console.log("EN servicio",jsonData)
       return jsonData;
     })
     .catch((e) => {
@@ -56,7 +54,7 @@ const updateExcercise = function(data){
     body: excercise,
   };
 
-  let URLEjercicio2 = "http://localhost:3000/Ejercicios/Ejercicio?id="+data._id;
+  const URLEjercicio2 = "http://localhost:3000/Ejercicios/Ejercicio?id="+data._id;
 
   return fetch(URLEjercicio2, requestOptions)
       .then((response) => response.json())
@@ -77,7 +75,7 @@ const deleteExcercise = function(data){
     body: excercise,
   };
 
-  let URLEjercicio2 = "http://localhost:3000/Ejercicios/Ejercicio?_id="+data._id;
+  const URLEjercicio2 = "http://localhost:3000/Ejercicios/Ejercicio?_id="+data._id;
 
   return fetch(URLEjercicio2, requestOptions)
     .then((response) => ({data:response.json(),status:response.status})) 

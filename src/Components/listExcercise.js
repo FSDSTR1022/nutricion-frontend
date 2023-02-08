@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { getExcercise, getExcerciseAtribut,deleteExcercise} from "../services/excerciseService";
 import { useEffect, useState } from "react";
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
@@ -50,7 +49,7 @@ const ExercisesList = () =>{
   const [exerciseToDelete, setExerciseToDelete] = useState("");
 
   const [mensajeAMostrar, setMensajeAMostrar] = useState("")
-  const [tipoMensajeAMostrar, setTipoMensajeAMostrar] = useState("")
+  const [tipoMensajeAMostrar, setTipoMensajeAMostrar] = useState("success")
   
   const [openMessage, setOpenMessage] = useState(false);
   const [openConfirmation, setOpenConfirmation] = useState(false);
@@ -71,11 +70,7 @@ const ExercisesList = () =>{
     },
   };
 
- /* 
-https://images.unsplash.com/photo-1516802273409-68526ee1bdd6
-https://images.unsplash.com/photo-1589118949245-7d38baf380d6 
-https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC5cFhphukFT-h24CWqwycbNcvVutbJeGlueYS4zwVmBzJVyiaz-QHbRCufuJJKe8_5SEVROgxGAKk9YlzyGlxBFX-Uyl0CIxObBSXxvow
-*/
+
 
   useEffect(() => {
     
@@ -84,11 +79,11 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
       switch (state.typeMessage) {
         case "guardoConExito":
           setMensajeAMostrar("Se guardo correctamente el ejercicio")
-          setTipoMensajeAMostrar("success") //"success":"error"
+          setTipoMensajeAMostrar("success")
           break;
         case "modificadoConExito":
           setMensajeAMostrar("Se modifico correctamente el ejercicio")
-          setTipoMensajeAMostrar("success") //"success":"error" 
+          setTipoMensajeAMostrar("success")
           break
       }
       
@@ -117,7 +112,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
   }
 
   const handleClickView = (evento)=>{
-    let e= excerciseListUS.find((element)=>{
+    const e= excerciseListUS.find((element)=>{
       return element._id===evento
     })
      
@@ -129,7 +124,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
     
   const handleClickEditExcercise = (evento)=>{
  
-    let excersiceToEdit= excerciseListUS.find((element)=>{
+    const excersiceToEdit= excerciseListUS.find((element)=>{
       return element._id===evento
     })
     
@@ -141,7 +136,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
 
   const handleClickDelteExcercise = (evento)=>{
 
-    let excersiceToDelete= excerciseListUS.find((excercise)=>{
+    const excersiceToDelete= excerciseListUS.find((excercise)=>{
       return excercise._id===evento
     })
 
@@ -159,28 +154,28 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
 
             if(response.status===200){
               setMensajeAMostrar("Se elimino el ejercicio")
-              setTipoMensajeAMostrar("success") //"success":"error"
+              setTipoMensajeAMostrar("success") 
               setOpenMessage(true)
             }
             else{
               setMensajeAMostrar("No se pudo eliminar el ejercicio")
-              setTipoMensajeAMostrar("success") //"success":"error"
+              setTipoMensajeAMostrar("success") 
               setOpenMessage(true)
             }
       }).catch((error) => {
             setMensajeAMostrar("No se pudo eliminar el ejercicio"+error)
-            setTipoMensajeAMostrar("error") //"success":"error"
+            setTipoMensajeAMostrar("error") 
             setOpenMessage(true)
       });
 
       setOpenConfirmation(false);
-      return  
+        
     }
     else if(event.target.value==="cancelar")
     {
       setOpenConfirmation(false);
       setExerciseToDelete()
-      return      
+            
     } 
 
   }
@@ -193,6 +188,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
     {
       excerciseListUS.map((excercise)=>{
         excercise.show = true;
+        return true
       })
     }
     else{
@@ -202,7 +198,8 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
         }
         else{
           excercise.show = false;
-        }        
+        }     
+        return true   
       })
     }
   };
@@ -214,6 +211,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
     {
       excerciseListUS.map((excercise)=>{
         excercise.show = true;
+        return true
       })
 
       setExerciseTypeSearchUS("");
@@ -223,9 +221,11 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
       excerciseListUS.map((excercise)=>{               
             if(excercise.exerciseType.exerciseType === event.target.value){
               excercise.show = true;
+              return true
             }
             else{
               excercise.show = false;
+              return true
             }
           });
     }
@@ -239,6 +239,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
     {
       excerciseListUS.map((excercise)=>{
         excercise.show = true;
+        return true
       })
 
       setExerciseDifficulSearchUS("");
@@ -248,9 +249,11 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
       excerciseListUS.map((excercise)=>{               
             if(excercise.difficulty.exerciseDifficulty === event.target.value){
               excercise.show = true;
+              return true
             }
             else{
               excercise.show = false;
+              return true
             }
           });
     }
@@ -266,6 +269,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
     {
       excerciseListUS.map((excercise)=>{
         excercise.show = true;
+        return true
         })
 
         setExcersiseBodyPartsSearchUS([])     
@@ -290,6 +294,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
          else{
             excercise.show = false;
           }
+          return true
         });
       }
     }    
@@ -304,6 +309,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
   {
     excerciseListUS.map((excercise)=>{
       excercise.show = true;
+      return true
       })
 
       setExerciseMuclesSearchUS([])     
@@ -328,6 +334,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
        else{
           excercise.show = false;
         }
+        return true
       });
     }
  };
@@ -342,6 +349,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
   {
     excerciseListUS.map((excercise)=>{
       excercise.show = true;
+      return true
       })
       
       setExerciseEquipmentsSearchUS([])     
@@ -366,6 +374,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
        else{
           excercise.show = false;
         }
+        return true
       });
     }
 };
@@ -377,10 +386,6 @@ const handleCloseMessage = (event, reason) => {
   }  
   setOpenMessage(false);
 };
-
-const handleClickOpenBoton = () => {
-  setOpenConfirmation(true);
-}; 
 
  function getStylesItemSelector(name, partesCuerpo, theme) {
   return {
@@ -559,7 +564,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
                      <Chip 
                         key={value} 
                         label={exerciseAtributsUS.bodyParts.map((part)=>{
-                              if(part.bodyPart===value) return part.bodyPart
+                             return part.bodyPart===value? part.bodyPart :""
                         }) } 
                       /> 
                   ))}
@@ -599,7 +604,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
                     <Chip 
                     key={value} 
                     label={ exerciseAtributsUS.exerciseMucles.map((muscle)=>{
-                          if(muscle.muscle===value) return muscle.muscle
+                          return muscle.muscle===value?  muscle.muscle:""
                     }) } 
                   /> 
                   ))}
@@ -637,7 +642,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
                     <Chip 
                       key={value} 
                      label={exerciseAtributsUS.exerciseEquipments.map((equipment)=>{
-                          if(equipment.exerciseEquipment===value) return equipment.exerciseEquipment
+                          return equipment.exerciseEquipment===value? equipment.exerciseEquipment:""
                     }) } 
                   /> 
                   ))}
@@ -688,6 +693,9 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
               {excerciseListUS.map((excercise) =>{
                   if(excercise.show===undefined ||excercise.show===true){
                     return drawTableRows(excercise)
+                  }
+                  else{
+                    return true
                   }                  
                 })}
               </TableBody>              
