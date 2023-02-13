@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -15,12 +15,22 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 
-const drawerWidth = 240;
-const navItems = ['Login', 'Register'];
-
 export default function NavBar(props) {
+	const drawerWidth = 240;
 	const { window } = props;
-	const [mobileOpen, setMobileOpen] = React.useState(false);
+	const [mobileOpen, setMobileOpen] = useState(false);
+	const [navItems, setNavItems] = useState([]);
+
+	useEffect(() => {
+		const token = localStorage.getItem('token');
+		console.log('token', token);
+
+		if (!token) {
+			setNavItems(['Login', 'Register']);
+		} else {
+			setNavItems(['Logout']);
+		}
+	}, []);
 
 	const handleDrawerToggle = () => {
 		setMobileOpen(prevState => !prevState);

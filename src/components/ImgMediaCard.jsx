@@ -24,14 +24,13 @@ const ImgMediaCard = props => (
 					{props.title}
 				</Typography>
 				<Typography
+					component={'ul'}
 					variant='body2'
 					color='text.secondary'
 					sx={{ textAlign: 'left', fontSize: 16 }}>
-					<ul>
-						{props.description.map((lineText, key) => {
-							return <li key={key}>{lineText}</li>;
-						})}
-					</ul>
+					{props.description.map((lineText, key) => {
+						return <li key={key}>{lineText}</li>;
+					})}
 				</Typography>
 				<CardActions sx={{ justifyContent: 'center' }}>
 					<Button variant='outlined'>

@@ -5,6 +5,7 @@ import Home from './components/view/Home';
 import Login from './components/view/Login';
 import Register from './components/view/Register';
 import Dashboard from './components/view/Dashboard';
+import Logout from './components/view/Logout';
 
 function App() {
 	return (
@@ -31,6 +32,11 @@ function App() {
 						exact
 						path='/dashboard'
 						element={<Dashboard />}
+					/>
+					<Route
+						exact
+						path='/logout'
+						element={<Logout />}
 					/>
 				</Routes>
 			</div>

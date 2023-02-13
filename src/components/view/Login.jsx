@@ -41,6 +41,7 @@ const Login = () => {
 
 		setLoading(false);
 		navigate('/dashboard');
+		window.location.reload(false);
 	}
 
 	const loginAction = () => {
