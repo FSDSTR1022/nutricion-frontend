@@ -5,183 +5,279 @@ import Button from '@mui/material/Button';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
-import { useState } from 'react';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
+import { useState, useEffect } from 'react';
+import { registerUser, getDisciplines } from '../../services/excerciseService';
+import { useTheme } from '@mui/material/styles';
+
+function getStyles(disciplineSelected, allDisciplines, theme) {
+	return {
+		fontWeight:
+			allDisciplines.indexOf(disciplineSelected) === -1
+				? theme.typography.fontWeightRegular
+				: theme.typography.fontWeightMedium,
+	};
+}
 
 const Register = () => {
-	const [nombre, setNombre] = useState('');
-	const [nombreError, setNombreError] = useState(false);
+	const [dni, setDni] = useState('');
+	const [dniError, setDniError] = useState(false);
 
-	const [apellidos, setApellidos] = useState('');
-	const [apellidosError, setApellidosError] = useState(false);
+	const [name, setName] = useState('');
+	const [nameError, setNameError] = useState(false);
 
-	const [correo, setCorreo] = useState('');
-	const [correoError, setCorreoError] = useState(false);
+	const [discipline, setDiscipline] = useState([]);
+	const [disciplineError, setDisciplineError] = useState(false);
 
-	const [repiteCorreo, setRepiteCorreo] = useState('');
-	const [repiteCorreoError, setRepiteCorreoError] = useState(false);
+	const [email, setEmail] = useState('');
+	const [emailError, setEmailError] = useState(false);
 
-	const [especialidad, setEspecialidad] = useState('');
-	const [especialidadError, setEspecialidadError] = useState(false);
+	const [phone, setPhone] = useState(0);
+	const [phoneError, setPhoneError] = useState(false);
 
-	const [contraseña, setContraseña] = useState('');
-	const [contraseñaError, setContraseñaError] = useState(false);
+	const [password, setPassword] = useState('');
+	const [passwordError, setPasswordError] = useState(false);
 
-	const [repiteContraseña, setRepiteContraseña] = useState('');
-	const [repiteContraseñaError, setRepiteContraseñaError] = useState(false);
+	const [imgUrl, setImgUrl] = useState('');
+	const [imgUrlError, setImgUrlError] = useState(false);
+
+	const theme = useTheme();
+
+	const [allDisciplines, setAllDisciplines] = useState([]);
+
+	const MenuProps = {
+		PaperProps: {
+			style: {
+				maxHeight: 48 * 4.5 + 8,
+				width: 250,
+			},
+		},
+	};
+
+	useEffect(() => {
+		getDisciplines().then(data => setAllDisciplines(data));
+	}, []);
+
+	const errorMesage = 'Campo requerido';
 
 	const registerAction = () => {
-		console.log('nombre',nombre);
-		console.log('apellidos',apellidos);
-		console.log('correo',correo);
-		console.log('repiteCorreo',repiteCorreo);
-		console.log('especialidad',especialidad);
-		console.log('contraseña',contraseña);
-		console.log('repiteContraseña',repiteContraseña);
-	}
+		const userInfo = {};
+
+		userInfo.dni = dni;
+		userInfo.name = name;
+		userInfo.discipline = discipline;
+		userInfo.email = email;
+		userInfo.phone = phone;
+		userInfo.password = password;
+		userInfo.imgUrl = imgUrl;
+
+		registerUser(userInfo);
+	};
 
 	const setValues = (type, value) => {
 		switch (type) {
-			case 'nombre':
-				setNombre(value);
+			case 'dni':
+				setDni(value);
 				if (value.length) {
-					setNombreError(false);
+					setDniError(false);
 					break;
 				}
-				setNombreError(true);
+				setDniError(true);
 				break;
-			case 'apellidos':
-				setApellidos(value);
+			case 'name':
+				setName(value);
 				if (value.length) {
-					setApellidosError(false);
+					setNameError(false);
 					break;
 				}
-				setApellidosError(true);
+				setNameError(true);
 				break;
-			case 'correo':
-				setCorreo(value);
+			case 'discipline':
+				setDiscipline(typeof value === 'string' ? value.split(',') : value);
 				if (value.length) {
-					setCorreoError(false);
+					setDisciplineError(false);
 					break;
 				}
-				setCorreoError(true);
+				setDisciplineError(true);
 				break;
-			case 'repiteCorreo':
-				setRepiteCorreo(value);
-				if (value === correo) {
-					setRepiteCorreoError(false);
-					break;
-				}
-				setRepiteCorreoError(true);
-				break;
-			case 'especialidad':
-				setEspecialidad(value);
+			case 'email':
+				setEmail(value);
 				if (value.length) {
-					setEspecialidadError(false);
+					setEmailError(false);
 					break;
 				}
-				setEspecialidadError(true);
+				setEmailError(true);
 				break;
-			case 'contraseña':
-				setContraseña(value);
+			case 'phone':
+				setPhone(value);
 				if (value.length) {
-					setContraseñaError(false);
+					setPhoneError(false);
 					break;
 				}
-				setContraseñaError(true);
+				setPhoneError(true);
+				break;
+			case 'password':
+				setPassword(value);
+				if (value.length) {
+					setPasswordError(false);
+					break;
+				}
+				setPasswordError(true);
 				break;
 			default:
-				setRepiteContraseña(value);
-				if (value === contraseña) {
-					setRepiteContraseñaError(false);
+				setImgUrl(value);
+				if (value.length) {
+					setImgUrlError(false);
 					break;
 				}
-				setRepiteContraseñaError(true);
+				setImgUrlError(true);
 		}
 	};
 
 	return (
 		<section>
 			<FormControl
-				sx={{ justifyContent: 'center', alignItems: 'center', marginTop:'5rem'}}>
+				sx={{
+					justifyContent: 'center',
+					alignItems: 'center',
+					marginTop: '5rem',
+				}}>
 				<TextField
 					required
-					error={nombreError}
+					error={dniError}
 					sx={{ marginBottom: '15px' }}
 					id='outlined-basic'
-					label='Nombre'
+					label={dniError ? errorMesage : 'DNI'}
 					variant='outlined'
-					onChange={event => setValues('nombre', event.target.value)}
+					onChange={event => setValues('dni', event.target.value)}
 				/>
-				{nombreError ? <span style={{color:"red"}}>Este campo es obligatorio</span> :<span></span>}
+				{dniError ? (
+					<span style={{ color: 'red' }}>Este campo es obligatorio</span>
+				) : (
+					<span></span>
+				)}
 				<TextField
 					required
-					error={apellidosError}
+					error={nameError}
 					sx={{ marginBottom: '15px' }}
 					id='outlined-basic'
-					label='Apellidos'
+					label='Nombre y Apellidos'
 					variant='outlined'
-					onChange={event => setValues('apellidos', event.target.value)}
+					onChange={event => setValues('name', event.target.value)}
 				/>
-				{apellidosError ? <span style={{color:"red"}}>Este campo es obligatorio</span> :<span></span>}
+				{nameError ? (
+					<span style={{ color: 'red' }}>Este campo es obligatorio</span>
+				) : (
+					<span></span>
+				)}
 				<TextField
 					required
-					error={correoError}
+					error={phoneError}
 					sx={{ marginBottom: '15px' }}
 					id='outlined-basic'
-					label='Correo electrónico'
+					label='Número de Teléfono'
 					variant='outlined'
-					onChange={event => setValues('correo', event.target.value)}
+					onChange={event => setValues('phone', event.target.value)}
 				/>
-				{correoError ? <span style={{color:"red"}}>Este campo es obligatorio</span> :<span></span>}
+				{phoneError ? (
+					<span style={{ color: 'red' }}>Este campo es obligatorio</span>
+				) : (
+					<span></span>
+				)}
 				<TextField
 					required
-					error={repiteCorreoError}
+					error={emailError}
 					sx={{ marginBottom: '15px' }}
 					id='outlined-basic'
-					label='Repetir correo'
+					label='Correo'
 					variant='outlined'
-					onChange={event => setValues('repiteCorreo', event.target.value)}
+					onChange={event => setValues('email', event.target.value)}
 				/>
-				{repiteCorreoError ? <span style={{color:"red"}}>Los correos no coinciden</span> :<span></span>}
-				<FormControl sx={{ marginBottom: '15px', minWidth: 225 }}>
-					<InputLabel id='selectorEspecialidad'>Especialidad</InputLabel>
+				{emailError ? (
+					<span style={{ color: 'red' }}>Este campo es obligatorio</span>
+				) : (
+					<span></span>
+				)}
+
+				<FormControl
+					sx={{ marginBottom: '15px', minWidth: 225, maxWidth: 225 }}>
+					<InputLabel id='demo-multiple-chip-label'>Especialidad</InputLabel>
 					<Select
-						error={especialidadError}
-						labelId='selectorEspecialidad'
-						id='demo-simple-select'
-						value={especialidad}
-						label='Especialidad'
-						onChange={event => setValues('especialidad', event.target.value)}>
-						<MenuItem value={'Nutricionista'}>Nutricionista</MenuItem>
-						<MenuItem value={'Entrenador'}>Entrenador</MenuItem>
-						<MenuItem value={'Ambas'}>Ambas</MenuItem>
+						labelId='demo-multiple-chip-label'
+						id='demo-multiple-chip'
+						multiple
+						error={disciplineError}
+						value={discipline}
+						onChange={event => setValues('discipline', event.target.value)}
+						input={
+							<OutlinedInput
+								id='select-multiple-chip'
+								label='Parte del Cuerpo Involucrdas'
+							/>
+						}
+						renderValue={selected => (
+							<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+								{selected.map(value => (
+									<Chip
+										key={value}
+										label={allDisciplines.map(item => {
+											return item.name;
+										})}
+									/>
+								))}
+							</Box>
+						)}
+						MenuProps={MenuProps}>
+						{allDisciplines.map(item => (
+							<MenuItem
+								key={item._id}
+								value={item._id}
+								style={getStyles(item, allDisciplines, theme)}>
+								{item.name}
+							</MenuItem>
+						))}
 					</Select>
 				</FormControl>
-				{especialidadError ? <span style={{color:"red"}}>Este campo es obligatorio</span> :<span></span>}
+				{disciplineError ? (
+					<span style={{ color: 'red' }}>Este campo es obligatorio</span>
+				) : (
+					<span></span>
+				)}
+
 				<TextField
 					required
-					error={contraseñaError}
+					error={passwordError}
 					sx={{ marginBottom: '15px' }}
 					id='outlined-password-input'
 					label='Contraseña'
 					type='password'
 					autoComplete='current-password'
-					onChange={event => setValues('contraseña', event.target.value)}
+					onChange={event => setValues('password', event.target.value)}
 				/>
-				{contraseñaError ? <span style={{color:"red"}}>Este campo es obligatorio</span> :<span></span>}
-				<TextField
-					required
-					error={repiteContraseñaError}
-					sx={{ marginBottom: '15px' }}
-					id='outlined-password-input'
-					label='Repetir contraseña'
-					type='password'
-					autoComplete='current-password'
-					onChange={event => setValues('repiteContraseña', event.target.value)}
-				/>
-				{repiteContraseñaError ? <span style={{color:"red"}}>Las contraseñas no coinciden</span> :<span></span>}
+				{passwordError ? (
+					<span style={{ color: 'red' }}>Este campo es obligatorio</span>
+				) : (
+					<span></span>
+				)}
+				<Button
+					variant='contained'
+					component='label'>
+					Upload File
+					<input
+						type='file'
+						hidden
+						onChange={event => setValues('imageUrl', event.target.value)}
+					/>
+				</Button>
+				{imgUrlError ? (
+					<span style={{ color: 'red' }}>Este campo es obligatorio</span>
+				) : (
+					<span></span>
+				)}
 				<FormHelperText
-					id='email'
+					id='file'
 					sx={{ textAlign: 'center', marginBottom: '15px' }}>
 					Bienvenido a Nutrición! <br />
 					Si ya tienes una cuenta prueba a iniciar sesión aquí.
