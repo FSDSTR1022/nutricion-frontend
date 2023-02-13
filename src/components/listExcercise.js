@@ -1,10 +1,10 @@
-import { getExcercise, getExcerciseAtribut} from "../services/excerciseService";
+import { getExcercise, getExcerciseAtribut,deleteExcercise} from "../services/excerciseService";
 import { useEffect, useState } from "react";
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
 import { useTheme } from "@mui/material/styles";
-import {useNavigate} from "react-router-dom"
+import {useNavigate,useLocation} from "react-router-dom"
 import {
   Table,
   TableBody,
@@ -23,7 +23,14 @@ import {
   Paper,
   ImageList,
  ImageListItem,
- Button
+ Button,
+ Alert,
+  Snackbar,
+  Dialog,
+         DialogContent,
+         DialogTitle,
+         DialogActions,
+         DialogContentText
 } from '@mui/material';
 
 
@@ -39,11 +46,18 @@ const ExercisesList = () =>{
   const [exerciseEquipmentsSearchUS, setExerciseEquipmentsSearchUS] = useState([]);
   const [exerciseNameSeachUS, setExerciseNameSearchUS] = useState("");
 
-  const navigate = useNavigate();
+  const [exerciseToDelete, setExerciseToDelete] = useState("");
 
-
- 
+  const [mensajeAMostrar, setMensajeAMostrar] = useState("")
+  const [tipoMensajeAMostrar, setTipoMensajeAMostrar] = useState("success")
   
+  const [openMessage, setOpenMessage] = useState(false);
+  const [openConfirmation, setOpenConfirmation] = useState(false);
+  
+  const navigate = useNavigate();
+  const {state} = useLocation(); // hook para la navegacion
+
+    
   const theme = useTheme();
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -56,14 +70,27 @@ const ExercisesList = () =>{
     },
   };
 
- /* 
-https://images.unsplash.com/photo-1516802273409-68526ee1bdd6
-https://images.unsplash.com/photo-1589118949245-7d38baf380d6 
-https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC5cFhphukFT-h24CWqwycbNcvVutbJeGlueYS4zwVmBzJVyiaz-QHbRCufuJJKe8_5SEVROgxGAKk9YlzyGlxBFX-Uyl0CIxObBSXxvow
-*/
+
 
   useEffect(() => {
-    getExcerciseAtribut().then((data) => {
+    
+    if(state!==null && mensajeAMostrar===""){
+      
+      switch (state.typeMessage) {
+        case "guardoConExito":
+          setMensajeAMostrar("Se guardo correctamente el ejercicio")
+          setTipoMensajeAMostrar("success")
+          break;
+        case "modificadoConExito":
+          setMensajeAMostrar("Se modifico correctamente el ejercicio")
+          setTipoMensajeAMostrar("success")
+          break
+      }
+      
+      setOpenMessage(true)
+    }
+        
+      getExcerciseAtribut().then((data) => {
       setExerciseAtributesUS(data);
       setIsLoadingExcersiceAtributes(false);
     });
@@ -72,17 +99,20 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
       setExcerciseListUS(data);
       setIsLoadingExcersice(false);
     });    
-  }, []);
+  }, [openMessage]);
 
   const handleClickNewExcerciseButton=(event)=>{
     navigate("/Ejercicios/Ejercicio",
-      {state:{action:"newExercise"}}
+      {state:
+        {
+          action:"newExercise"
+        }
+      }
     )
   }
 
   const handleClickView = (evento)=>{
-    //console.log("Vista: ",evento)
-    let e= excerciseListUS.find((element)=>{
+    const e= excerciseListUS.find((element)=>{
       return element._id===evento
     })
      
@@ -92,20 +122,62 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
     )
   }
     
-  const handleClickEdit = (evento)=>{
+  const handleClickEditExcercise = (evento)=>{
  
-    let e= excerciseListUS.find((element)=>{
+    const excersiceToEdit= excerciseListUS.find((element)=>{
       return element._id===evento
     })
     
      navigate("/Ejercicios/Ejercicio",
-      {state:{action:"editExercise",excercise:e}
+      {state:{action:"editExercise",excercise:excersiceToEdit}
     }   
     ) 
   }
 
-  const handleClickDelte = (evento)=>{
-    console.log("borrar: ",evento)
+  const handleClickDelteExcercise = (evento)=>{
+
+    const excersiceToDelete= excerciseListUS.find((excercise)=>{
+      return excercise._id===evento
+    })
+
+    setExerciseToDelete(excersiceToDelete);
+    setOpenConfirmation(true); 
+ 
+  }
+
+  const handleClickAceptDelteExcercise = (event) =>{
+
+   if(event.target.value==="aceptar")
+    {
+            
+        deleteExcercise(exerciseToDelete).then((response) =>{
+
+            if(response.status===200){
+              setMensajeAMostrar("Se elimino el ejercicio")
+              setTipoMensajeAMostrar("success") 
+              setOpenMessage(true)
+            }
+            else{
+              setMensajeAMostrar("No se pudo eliminar el ejercicio")
+              setTipoMensajeAMostrar("success") 
+              setOpenMessage(true)
+            }
+      }).catch((error) => {
+            setMensajeAMostrar("No se pudo eliminar el ejercicio"+error)
+            setTipoMensajeAMostrar("error") 
+            setOpenMessage(true)
+      });
+
+      setOpenConfirmation(false);
+        
+    }
+    else if(event.target.value==="cancelar")
+    {
+      setOpenConfirmation(false);
+      setExerciseToDelete()
+            
+    } 
+
   }
 
   const handleChangeExerciseNameInput = (event) => {
@@ -116,6 +188,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
     {
       excerciseListUS.map((excercise)=>{
         excercise.show = true;
+        return true
       })
     }
     else{
@@ -125,7 +198,8 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
         }
         else{
           excercise.show = false;
-        }        
+        }     
+        return true   
       })
     }
   };
@@ -137,6 +211,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
     {
       excerciseListUS.map((excercise)=>{
         excercise.show = true;
+        return true
       })
 
       setExerciseTypeSearchUS("");
@@ -146,9 +221,11 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
       excerciseListUS.map((excercise)=>{               
             if(excercise.exerciseType.exerciseType === event.target.value){
               excercise.show = true;
+              return true
             }
             else{
               excercise.show = false;
+              return true
             }
           });
     }
@@ -162,6 +239,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
     {
       excerciseListUS.map((excercise)=>{
         excercise.show = true;
+        return true
       })
 
       setExerciseDifficulSearchUS("");
@@ -171,9 +249,11 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
       excerciseListUS.map((excercise)=>{               
             if(excercise.difficulty.exerciseDifficulty === event.target.value){
               excercise.show = true;
+              return true
             }
             else{
               excercise.show = false;
+              return true
             }
           });
     }
@@ -189,6 +269,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
     {
       excerciseListUS.map((excercise)=>{
         excercise.show = true;
+        return true
         })
 
         setExcersiseBodyPartsSearchUS([])     
@@ -213,6 +294,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
          else{
             excercise.show = false;
           }
+          return true
         });
       }
     }    
@@ -227,6 +309,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
   {
     excerciseListUS.map((excercise)=>{
       excercise.show = true;
+      return true
       })
 
       setExerciseMuclesSearchUS([])     
@@ -251,6 +334,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
        else{
           excercise.show = false;
         }
+        return true
       });
     }
  };
@@ -265,6 +349,7 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
   {
     excerciseListUS.map((excercise)=>{
       excercise.show = true;
+      return true
       })
       
       setExerciseEquipmentsSearchUS([])     
@@ -289,8 +374,17 @@ https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC
        else{
           excercise.show = false;
         }
+        return true
       });
     }
+};
+
+const handleCloseMessage = (event, reason) => {
+ 
+  if (reason === 'clickaway') {
+    setOpenMessage(false);
+  }  
+  setOpenMessage(false);
 };
 
  function getStylesItemSelector(name, partesCuerpo, theme) {
@@ -367,38 +461,35 @@ const drawTableRows = (excercise)=>{
 
     }</TableCell>
     <TableCell align="center">
-      <SearchIcon 
-        onClick={() => (excerciseListUS ? handleClickView(excercise._id) : null)}/>
+      <SearchIcon onClick={() => (excerciseListUS ? handleClickView(excercise._id) : null)}/>
     </TableCell>
     <TableCell align="center">
-      <EditIcon onClick={() => (excerciseListUS ? handleClickEdit(excercise._id) : null)}/>
+      <EditIcon onClick={() => (excerciseListUS ? handleClickEditExcercise(excercise._id) : null)}/>
       </TableCell>
     <TableCell align="center">
-      <DeleteOutlinedIcon onClick={() => (excerciseListUS ? handleClickDelte(excercise._id) : null) }/>
+      <DeleteOutlinedIcon onClick={() => (excerciseListUS ? handleClickDelteExcercise(excercise._id) : null) }/>
       </TableCell>               
   </TableRow>
    )
   }
 
-  const getMenuItemQuitarSeleccion = ()=>{
+const getMenuItemQuitarSeleccion = ()=>{
     return (
       <MenuItem value={"quitarSeleccion"} sx={{ color: "red"}}>
       Quitar Selección
     </MenuItem> 
     )
-  }
+}
 
 if (!isLoadingExercise && !isLoadingExerciseAtributes) {
     return(
       <div>
-        {/* //{console.log(excerciseListUS)}  */}
         <h1>Listado de ejercicios!</h1>
 
 {/* ///////////////////// BOTON NUEVO  ///////////////////// */}
 <div style={{display: "flex", justifyContent: "flex-end"}}>
   <Button variant="contained" onClick={handleClickNewExcerciseButton}>Nuevo Ejercicio</Button>
 </div>
- 
 
 {/* ///////////////////// FILTROS  ///////////////////// */}
         <div>
@@ -425,7 +516,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
                 onChange={handleChangeExerciseTypeSearch}
                 input={<OutlinedInput id="excersiceTypeSearch" label="Tipo de Ejercicio "/>}
               >
-                {exerciseTypeSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():console.log()}
+                {exerciseTypeSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():null}
                 {exerciseAtributsUS.exerciseType.map((te, id) => (
                   <MenuItem value={te.exerciseType} key={id}>
                     {te.exerciseType}
@@ -447,7 +538,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
                 input={ <OutlinedInput id="dificultadEjercicioSelect" label="Dificultad de Ejercicio"/>}
                 
               >
-                {exerciseDifficulSearchtUS.length !== 0 ? getMenuItemQuitarSeleccion():console.log()}
+                {exerciseDifficulSearchtUS.length !== 0 ? getMenuItemQuitarSeleccion():null}
                 {exerciseAtributsUS.exerciseDifficult.map((de, id) => (
                   <MenuItem value={de.exerciseDifficulty} key={id}>
                     {de.exerciseDifficulty}
@@ -473,7 +564,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
                      <Chip 
                         key={value} 
                         label={exerciseAtributsUS.bodyParts.map((part)=>{
-                              if(part.bodyPart===value) return part.bodyPart
+                             return part.bodyPart===value? part.bodyPart :""
                         }) } 
                       /> 
                   ))}
@@ -481,7 +572,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
               )}
               MenuProps={MenuProps}
             >
-              {exerciseBodyPartsSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():console.log()}
+              {exerciseBodyPartsSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():null}
               {exerciseAtributsUS.bodyParts.map((part) => (
                 <MenuItem
                   key={part._id}
@@ -513,7 +604,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
                     <Chip 
                     key={value} 
                     label={ exerciseAtributsUS.exerciseMucles.map((muscle)=>{
-                          if(muscle.muscle===value) return muscle.muscle
+                          return muscle.muscle===value?  muscle.muscle:""
                     }) } 
                   /> 
                   ))}
@@ -521,7 +612,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
               )}
               MenuProps={MenuProps}
             >
-              {exerciseMuclesSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():console.log()}
+              {exerciseMuclesSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():null}
               {exerciseAtributsUS.exerciseMucles.map((muscle) => (
                 <MenuItem
                   key={muscle.muscle}
@@ -551,7 +642,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
                     <Chip 
                       key={value} 
                      label={exerciseAtributsUS.exerciseEquipments.map((equipment)=>{
-                          if(equipment.exerciseEquipment===value) return equipment.exerciseEquipment
+                          return equipment.exerciseEquipment===value? equipment.exerciseEquipment:""
                     }) } 
                   /> 
                   ))}
@@ -559,7 +650,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
               )}
               MenuProps={MenuProps}
             >
-              {exerciseEquipmentsSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():console.log()}
+              {exerciseEquipmentsSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():null}
               {exerciseAtributsUS.exerciseEquipments.map((equipment) => (
                 <MenuItem
                   key={equipment._id}
@@ -602,12 +693,47 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
               {excerciseListUS.map((excercise) =>{
                   if(excercise.show===undefined ||excercise.show===true){
                     return drawTableRows(excercise)
+                  }
+                  else{
+                    return true
                   }                  
                 })}
               </TableBody>              
             </Table>
           </TableContainer> 
-        </div> 
+        </div>
+
+      
+{/* ///////////////////// Mensaje de resultado  ///////////////////// */}              
+        <Snackbar open={openMessage} autoHideDuration={6000} onClose={handleCloseMessage}>
+          <Alert variant="filled" onClose={handleCloseMessage} severity={tipoMensajeAMostrar} sx={{ width: '100%' }}>
+            {mensajeAMostrar}
+          </Alert>
+        </Snackbar>
+
+{/* ///////////////////// Dialogo de confirmación  ///////////////////// */}   
+        <Dialog
+            open={openConfirmation}
+            onClose={handleClickDelteExcercise}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"Eliminar Ejercicio"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                ¿Desea eliminar el ejercicio?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button value="aceptar" onClick={handleClickAceptDelteExcercise}>Aceptar</Button>
+              <Button value="cancelar" onClick={handleClickAceptDelteExcercise}> Cancelar </Button>
+            </DialogActions>
+         </Dialog> 
+               
+      
+ 
       </div>
     )
   }
