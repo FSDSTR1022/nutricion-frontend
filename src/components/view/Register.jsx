@@ -8,6 +8,7 @@ import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
+import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { registerUser, getDisciplines } from '../../services/excerciseService';
 import { useTheme } from '@mui/material/styles';
@@ -43,9 +44,10 @@ const Register = () => {
 	const [imgUrl, setImgUrl] = useState('');
 	const [imgUrlError, setImgUrlError] = useState(false);
 
-	const theme = useTheme();
-
 	const [allDisciplines, setAllDisciplines] = useState([]);
+
+	const theme = useTheme();
+	const navigate = useNavigate();
 
 	const MenuProps = {
 		PaperProps: {
@@ -73,7 +75,7 @@ const Register = () => {
 		userInfo.password = password;
 		userInfo.imgUrl = imgUrl;
 
-		registerUser(userInfo);
+		registerUser(userInfo).then(() => navigate('/'));
 	};
 
 	const setValues = (type, value) => {
