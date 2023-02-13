@@ -7,14 +7,14 @@ const Dashboard = () => {
 	useEffect(() => {
 		if (!localStorage.getItem('token')) {
 			navigate('/home');
-		} 
+		}
 	}, []);
 
 	return (
-	<section>
-		<h1>Si Token</h1>
-	</section>
-	)
+		<section>
+			<h1>Si Token</h1>
+		</section>
+	);
 };
 
 export default Dashboard;
