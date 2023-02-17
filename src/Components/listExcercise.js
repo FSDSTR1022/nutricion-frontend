@@ -1,10 +1,14 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
+/* eslint-disable array-callback-return */
+import FormExcercise from "./formExercise";
 import { getExcercise, getExcerciseAtribut,deleteExcercise} from "../services/excerciseService";
 import { useEffect, useState } from "react";
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
 import { useTheme } from "@mui/material/styles";
-import {useNavigate,useLocation} from "react-router-dom"
+import {useNavigate,useLocation,useParams} from "react-router-dom"
 import {
   Table,
   TableBody,
@@ -30,11 +34,13 @@ import {
          DialogContent,
          DialogTitle,
          DialogActions,
-         DialogContentText
+         DialogContentText,
+         FormControlLabel,
+         Checkbox
 } from '@mui/material';
 
 
-const ExercisesList = () =>{
+const ExercisesList = (props) =>{
   const [isLoadingExercise, setIsLoadingExcersice] = useState(true);
   const [isLoadingExerciseAtributes, setIsLoadingExcersiceAtributes] = useState(true);
   const [excerciseListUS,setExcerciseListUS] = useState();
@@ -46,18 +52,41 @@ const ExercisesList = () =>{
   const [exerciseEquipmentsSearchUS, setExerciseEquipmentsSearchUS] = useState([]);
   const [exerciseNameSeachUS, setExerciseNameSearchUS] = useState("");
 
-  const [exerciseToDelete, setExerciseToDelete] = useState("");
-
-  const [mensajeAMostrar, setMensajeAMostrar] = useState("")
-  const [tipoMensajeAMostrar, setTipoMensajeAMostrar] = useState("success")
-  
-  const [openMessage, setOpenMessage] = useState(false);
+  /* const [mensajeAMostrar, setMensajeAMostrar] = useState("") */
+      
   const [openConfirmation, setOpenConfirmation] = useState(false);
+
+
+  const [openFormDialog, setOpenFormDialog] = useState(false);
+  const [actionToDoInExcerciseDialog,setActionToDoInExcerciseDialog] = useState()
+  const [exerciseToDeleteOrEdit, setExerciseToDeleteOrEdit] = useState("");
+  const [resultActinDialog,setResultActinDialog]= useState();
+
+  const [openAlert, setOpenAlert] = useState(false);
+  const [messageAlert, setMessageAlert] = useState("")
+  const [severityAlert,setSeverityAlert]= useState("")
+  
+  
+  const [actionUS, setActionUS] = useState({})
+
+  const [excerciseListToAddRoutine, setExcerciseListToAddRoutine] = useState([])
+
+  const [excerciseRepSeg, setExcerciseRepSeg] = useState("");
+
+  
   
   const navigate = useNavigate();
-  const {state} = useLocation(); // hook para la navegacion
+  /* const {state} = useLocation(); // hook para la navegacion */
 
-    
+ /*   const {state2} = useParams()  */
+ // eslint-disable-next-line react/prop-types
+
+ const { action,excercisesToAdd,setExcerciseToAdd } = props; 
+
+  const [ExcerciseSelect, setExcerciseSelect] = useState(false); /* -> para el check */
+
+ 
+  
   const theme = useTheme();
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -70,56 +99,85 @@ const ExercisesList = () =>{
     },
   };
 
-
-
   useEffect(() => {
+
     
-    if(state!==null && mensajeAMostrar===""){
-      
-      switch (state.typeMessage) {
-        case "guardoConExito":
-          setMensajeAMostrar("Se guardo correctamente el ejercicio")
-          setTipoMensajeAMostrar("success")
-          break;
-        case "modificadoConExito":
-          setMensajeAMostrar("Se modifico correctamente el ejercicio")
-          setTipoMensajeAMostrar("success")
-          break
-      }
-      
-      setOpenMessage(true)
+    
+		if (action === undefined) {
+			/* action = 'listExcercise' */
+      setActionUS('listExcercise')
+		}
+    else {
+      setActionUS(action)
     }
-        
-      getExcerciseAtribut().then((data) => {
+
+    
+  
+     switch (action) {
+      case "listExcercise":
+        console.log("listExcercise")        
+        break;        
+
+      case "selectExcercise":  
+        console.log("selectExcercise")
+
+        break;
+      
+      case "newExcercise":
+          console.log("newExcercise")  
+        break;  
+    
+      default:
+        break;
+    } 
+
+      
+    getExcerciseAtribut().then((data) => {
       setExerciseAtributesUS(data);
-      setIsLoadingExcersiceAtributes(false);
-    });
+      setIsLoadingExcersiceAtributes(false);  
+    }); 
 
     getExcercise().then((data) => {
-      setExcerciseListUS(data);
-      setIsLoadingExcersice(false);
-    });    
-  }, [openMessage]);
+        setExcerciseListUS(data);
+        setIsLoadingExcersice(false);  
+    })
+
+    if(resultActinDialog==="saveSuccessfully"){
+      setOpenAlert(true)
+      setMessageAlert("Se guardo el ejercicio correctamente")
+      setSeverityAlert("success")
+
+    }else if(resultActinDialog==="modifiedSuccessfully"){
+      setOpenAlert(true)
+      setMessageAlert("Se modifico el ejercicio correctamente")
+      setSeverityAlert("success")
+
+    }
+  }, [resultActinDialog]);
 
   const handleClickNewExcerciseButton=(event)=>{
-    navigate("/Ejercicios/Ejercicio",
-      {state:
-        {
-          action:"newExercise"
-        }
-      }
-    )
+    navigate("/Ejercicios/Ejercicio", {state:{action:"newExercise"}})
+  }
+
+  
+  const handleClickNewExcerciseDialogButton=(event)=>{
+    setActionToDoInExcerciseDialog("newExercise")
+    setOpenFormDialog(true)
   }
 
   const handleClickView = (evento)=>{
-    const e= excerciseListUS.find((element)=>{
+    const excersiceToView= excerciseListUS.find((element)=>{
       return element._id===evento
     })
      
-    navigate("/Ejercicios/Ejercicio",
+    /* navigate("/Ejercicios/Ejercicio",
       {state:{action:"editExercise",excercise:e}
     }   
-    )
+    ) */
+
+    setActionToDoInExcerciseDialog("viewExercise")
+    setExerciseToDeleteOrEdit(excersiceToView)
+    setOpenFormDialog(true)
   }
     
   const handleClickEditExcercise = (evento)=>{
@@ -128,10 +186,16 @@ const ExercisesList = () =>{
       return element._id===evento
     })
     
-     navigate("/Ejercicios/Ejercicio",
+    /*  navigate("/Ejercicios/Ejercicio",
       {state:{action:"editExercise",excercise:excersiceToEdit}
     }   
-    ) 
+    )  */
+
+   
+    setActionToDoInExcerciseDialog("editExercise")
+    setExerciseToDeleteOrEdit(excersiceToEdit)
+    setOpenFormDialog(true)
+    
   }
 
   const handleClickDelteExcercise = (evento)=>{
@@ -140,7 +204,7 @@ const ExercisesList = () =>{
       return excercise._id===evento
     })
 
-    setExerciseToDelete(excersiceToDelete);
+    setExerciseToDeleteOrEdit(excersiceToDelete);
     setOpenConfirmation(true); 
  
   }
@@ -150,32 +214,35 @@ const ExercisesList = () =>{
    if(event.target.value==="aceptar")
     {
             
-        deleteExcercise(exerciseToDelete).then((response) =>{
+        deleteExcercise(exerciseToDeleteOrEdit).then((response) =>{
 
             if(response.status===200){
-              setMensajeAMostrar("Se elimino el ejercicio")
-              setTipoMensajeAMostrar("success") 
-              setOpenMessage(true)
+              setMessageAlert("Se elimino el ejercicio")
+              setSeverityAlert("success") /* "success":"error" */
+              setOpenAlert(true)
             }
             else{
-              setMensajeAMostrar("No se pudo eliminar el ejercicio")
-              setTipoMensajeAMostrar("success") 
-              setOpenMessage(true)
+              setMessageAlert("No se pudo eliminar el ejercicio")
+              setSeverityAlert("success") /* "success":"error" */
+              setOpenAlert(true)
             }
       }).catch((error) => {
-            setMensajeAMostrar("No se pudo eliminar el ejercicio"+error)
-            setTipoMensajeAMostrar("error") 
-            setOpenMessage(true)
+            setMessageAlert("No se pudo eliminar el ejercicio"+error)
+            setSeverityAlert("error") /* "success":"error" */
+            setOpenAlert(true)
       });
 
       setOpenConfirmation(false);
-        
+      
+      // eslint-disable-next-line no-useless-return
+      return  
     }
     else if(event.target.value==="cancelar")
     {
       setOpenConfirmation(false);
-      setExerciseToDelete()
-            
+      setExerciseToDeleteOrEdit()
+      // eslint-disable-next-line no-useless-return
+      return      
     } 
 
   }
@@ -186,20 +253,20 @@ const ExercisesList = () =>{
 
     if(event.target.value==="")
     {
+      // eslint-disable-next-line no-useless-return, array-callback-return
       excerciseListUS.map((excercise)=>{
         excercise.show = true;
-        return true
       })
     }
     else{
+      // eslint-disable-next-line no-useless-return, array-callback-return
       excerciseListUS.map((excercise)=>{
         if(excercise.name.includes(event.target.value)){
           excercise.show = true;
         }
         else{
           excercise.show = false;
-        }     
-        return true   
+        }        
       })
     }
   };
@@ -209,23 +276,22 @@ const ExercisesList = () =>{
 
     if(event.target.value==="quitarSeleccion")
     {
+      // eslint-disable-next-line array-callback-return
       excerciseListUS.map((excercise)=>{
         excercise.show = true;
-        return true
       })
 
       setExerciseTypeSearchUS("");
       
     }
     else{
+      // eslint-disable-next-line array-callback-return
       excerciseListUS.map((excercise)=>{               
             if(excercise.exerciseType.exerciseType === event.target.value){
               excercise.show = true;
-              return true
             }
             else{
               excercise.show = false;
-              return true
             }
           });
     }
@@ -237,23 +303,22 @@ const ExercisesList = () =>{
 
     if(event.target.value==="quitarSeleccion")
     {
+      // eslint-disable-next-line array-callback-return
       excerciseListUS.map((excercise)=>{
         excercise.show = true;
-        return true
       })
 
       setExerciseDifficulSearchUS("");
       
     }
     else{
+      // eslint-disable-next-line array-callback-return
       excerciseListUS.map((excercise)=>{               
             if(excercise.difficulty.exerciseDifficulty === event.target.value){
               excercise.show = true;
-              return true
             }
             else{
               excercise.show = false;
-              return true
             }
           });
     }
@@ -267,9 +332,9 @@ const ExercisesList = () =>{
 
     if(quitarSeleccion || event.target.value.length===0)
     {
+      // eslint-disable-next-line array-callback-return
       excerciseListUS.map((excercise)=>{
         excercise.show = true;
-        return true
         })
 
         setExcersiseBodyPartsSearchUS([])     
@@ -281,6 +346,7 @@ const ExercisesList = () =>{
           typeof value === "string" ? value.split(",") : value,
       );
 
+        // eslint-disable-next-line array-callback-return
         excerciseListUS.map((excercise)=>{     
           const mostrarEjercicio = excercise.bodyParts.some((part)=>{
             return event.target.value.some((valor)=>{
@@ -294,7 +360,6 @@ const ExercisesList = () =>{
          else{
             excercise.show = false;
           }
-          return true
         });
       }
     }    
@@ -307,9 +372,9 @@ const ExercisesList = () =>{
 
   if(quitarSeleccion || event.target.value.length===0)
   {
+    // eslint-disable-next-line array-callback-return
     excerciseListUS.map((excercise)=>{
       excercise.show = true;
-      return true
       })
 
       setExerciseMuclesSearchUS([])     
@@ -334,7 +399,6 @@ const ExercisesList = () =>{
        else{
           excercise.show = false;
         }
-        return true
       });
     }
  };
@@ -349,7 +413,6 @@ const ExercisesList = () =>{
   {
     excerciseListUS.map((excercise)=>{
       excercise.show = true;
-      return true
       })
       
       setExerciseEquipmentsSearchUS([])     
@@ -374,7 +437,6 @@ const ExercisesList = () =>{
        else{
           excercise.show = false;
         }
-        return true
       });
     }
 };
@@ -382,10 +444,15 @@ const ExercisesList = () =>{
 const handleCloseMessage = (event, reason) => {
  
   if (reason === 'clickaway') {
-    setOpenMessage(false);
+    setOpenAlert(false);
   }  
-  setOpenMessage(false);
+  setOpenAlert(false);
 };
+
+// eslint-disable-next-line no-unused-vars
+const handleClickOpenBoton = () => {
+  setOpenConfirmation(true);
+}; 
 
  function getStylesItemSelector(name, partesCuerpo, theme) {
   return {
@@ -396,81 +463,285 @@ const handleCloseMessage = (event, reason) => {
   };
 }
 
+const handleChangeSelectExcerciseCheckbox = (event) => {
+
+  console.log("event.target.checked",event.target.checked)
+  console.log("event.target.value",event.target.value)
+
+
+  if(event.target.checked)
+  {
+    /* buscar en array  excerciseListUS el ejercicio con id que viene
+        en event.target.value y agregarlo en 
+    */
+
+      const excerToAdd = excerciseListUS.find(
+				excersice => excersice._id === event.target.value
+			);
+			const arrayEjercicios = excercisesToAdd;
+      const e = {excercise: excerToAdd, timeOReps: '60'}
+			arrayEjercicios.push(e);
+			setExcerciseToAdd(arrayEjercicios);
+
+
+
+     /* 
+     const arrayExcercises = excerciseListToAddRoutine
+      arrayExcercises.push(excerciseToAdd2)
+      setExcerciseListToAddRoutine(arrayExcercises) */
+      
+    /*   const {excercisesToAdd} = props
+      console.log(excercisesToAdd)
+      
+ */
+
+/*       const { action,excercisesToAdd,setExcerciseToAdd } = props;  */
+
+      
+
+
+  }
+  else{
+    const array = excerciseListToAddRoutine
+    const arrayLimpio = array.filter(id => id !==event.target.value)
+    setExcerciseListToAddRoutine(arrayLimpio)
+  }
+  
+   setExcerciseSelect(event.target.checked); 
+  
+  
+};
+
+const handleChangeExcerciseRepSegTexField = (event)=>{
+  setExcerciseRepSeg(event.target.value);
+}
+
+const getTableHead =()=>{
+
+  const a= <>
+    <TableCell> Nombre Ejercicio</TableCell>
+    <TableCell align="center">Tipo de Ejercicio</TableCell>
+    <TableCell align="center">Dificultad</TableCell>
+    <TableCell align="center">Partes del Cuerpo</TableCell>
+    <TableCell align="center">Musculos Involucrados</TableCell>
+    <TableCell align="center">Equipamiento</TableCell>
+  </>
+
+if(actionUS==="listExcercise"){
+  return( 
+    <TableRow>
+          {a}
+          <TableCell align="center">Explicación</TableCell>
+          <TableCell align="center">Precauciones </TableCell>
+          <TableCell align="center">Demostración</TableCell>
+          <TableCell align="center">Ver</TableCell>
+          <TableCell align="center">Modificar</TableCell>
+          <TableCell align="center">Eliminar</TableCell>
+      </TableRow>
+  )
+}
+else if(actionUS==="selectExcercise"){
+  return(
+    <TableRow>
+      {a}
+      <TableCell align="center">Seleccionar</TableCell>
+      <TableCell align="center">Repeticiones/Tiempo </TableCell>
+      {/* <TableCell align="center">Equipamiento</TableCell>
+      <TableCell align="center">Peso</TableCell> */}
+    </TableRow>
+
+  )
+}
+}
+
 const drawTableRows = (excercise)=>{
-
-   return (
-    <TableRow
-        key={excercise._id}
-        hover={true}
-        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-        >
+  
+  const cells = <>
     <TableCell component="th" scope="row">{excercise.name} </TableCell>
-    <TableCell align="center">{excercise.exerciseType.exerciseType}</TableCell>
-    <TableCell align="center">{excercise.difficulty.exerciseDifficulty}</TableCell>
-    <TableCell align="center">
-      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-        {excercise.bodyParts.map((part) => ( 
-          <Chip 
-              key={part._id} 
-              label={part.bodyPart} 
-            /> 
-        ))}
-      </Box>
-    </TableCell>
-    <TableCell>
-      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-          {excercise.muscles.map((muscle) => ( 
-            <Chip 
-                key={muscle._id} 
-                label={muscle.muscle} 
-              /> 
-          ))}
-        </Box>
-    </TableCell> 
-    <TableCell align="center">
-      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-        {excercise.equipments.map((equipment) => ( 
-          <Chip 
-              key={equipment._id} 
-              label={equipment.exerciseEquipment} 
-            /> 
-        ))}
-      </Box></TableCell>
-    <TableCell align="center">{excercise.explanation}</TableCell>
-    <TableCell align="center">{excercise.precautions}</TableCell>
-    {/* <TableCell align="center">{excercise.video + excercise.photo }</TableCell> */}
-    <TableCell align="center">{
-      <ImageList sx={{ width: 250, height: 100 }} cols={2} rowHeight={100}>
-        <ImageListItem key={"photo:"+excercise._id}>
-            <img
-              src={excercise.photo}
-              srcSet={excercise.photo}
-              alt={"Foto"}
-              loading="Cargando..."
-            />
-          </ImageListItem>
-          <ImageListItem key={"video:"+excercise._id}>
-            <img
-              src={excercise.video}
-              srcSet={excercise.video}
-              alt={"Video"}
-              loading="Cargando..."
-            />
-          </ImageListItem>      
-    </ImageList>
+        <TableCell align="center">{excercise.exerciseType.exerciseType}</TableCell>
+        <TableCell align="center">{excercise.difficulty.exerciseDifficulty}</TableCell>
+        <TableCell align="center">
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+            {excercise.bodyParts.map((part) => ( 
+              <Chip 
+                  key={part._id} 
+                  label={part.bodyPart} 
+                /> 
+            ))}
+          </Box>
+        </TableCell>
+        <TableCell>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+              {excercise.muscles.map((muscle) => ( 
+                <Chip 
+                    key={muscle._id} 
+                    label={muscle.muscle} 
+                  /> 
+              ))}
+            </Box>
+        </TableCell> 
+        <TableCell align="center">
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+            {excercise.equipments.map((equipment) => ( 
+              <Chip 
+                  key={equipment._id} 
+                  label={equipment.exerciseEquipment} 
+                /> 
+            ))}
+          </Box></TableCell>
+   </>
 
-    }</TableCell>
-    <TableCell align="center">
-      <SearchIcon onClick={() => (excerciseListUS ? handleClickView(excercise._id) : null)}/>
-    </TableCell>
-    <TableCell align="center">
-      <EditIcon onClick={() => (excerciseListUS ? handleClickEditExcercise(excercise._id) : null)}/>
+if(actionUS==="listExcercise"){
+  return(
+    <TableRow key={excercise._id} hover={true} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+      {cells}
+      <TableCell align="center">{excercise.explanation}</TableCell>
+        <TableCell align="center">{excercise.precautions}</TableCell>
+        <TableCell align="center">{
+          <ImageList sx={{ width: 250, height: 100 }} cols={2} rowHeight={100}>
+            <ImageListItem key={"photo:"+excercise._id}>
+                <img
+                  src={excercise.photo}
+                  srcSet={excercise.photo}
+                  alt={"Foto"}
+                  loading="Cargando..."
+                />
+              </ImageListItem>
+              <ImageListItem key={"video:"+excercise._id}>
+                <img
+                  src={excercise.video}
+                  srcSet={excercise.video}
+                  alt={"Video"}
+                  loading="Cargando..."
+                />
+              </ImageListItem>      
+          </ImageList>
+          }
+        </TableCell>
+        {getIconsRow(excercise)}
+    </TableRow>
+)
+}
+else if(actionUS==="selectExcercise"){
+  return(
+    <TableRow key={excercise._id} hover={true} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+      {cells}
+      {getIconsRow(excercise)}
+      <TableCell align="center">
+        <FormControl  sx={{ m: 1, minWidth: 50}}>
+            <TextField
+              id="standard-basic"
+              label="Repeticiones"
+              variant="outlined"
+             /*   value={excerciseRepSeg}
+              onChange={handleChangeExcerciseRepSegTexField} */
+            />
+          </FormControl>
       </TableCell>
-    <TableCell align="center">
-      <DeleteOutlinedIcon onClick={() => (excerciseListUS ? handleClickDelteExcercise(excercise._id) : null) }/>
-      </TableCell>               
-  </TableRow>
-   )
+     {/*  <TableCell align="center">
+      <FormControl  sx={{ m: 1, minWidth: 200}}>
+            <InputLabel id="demo-multiple-chip-label">Equipamiento</InputLabel>
+            <Select
+              labelId="demo-multiple-chip-label"
+              id="demo-multiple-chip"
+              multiple
+               value={exerciseEquipmentsSearchUS}
+              onChange={handleChangeEquipamiento} 
+              input={<OutlinedInput id="select-multiple-chip" label="Equipamiento"/>}
+              renderValue={(selected) => (
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                  {selected.map((value) => (
+                    <Chip 
+                      key={value} 
+                     label={exerciseAtributsUS.exerciseEquipments.map((equipment)=>{
+                          if(equipment.exerciseEquipment===value) return equipment.exerciseEquipment
+                    }) } 
+                  /> 
+                  ))}
+                </Box>
+              )}
+              MenuProps={MenuProps}
+            >
+              {exerciseEquipmentsSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():null}
+              {exerciseAtributsUS.exerciseEquipments.map((equipment) => (
+                <MenuItem
+                  key={equipment._id}
+                  value={equipment.exerciseEquipment}
+                  style={getStylesItemSelector(
+                    equipment.exerciseEquipment,
+                    exerciseEquipmentsSearchUS,
+                    theme
+                  )}
+                >
+                  {equipment.exerciseEquipment}
+                </MenuItem>
+              ))
+              }
+              </Select>
+          </FormControl>
+        
+      </TableCell> */}
+      {/* <TableCell align="center">
+        <FormControl  sx={{ m: 1, minWidth: 50}}>
+              <TextField
+                id="standard-basic"
+                label="Peso"
+                variant="outlined"
+                /* value={exerciseNameSeachUS}
+                onChange={handleChangeExerciseNameInput} 
+              />
+          </FormControl>
+      </TableCell> */}
+      
+    </TableRow>
+    
+  )
+}
+  
+
+}
+
+  const getIconsRow = (excercise)=>{
+
+    if(actionUS==="listExcercise")
+    {
+      return (
+        <>
+        <TableCell align="center">
+          <SearchIcon onClick={() => (excerciseListUS ? handleClickView(excercise._id) : null)} />
+        </TableCell><TableCell align="center">
+            <EditIcon onClick={() => (excerciseListUS ? handleClickEditExcercise(excercise._id) : null)} />
+          </TableCell>
+        <TableCell align="center">
+            <DeleteOutlinedIcon onClick={() => (excerciseListUS ? handleClickDelteExcercise(excercise._id) : null) }/>
+        </TableCell> 
+        </>        
+      )
+    }
+    else if(actionUS==="selectExcercise")
+    {
+      return (
+        <>
+        <TableCell align="center">
+         <FormControlLabel 
+              label="Seleccionar"
+              value={excercise._id}
+              control={
+                <Checkbox
+                   onChange={handleChangeSelectExcerciseCheckbox}
+                   checked=
+                   /* {ExcerciseSelect}   */
+                    {excerciseListToAddRoutine.some(id=> id===excercise._id)}
+                   /* {chekear(excercise)} */ 
+                   
+                   
+                  inputProps={{ 'aria-label': 'controlled' }}
+              />}  
+          /> 
+        </TableCell>
+        </> 
+      )
+    }
   }
 
 const getMenuItemQuitarSeleccion = ()=>{
@@ -481,14 +752,55 @@ const getMenuItemQuitarSeleccion = ()=>{
     )
 }
 
+function getTitle(){
+   
+  switch (actionUS) {
+    case "selectExcercise":
+      return <h1>Seleccionar ejercicio</h1>
+    case "listExcercise":
+      return <h1>Listado de Ejercicios</h1>
+    } 
+}
+
+const handleCloseFormExcerciseDialog = (evento) => {
+  setOpenFormDialog(false);
+  };
+
+const getDialogContent = ()=>{
+ 
+  switch (actionToDoInExcerciseDialog) {
+    case "newExercise" :
+      return <FormExcercise action={{action:"newExercise",setOpendialog:setOpenFormDialog,result:setResultActinDialog}}/>
+     
+    case "editExercise" :
+     return <FormExcercise action={{action:"editExercise",excercise:exerciseToDeleteOrEdit,setOpendialog:setOpenFormDialog,result:setResultActinDialog}}/> 
+    
+     case "viewExercise" :
+      return <FormExcercise action={{action:"viewExercise",excercise:exerciseToDeleteOrEdit,setOpendialog:setOpenFormDialog,result:setResultActinDialog}}/> 
+     
+    default:
+      return <h1>No se puede cargar el formulario</h1>;
+  }
+              
+
+
+}  
+
+const handleClickMostrarEjercicios = ()=>{
+  console.log(excerciseListToAddRoutine)
+}
+
+
 if (!isLoadingExercise && !isLoadingExerciseAtributes) {
     return(
       <div>
-        <h1>Listado de ejercicios!</h1>
+        {getTitle()}
 
 {/* ///////////////////// BOTON NUEVO  ///////////////////// */}
 <div style={{display: "flex", justifyContent: "flex-end"}}>
   <Button variant="contained" onClick={handleClickNewExcerciseButton}>Nuevo Ejercicio</Button>
+  <Button variant="contained" onClick={handleClickMostrarEjercicios}>Mostar Ejercicios a agregar</Button>
+  <Button variant="contained" onClick={handleClickNewExcerciseDialogButton}>Nuevo Ejercicio Dialogo</Button>
 </div>
 
 {/* ///////////////////// FILTROS  ///////////////////// */}
@@ -564,7 +876,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
                      <Chip 
                         key={value} 
                         label={exerciseAtributsUS.bodyParts.map((part)=>{
-                             return part.bodyPart===value? part.bodyPart :""
+                              if(part.bodyPart===value) return part.bodyPart
                         }) } 
                       /> 
                   ))}
@@ -604,7 +916,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
                     <Chip 
                     key={value} 
                     label={ exerciseAtributsUS.exerciseMucles.map((muscle)=>{
-                          return muscle.muscle===value?  muscle.muscle:""
+                          if(muscle.muscle===value) return muscle.muscle
                     }) } 
                   /> 
                   ))}
@@ -642,7 +954,7 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
                     <Chip 
                       key={value} 
                      label={exerciseAtributsUS.exerciseEquipments.map((equipment)=>{
-                          return equipment.exerciseEquipment===value? equipment.exerciseEquipment:""
+                          if(equipment.exerciseEquipment===value) return equipment.exerciseEquipment
                     }) } 
                   /> 
                   ))}
@@ -674,30 +986,14 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
           <TableContainer component={Paper} >
             <Table sx={{ minWidth: 650}} aria-label="simple table">
               <TableHead>
-                <TableRow>
-                  <TableCell> Nombre Ejercicio</TableCell>
-                  <TableCell align="center">Tipo de Ejercicio</TableCell>
-                  <TableCell align="center">Dificultad</TableCell>
-                  <TableCell align="center">Partes del Cuerpo</TableCell>
-                  <TableCell align="center">Musculos Involucrados</TableCell>
-                  <TableCell align="center">Equipamiento</TableCell>
-                  <TableCell align="center">Explicación</TableCell>
-                  <TableCell align="center">Precauciones </TableCell>
-                  <TableCell align="center">Demostración</TableCell>
-                  <TableCell align="center">Ver</TableCell>
-                  <TableCell align="center">Modificar</TableCell>
-                  <TableCell align="center">Eliminar</TableCell>
-                </TableRow>
+                {getTableHead()}
               </TableHead>
               <TableBody>
-              {excerciseListUS.map((excercise) =>{
-                  if(excercise.show===undefined ||excercise.show===true){
-                    return drawTableRows(excercise)
-                  }
-                  else{
-                    return true
-                  }                  
-                })}
+                {excerciseListUS.map((excercise) =>{
+                    if(excercise.show===undefined ||excercise.show===true){
+                      return drawTableRows(excercise)
+                    }                  
+                  })}
               </TableBody>              
             </Table>
           </TableContainer> 
@@ -705,11 +1001,13 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
 
       
 {/* ///////////////////// Mensaje de resultado  ///////////////////// */}              
-        <Snackbar open={openMessage} autoHideDuration={6000} onClose={handleCloseMessage}>
-          <Alert variant="filled" onClose={handleCloseMessage} severity={tipoMensajeAMostrar} sx={{ width: '100%' }}>
-            {mensajeAMostrar}
+      <div>
+        <Snackbar open={openAlert} autoHideDuration={6000} onClose={handleCloseMessage}>
+          <Alert variant="filled" onClose={handleCloseMessage} severity={severityAlert} sx={{ width: '100%' }}>
+            {messageAlert}
           </Alert>
         </Snackbar>
+      </div>
 
 {/* ///////////////////// Dialogo de confirmación  ///////////////////// */}   
         <Dialog
@@ -730,12 +1028,28 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
               <Button value="aceptar" onClick={handleClickAceptDelteExcercise}>Aceptar</Button>
               <Button value="cancelar" onClick={handleClickAceptDelteExcercise}> Cancelar </Button>
             </DialogActions>
-         </Dialog> 
-               
-      
- 
-      </div>
-    )
+        </Dialog>
+
+{/* ///////////////////// Dialogo nuevo ejercicio  ///////////////////// */}   
+          <div>
+            <Dialog
+              open={openFormDialog}
+              onClose={handleCloseFormExcerciseDialog}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+              fullWidth="xl"
+              maxWidth="xl"
+            >
+              <DialogContent>
+                {getDialogContent()}
+              </DialogContent>
+              <DialogActions>
+                  <Button value="cancelar" onClick={handleCloseFormExcerciseDialog}> Cancelar </Button>
+              </DialogActions>
+            </Dialog> 
+          </div>
+    </div>
+     )
   }
   else {
     return <h1>CARGANDO</h1>;
