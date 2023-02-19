@@ -23,7 +23,8 @@ import {
 	InputAdornment,
 	DialogContent,
 	DialogActions,
-	Dialog
+	Dialog,
+	Chip
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -51,14 +52,25 @@ const NewRoutine = (props) => {
 			}
 		]
 	});
-	const [roundsCuantity, setRoundsCuantity] = useState('');
+	/* const [roundsCuantity, setRoundsCuantity] = useState(''); */
 	const [roundToEdit, setRoudToEdit] = useState('');
 	const [roundNameToEdit, setRoundNameToEdit] = useState();
 	const [openSelectExcerciseDialog, setOpenSelectExcerciseDialog] = useState(false);
 	const [errorTextFild, setErrorTextFild] = useState(false);
 
 	const [excerciseToAddUS, setExcerciseToAddUS] = useState([])
-	const [roundDondeSeAgregara,setRoundDondeSeAgregara] = useState("")
+	const [roundDondeSeAgregaraElEjercicioUS,SetRoundDondeSeAgregaraElEjercicioUS] = useState("")
+
+	const [rutineNameUS,setRutineNameUS] = useState("")
+	const [pacienteNameUS,setPacienteNameUS] = useState("")
+	const [rutineDayUS,setRutineDayUS] = useState("24/01/2023")
+	/* const [rutineDayUS,setRutineDayUS] = useState("") */
+
+	const [errorsUS, setErrorsUS] = useState({});
+
+	const [actionUS, setActionUS] = useState({})
+
+	const {action} = props; 
 	
 	const rutina = {
 		name: "Nombre de rutina", 
@@ -126,17 +138,19 @@ const NewRoutine = (props) => {
 
 	useEffect(() => {
 
-		let { action } = props;
-    
 		if (action === undefined) {
-			action = { action: 'newRutine' };
+			setActionUS('newRutine');
+		} else {
+			setActionUS(action);
 		}
-		
-		setRutineUS(rutina); 
+		/* setRutineUS(rutina);  */
 
-		switch (action.action) {
+		switch (action) {
 			case "newRutine":
-			  break;        
+			  break;
+			  
+			case "showRutine":
+				break;    
 			  
 			default:
 			  break;
@@ -155,6 +169,12 @@ const NewRoutine = (props) => {
 				...rutineUS,
 				rounds,
 			}));
+
+			setErrorsUS(errorsUS => ({
+				...errorsUS,
+				roundsRutine: false,
+			}));
+
 		} else {
 			const rounds = rutineUS.rounds;
 			rounds.splice(0, 1);
@@ -164,6 +184,8 @@ const NewRoutine = (props) => {
 				rounds,
 			}));
 		}
+
+		
 	};
 
 	const handleChangeRelaxSwitch = event => {
@@ -177,6 +199,12 @@ const NewRoutine = (props) => {
 				...rutineUS,
 				rounds,
 			}));
+
+			setErrorsUS(errorsUS => ({
+				...errorsUS,
+				roundsRutine: false,
+			}));
+
 		} else {
 			const rounds = rutineUS.rounds;
 			rounds.splice(rutineUS.rounds.length - 1, 1);
@@ -191,7 +219,11 @@ const NewRoutine = (props) => {
 	const handleChangeAcordion = panel => (event, isExpanded) => {
 		if (panel === 'addRound') {
 			const rounds = rutineUS.rounds;
-			rounds.splice(rutineUS.rounds.length - 1, 0, { roundName: 'Nuevo' });
+			rounds.splice(rutineUS.rounds.length - 1, 0, {
+				order: 0,
+				roundName: 'Nuevo',
+				excercises: [],
+			});
 
 			setRutineUS(rutineUS => ({
 				...rutineUS,
@@ -202,15 +234,35 @@ const NewRoutine = (props) => {
 		setAccordionExpanded(isExpanded ? panel : false);
 	};
 
-	const handleChangeRoundsCantitySelect = event => {
-		setRoundsCuantity(event.target.checked);
-	};
+	const handleChangeRutineNameTextField = (event)=>{
+		setRutineNameUS(event.target.value);
+		setErrorsUS(errorsUS => ({
+			...errorsUS,
+			rutineName: false,
+		}));
+	}
+
+	const handleChangepacienteNameTextField = (event)=>{
+		setPacienteNameUS(event.target.value);
+		setErrorsUS(errorsUS => ({
+			...errorsUS,
+			pacientName: false,
+		}));
+	}
+
+	const handleChangeRutineDayTextField = (event)=>{
+		setRutineDayUS(event.target.value);
+		setErrorsUS(errorsUS => ({
+			...errorsUS,
+			rutineDay: false,
+		}));
+	}
 
 	const handleClickAddExceciseIcon = round => event => {
 		console.log('Click ADD Excercise ICON');
 		/* console.log('round: ',round); */
 
-		setRoundDondeSeAgregara(round)
+		SetRoundDondeSeAgregaraElEjercicioUS(round)
 		setOpenSelectExcerciseDialog(true) 
 	};
 
@@ -220,10 +272,6 @@ const NewRoutine = (props) => {
 
 	const handleClickDeleteExceciseIcon = event => {
 		console.log('Click DELETE Excercise ICON');
-	};
-
-	const handleClickShowRoundsButton = evento => {
-		console.log(rutineUS.rounds);
 	};
 
 	const handleClickDeleteRoundIcon = roundName => event => {
@@ -293,22 +341,23 @@ const NewRoutine = (props) => {
 	};
 
 	const handleClickAddExcerciseButton = ()=>{
-		// Agregar los ejercicios de excerciseToAddUS en rutineUS segun roundDondeSeAgregara
+		
 
 		const rutina = rutineUS;
 		const round = rutina.rounds.find(round => {
-			return round.roundName === roundDondeSeAgregara
+			return round.roundName === roundDondeSeAgregaraElEjercicioUS
 		});
 
 		round.excercises = round.excercises.concat(excerciseToAddUS)
 
-		setRutineUS(rutineUS => ({
+		// ¿porque no me hace falt esto que sigue? 
+		/* setRutineUS(rutineUS => ({
 			...rutineUS,
 			round,
-		}));
+		})); */
 
 		setExcerciseToAddUS([]) 
-		setRoundDondeSeAgregara('');
+		SetRoundDondeSeAgregaraElEjercicioUS('');
 		setOpenSelectExcerciseDialog(false);
 
 	}
@@ -385,13 +434,22 @@ const NewRoutine = (props) => {
 												}}
 											>
 												<TableCell component='th' scope='row' align='center'>
-													Nombre Ejercicio: {excercise.exerciseName}
+													Nombre Ejercicio: <br/> {excercise.excercise.name}
 												</TableCell>
 												<TableCell component='th' scope='row' align='center'>
-													Tiempo / repeticiones: {excercise.timeOReps}
+													Tiempo / repeticiones:<br/> {excercise.timeOReps}
 												</TableCell>
 												<TableCell component='th' scope='row' align='center'>
-													Elementos {excercise.equipment}
+													{/* Elementos: {excercise.excercise.equipments[0].exerciseEquipment} */}
+													Elementos: <br/>
+													<Box
+														sx={{ display: 'flex', flexWrap: 'wrap', justifyContent:"center" , gap: 0.5 }}
+													>
+														{excercise.excercise.equipments.map(equipment => (
+															<Chip key={equipment._id} label={equipment.exerciseEquipment} />
+															
+														))}
+													</Box>
 												</TableCell>
 												<TableCell component='th' scope='row' align='center'>
 													<DeleteIcon
@@ -501,19 +559,137 @@ const NewRoutine = (props) => {
 	const handleClickShowExcerciseButton = () => {
 		console.log(excerciseToAddUS)
 	  };
+	
+	const handleClickShowRutineButton = () => {
+		
+		console.log(rutineUS)
+		
+	};
+
+	const handleClickSaveRutineButton = () =>{
+		if(checkForm())
+		{
+			console.log("GUARDAR RUTINA")
+		}
+		else{
+			console.log("NO SE PUEDE GUARDAT")
+		}
+	}
+
+	const getTitle= ()=> {
+   
+		switch (actionUS) {
+		  case "newRutine":
+			return <h1>Nueva Rutina</h1>
+		  case "showRutine":
+			return <h1>Mostrar Rutina</h1>
+		  } 
+	  }
+
+	const checkForm = () => {
+		let errors = true;
+
+		if (pacienteNameUS === undefined || pacienteNameUS === '') {
+			setErrorsUS(errorsUS => ({
+				...errorsUS,
+				pacientName: true,
+			}));
+
+			errors = false;
+		}
+
+		if (rutineNameUS === undefined || rutineNameUS === '') {
+			setErrorsUS(errorsUS => ({
+				...errorsUS,
+				rutineName: true,
+			}));
+
+			errors = false;
+		}
+
+		if (rutineDayUS === undefined || rutineDayUS === '') {
+			setErrorsUS(errorsUS => ({
+				...errorsUS,
+				rutineDay: true,
+			}));
+
+			errors = false;
+		}
+
+		if (rutineUS.rounds.length === 0) {
+			setErrorsUS(errorsUS => ({
+				...errorsUS,
+				roundsRutine: true,
+			}));
+
+			errors = false;
+		}
+
+
+
+		return errors;
+
+	  }  
 
 	return (
 		<>
+			<div>{getTitle()}</div>
 			<div>
-				<h1>Nueva Rutina</h1>
-				<br></br>
-				<h2>24/01/2023</h2>
-				<Button variant='contained' onClick={handleClickShowRoundsButton}>
-					Mostrar Rounds
-				</Button>
-				<Button variant='contained' onClick={handleClickShowExcerciseButton}>
-					Mostrar ejercicios a agregar
-				</Button>
+			<FormControl fullWidth sx={{ m: 1 }}>
+					<TextField
+						id='pacientName'
+						label='Nombre Paciente'
+						variant='outlined'
+						required
+						error={!!errorsUS.pacientName}
+						value={pacienteNameUS}
+						onChange={handleChangepacienteNameTextField}
+					/>
+					{errorsUS.pacientName ? (
+						<span style={{ color: 'red' }}>
+							El nombre del paciente es obligatorio
+						</span>
+					) : (
+						<span></span>
+					)}
+				</FormControl>
+				<FormControl fullWidth sx={{ m: 1 }}>
+					<TextField
+						id='rutineName'
+						label='Nombre Rutina'
+						variant='outlined'
+						required
+						error={!!errorsUS.excersiceName}
+						value={rutineNameUS}
+						onChange={handleChangeRutineNameTextField}
+					/>
+					{errorsUS.rutineName ? (
+						<span style={{ color: 'red' }}>
+							El nombre de la rutina es obligatorio
+						</span>
+					) : (
+						<span></span>
+					)}
+				</FormControl>
+
+				<FormControl fullWidth sx={{ m: 1 }}>
+					<TextField
+						id='rutineDay'
+						label='Día de rutina'
+						variant='outlined'
+						required
+						error={!!errorsUS.rutineDay}
+						value={rutineDayUS}
+						onChange={handleChangeRutineDayTextField}
+					/>
+					{errorsUS.rutineDay ? (
+						<span style={{ color: 'red' }}>
+							La fecha de la rutina es obligatoria
+						</span>
+					) : (
+						<span></span>
+					)}
+				</FormControl>
 			</div>
 			<div style={{ display: 'flex', justifyContent: 'center' }}>
 				<FormControlLabel
@@ -528,31 +704,6 @@ const NewRoutine = (props) => {
 					}
 				/>
 
-				<FormControl sx={{ m: 1, minWidth: 200 }}>
-					<InputLabel id='demo-simple-select-label'>
-						Cantidad de Rounds
-					</InputLabel>
-					<Select
-						labelId='demo-simple-select-autowidth-label'
-						id='demo-simple-select-autowidth'
-						value={roundsCuantity}
-						onChange={handleChangeRoundsCantitySelect}
-						autoWidth
-						label='Cantidad de Rounds'
-					>
-						<MenuItem value={1}>{1}</MenuItem>
-						<MenuItem value={2}>{2}</MenuItem>
-						<MenuItem value={3}>{3}</MenuItem>
-						<MenuItem value={4}>{4}</MenuItem>
-						<MenuItem value={5}>{5}</MenuItem>
-						<MenuItem value={6}>{6}</MenuItem>
-						<MenuItem value={7}>{7}</MenuItem>
-						<MenuItem value={8}>{8}</MenuItem>
-						<MenuItem value={9}>{9}</MenuItem>
-						<MenuItem value={10}>{10}</MenuItem>
-					</Select>
-				</FormControl>
-
 				<FormControlLabel
 					labelPlacement='start'
 					value='start'
@@ -566,24 +717,56 @@ const NewRoutine = (props) => {
 				{rutineUS.rounds.map(round => {
 					return getAccordions(round);
 				})}
+				{errorsUS.roundsRutine ? (
+					<span style={{ color: 'red' }}>
+						Debe agregar rounds a la rutina
+					</span>
+				) : (
+					<span></span>
+				)}
+			</div>
+			<div>
+				<Button variant='contained' onClick={handleClickSaveRutineButton}>
+					Guardar Rutina
+				</Button>
+			</div>
+			<div>
+				<br />
+				<Button variant='contained' onClick={handleClickShowRutineButton}>
+					Mostrar Rutina
+				</Button>
+				<Button variant='contained' onClick={handleClickShowExcerciseButton}>
+					Mostrar ejercicios a agregar
+				</Button>
 			</div>
 			<div>
 				<Dialog
 					open={openSelectExcerciseDialog}
 					onClose={handleCloseDialog}
-					aria-labelledby="alert-dialog-title"
-					aria-describedby="alert-dialog-description"
-					fullWidth="xl"
-					maxWidth="xl"
+					aria-labelledby='alert-dialog-title'
+					aria-describedby='alert-dialog-description'
+					/* fullWidth="xl" */
+					maxWidth='xl'
 				>
 					<DialogContent>
-						<ListExcersice action={"selectExcercise"} excercisesToAdd={excerciseToAddUS} setExcerciseToAdd={setExcerciseToAddUS} setOpenDialog={setOpenSelectExcerciseDialog}></ListExcersice>
+						<ListExcersice
+							action={'selectExcercise'}
+							excercisesToAdd={excerciseToAddUS}
+							setExcerciseToAdd={setExcerciseToAddUS}
+							setOpenDialog={setOpenSelectExcerciseDialog}
+						></ListExcersice>
 					</DialogContent>
 					<DialogActions>
-						<Button value="cancelar" onClick={handleCloseDialog}> Cancelar </Button>
-						<Button value="agregar" onClick={handleClickAddExcerciseButton}> Agregar ejercicios </Button>
+						<Button value='cancelar' onClick={handleCloseDialog}>
+							{' '}
+							Cancelar{' '}
+						</Button>
+						<Button value='agregar' onClick={handleClickAddExcerciseButton}>
+							{' '}
+							Agregar ejercicios{' '}
+						</Button>
 					</DialogActions>
-				</Dialog> 
+				</Dialog>
 			</div>
 		</>
 	);

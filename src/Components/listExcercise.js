@@ -52,40 +52,34 @@ const ExercisesList = (props) =>{
   const [exerciseEquipmentsSearchUS, setExerciseEquipmentsSearchUS] = useState([]);
   const [exerciseNameSeachUS, setExerciseNameSearchUS] = useState("");
 
-  /* const [mensajeAMostrar, setMensajeAMostrar] = useState("") */
-      
-  const [openConfirmation, setOpenConfirmation] = useState(false);
+    
+  const [openConfirmationUS, setOpenConfirmationUS] = useState(false); /* para el dialogo de confirmación de eliminar ejercicio */
 
+  const [openFormDialogUS, setOpenFormDialogUS] = useState(false); /* para abrir el dialog del formulario de ejercicios */
+  const [actionToDoInExcerciseDialog,setActionToDoInExcerciseDialog] = useState() /* para saber que accion se realiza con el formulario de ejercicio */
+  const [exerciseToDeleteOrEdit, setExerciseToDeleteOrEdit] = useState(""); /* para pasar el ejercicio al formulario de ejercicio */
+  const [resultActinDialog,setResultActinDialog]= useState(); /* para saber el resultado del formulario de ejercicio */
 
-  const [openFormDialog, setOpenFormDialog] = useState(false);
-  const [actionToDoInExcerciseDialog,setActionToDoInExcerciseDialog] = useState()
-  const [exerciseToDeleteOrEdit, setExerciseToDeleteOrEdit] = useState("");
-  const [resultActinDialog,setResultActinDialog]= useState();
-
-  const [openAlert, setOpenAlert] = useState(false);
-  const [messageAlert, setMessageAlert] = useState("")
-  const [severityAlert,setSeverityAlert]= useState("")
+  const [openAlertUS, setOpenAlertUS] = useState(false);
+  const [messageAlertUS, setMessageAlertUS] = useState("")
+  const [severityAlertUS,setSeverityAlertUS]= useState("")
   
   
-  const [actionUS, setActionUS] = useState({})
+  const [actionUS, setActionUS] = useState({})/*  para saber la accion que se va a realizar con el listado */
 
-  const [excerciseListToAddRoutine, setExcerciseListToAddRoutine] = useState([])
-
-  const [excerciseRepSeg, setExcerciseRepSeg] = useState("");
-
+/*   const [excerciseListToAddRoutineUS, setExcerciseListToAddRoutineUS] = useState([]) */
   
+ /* const [excerciseRepSegUS, setExcerciseRepSegUS] = useState([]);  para el campo repeticines/tiempo */
+
+  /* const [excercisesSelectUS, setExcercisesSelectUS] = useState(false);  -> para saber los ejercicios selesccionados con los checks */
+
+  const [renderUS, setRenderizadoUS] = useState(false);
+
+  const {action,excercisesToAdd,setExcerciseToAdd} = props; 
+
   
   const navigate = useNavigate();
-  /* const {state} = useLocation(); // hook para la navegacion */
 
- /*   const {state2} = useParams()  */
- // eslint-disable-next-line react/prop-types
-
- const { action,excercisesToAdd,setExcerciseToAdd } = props; 
-
-  const [ExcerciseSelect, setExcerciseSelect] = useState(false); /* -> para el check */
-
- 
   
   const theme = useTheme();
   const ITEM_HEIGHT = 48;
@@ -100,69 +94,52 @@ const ExercisesList = (props) =>{
   };
 
   useEffect(() => {
-
-    
-    
 		if (action === undefined) {
-			/* action = 'listExcercise' */
-      setActionUS('listExcercise')
+			setActionUS('listExcercise');
+		} else {
+			setActionUS(action);
 		}
-    else {
-      setActionUS(action)
-    }
 
-    
-  
-     switch (action) {
-      case "listExcercise":
-        console.log("listExcercise")        
-        break;        
-
-      case "selectExcercise":  
-        console.log("selectExcercise")
-
-        break;
-      
-      case "newExcercise":
-          console.log("newExcercise")  
-        break;  
-    
+		switch (action) {
+			case 'listExcercise':
+				console.log('listExcercise');
+				break;
+			case 'selectExcercise':
+				console.log('selectExcercise');
+				break;
       default:
-        break;
-    } 
+				break;
+		}
 
-      
-    getExcerciseAtribut().then((data) => {
-      setExerciseAtributesUS(data);
-      setIsLoadingExcersiceAtributes(false);  
-    }); 
+		getExcerciseAtribut().then(data => {
+			setExerciseAtributesUS(data);
+			setIsLoadingExcersiceAtributes(false);
+		});
 
-    getExcercise().then((data) => {
-        setExcerciseListUS(data);
-        setIsLoadingExcersice(false);  
-    })
+		getExcercise().then(data => {
+			setExcerciseListUS(data);
+			setIsLoadingExcersice(false);
+		});
 
-    if(resultActinDialog==="saveSuccessfully"){
-      setOpenAlert(true)
-      setMessageAlert("Se guardo el ejercicio correctamente")
-      setSeverityAlert("success")
+		if (resultActinDialog === 'saveSuccessfully') {
+			setOpenAlertUS(true);
+			setMessageAlertUS('Se guardo el ejercicio correctamente');
+			setSeverityAlertUS('success');
+		} else if (resultActinDialog === 'modifiedSuccessfully') {
+			setOpenAlertUS(true);
+			setMessageAlertUS('Se modifico el ejercicio correctamente');
+			setSeverityAlertUS('success');
+		}
+	}, [resultActinDialog]);
 
-    }else if(resultActinDialog==="modifiedSuccessfully"){
-      setOpenAlert(true)
-      setMessageAlert("Se modifico el ejercicio correctamente")
-      setSeverityAlert("success")
+  useEffect(() => { 
+  }, [renderUS]);
 
-    }
-  }, [resultActinDialog]);
-
-  const handleClickNewExcerciseButton=(event)=>{
-    navigate("/Ejercicios/Ejercicio", {state:{action:"newExercise"}})
-  }
-
+  
   
   const handleClickNewExcerciseDialogButton=(event)=>{
     setActionToDoInExcerciseDialog("newExercise")
-    setOpenFormDialog(true)
+    setOpenFormDialogUS(true)
   }
 
   const handleClickView = (evento)=>{
@@ -177,7 +154,7 @@ const ExercisesList = (props) =>{
 
     setActionToDoInExcerciseDialog("viewExercise")
     setExerciseToDeleteOrEdit(excersiceToView)
-    setOpenFormDialog(true)
+    setOpenFormDialogUS(true)
   }
     
   const handleClickEditExcercise = (evento)=>{
@@ -194,7 +171,7 @@ const ExercisesList = (props) =>{
    
     setActionToDoInExcerciseDialog("editExercise")
     setExerciseToDeleteOrEdit(excersiceToEdit)
-    setOpenFormDialog(true)
+    setOpenFormDialogUS(true)
     
   }
 
@@ -205,7 +182,7 @@ const ExercisesList = (props) =>{
     })
 
     setExerciseToDeleteOrEdit(excersiceToDelete);
-    setOpenConfirmation(true); 
+    setOpenConfirmationUS(true); 
  
   }
 
@@ -217,29 +194,29 @@ const ExercisesList = (props) =>{
         deleteExcercise(exerciseToDeleteOrEdit).then((response) =>{
 
             if(response.status===200){
-              setMessageAlert("Se elimino el ejercicio")
-              setSeverityAlert("success") /* "success":"error" */
-              setOpenAlert(true)
+              setMessageAlertUS("Se elimino el ejercicio")
+              setSeverityAlertUS("success") /* "success":"error" */
+              setOpenAlertUS(true)
             }
             else{
-              setMessageAlert("No se pudo eliminar el ejercicio")
-              setSeverityAlert("success") /* "success":"error" */
-              setOpenAlert(true)
+              setMessageAlertUS("No se pudo eliminar el ejercicio")
+              setSeverityAlertUS("success") /* "success":"error" */
+              setOpenAlertUS(true)
             }
       }).catch((error) => {
-            setMessageAlert("No se pudo eliminar el ejercicio"+error)
-            setSeverityAlert("error") /* "success":"error" */
-            setOpenAlert(true)
+            setMessageAlertUS("No se pudo eliminar el ejercicio"+error)
+            setSeverityAlertUS("error") /* "success":"error" */
+            setOpenAlertUS(true)
       });
 
-      setOpenConfirmation(false);
+      setOpenConfirmationUS(false);
       
       // eslint-disable-next-line no-useless-return
       return  
     }
     else if(event.target.value==="cancelar")
     {
-      setOpenConfirmation(false);
+      setOpenConfirmationUS(false);
       setExerciseToDeleteOrEdit()
       // eslint-disable-next-line no-useless-return
       return      
@@ -444,14 +421,13 @@ const ExercisesList = (props) =>{
 const handleCloseMessage = (event, reason) => {
  
   if (reason === 'clickaway') {
-    setOpenAlert(false);
+    setOpenAlertUS(false);
   }  
-  setOpenAlert(false);
+  setOpenAlertUS(false);
 };
 
-// eslint-disable-next-line no-unused-vars
 const handleClickOpenBoton = () => {
-  setOpenConfirmation(true);
+  setOpenConfirmationUS(true);
 }; 
 
  function getStylesItemSelector(name, partesCuerpo, theme) {
@@ -463,58 +439,44 @@ const handleClickOpenBoton = () => {
   };
 }
 
-const handleChangeSelectExcerciseCheckbox = (event) => {
+const handleChangeSelectExcerciseCheckbox = event => {
 
-  console.log("event.target.checked",event.target.checked)
-  console.log("event.target.value",event.target.value)
+	if (event.target.checked) {
+		const excerToAdd = excerciseListUS.find(
+			excersice => excersice._id === event.target.value
+		);
+		const arrayEjercicios = excercisesToAdd;
+		arrayEjercicios.push({ excercise: excerToAdd });
+		setExcerciseToAdd(arrayEjercicios);    
+	} else {
+		const array = excercisesToAdd;
+		const arrayLimpio = array.filter(element => element.excercise._id !== event.target.value);
+		setExcerciseToAdd(arrayLimpio);    
+	}
 
-
-  if(event.target.checked)
-  {
-    /* buscar en array  excerciseListUS el ejercicio con id que viene
-        en event.target.value y agregarlo en 
-    */
-
-      const excerToAdd = excerciseListUS.find(
-				excersice => excersice._id === event.target.value
-			);
-			const arrayEjercicios = excercisesToAdd;
-      const e = {excercise: excerToAdd, timeOReps: '60'}
-			arrayEjercicios.push(e);
-			setExcerciseToAdd(arrayEjercicios);
-
-
-
-     /* 
-     const arrayExcercises = excerciseListToAddRoutine
-      arrayExcercises.push(excerciseToAdd2)
-      setExcerciseListToAddRoutine(arrayExcercises) */
-      
-    /*   const {excercisesToAdd} = props
-      console.log(excercisesToAdd)
-      
- */
-
-/*       const { action,excercisesToAdd,setExcerciseToAdd } = props;  */
-
-      
-
-
-  }
-  else{
-    const array = excerciseListToAddRoutine
-    const arrayLimpio = array.filter(id => id !==event.target.value)
-    setExcerciseListToAddRoutine(arrayLimpio)
-  }
-  
-   setExcerciseSelect(event.target.checked); 
-  
+  /* para que vuelva a renderizar */
+  if (renderUS) {
+		setRenderizadoUS(false);
+	} else {
+		setRenderizadoUS(true);
+	}
   
 };
 
-const handleChangeExcerciseRepSegTexField = (event)=>{
-  setExcerciseRepSeg(event.target.value);
-}
+const handleChangeExcerciseRepSegTexField = excerciseId => event => {
+	
+  const resultado = excercisesToAdd.find(
+		element => element.excercise._id === excerciseId
+	);
+
+  resultado.timeOReps = event.target.value
+
+  if (renderUS) {
+		setRenderizadoUS(false);
+	} else {
+		setRenderizadoUS(true);
+	}
+};
 
 const getTableHead =()=>{
 
@@ -623,79 +585,32 @@ if(actionUS==="listExcercise"){
 )
 }
 else if(actionUS==="selectExcercise"){
-  return(
-    <TableRow key={excercise._id} hover={true} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-      {cells}
-      {getIconsRow(excercise)}
-      <TableCell align="center">
-        <FormControl  sx={{ m: 1, minWidth: 50}}>
-            <TextField
-              id="standard-basic"
-              label="Repeticiones"
-              variant="outlined"
-             /*   value={excerciseRepSeg}
-              onChange={handleChangeExcerciseRepSegTexField} */
-            />
-          </FormControl>
-      </TableCell>
-     {/*  <TableCell align="center">
-      <FormControl  sx={{ m: 1, minWidth: 200}}>
-            <InputLabel id="demo-multiple-chip-label">Equipamiento</InputLabel>
-            <Select
-              labelId="demo-multiple-chip-label"
-              id="demo-multiple-chip"
-              multiple
-               value={exerciseEquipmentsSearchUS}
-              onChange={handleChangeEquipamiento} 
-              input={<OutlinedInput id="select-multiple-chip" label="Equipamiento"/>}
-              renderValue={(selected) => (
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                  {selected.map((value) => (
-                    <Chip 
-                      key={value} 
-                     label={exerciseAtributsUS.exerciseEquipments.map((equipment)=>{
-                          if(equipment.exerciseEquipment===value) return equipment.exerciseEquipment
-                    }) } 
-                  /> 
-                  ))}
-                </Box>
-              )}
-              MenuProps={MenuProps}
-            >
-              {exerciseEquipmentsSearchUS.length !== 0 ? getMenuItemQuitarSeleccion():null}
-              {exerciseAtributsUS.exerciseEquipments.map((equipment) => (
-                <MenuItem
-                  key={equipment._id}
-                  value={equipment.exerciseEquipment}
-                  style={getStylesItemSelector(
-                    equipment.exerciseEquipment,
-                    exerciseEquipmentsSearchUS,
-                    theme
-                  )}
-                >
-                  {equipment.exerciseEquipment}
-                </MenuItem>
-              ))
-              }
-              </Select>
-          </FormControl>
-        
-      </TableCell> */}
-      {/* <TableCell align="center">
-        <FormControl  sx={{ m: 1, minWidth: 50}}>
-              <TextField
-                id="standard-basic"
-                label="Peso"
-                variant="outlined"
-                /* value={exerciseNameSeachUS}
-                onChange={handleChangeExerciseNameInput} 
-              />
-          </FormControl>
-      </TableCell> */}
-      
-    </TableRow>
-    
-  )
+  return (
+		<TableRow
+			key={excercise._id}
+			hover={true}
+			sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+		>
+			{cells}
+			{getIconsRow(excercise)}
+			<TableCell align='center'>
+				<FormControl sx={{ m: 1, minWidth: 50 }} value={excercise._id}>
+					<TextField
+						id='standard-basic'
+						label='Repeticiones / tiempo'
+						variant='outlined'
+						disabled={
+							!excercisesToAdd.some(element => {
+								return element.excercise._id === excercise._id;
+							})
+						}
+						value={devolverTimeoReps(excercise._id)}
+						onChange={handleChangeExcerciseRepSegTexField(excercise._id)}
+					/>
+				</FormControl>
+			</TableCell>
+		</TableRow>
+	);
 }
   
 
@@ -721,26 +636,24 @@ else if(actionUS==="selectExcercise"){
     else if(actionUS==="selectExcercise")
     {
       return (
-        <>
-        <TableCell align="center">
-         <FormControlLabel 
-              label="Seleccionar"
-              value={excercise._id}
-              control={
-                <Checkbox
-                   onChange={handleChangeSelectExcerciseCheckbox}
-                   checked=
-                   /* {ExcerciseSelect}   */
-                    {excerciseListToAddRoutine.some(id=> id===excercise._id)}
-                   /* {chekear(excercise)} */ 
-                   
-                   
-                  inputProps={{ 'aria-label': 'controlled' }}
-              />}  
-          /> 
-        </TableCell>
-        </> 
-      )
+				<>
+					<TableCell align='center'>
+						<FormControlLabel
+							label='Seleccionar'
+							value={excercise._id}
+							control={
+								<Checkbox
+									onChange={handleChangeSelectExcerciseCheckbox}
+									checked={excercisesToAdd.some(element => {
+										return element.excercise._id === excercise._id;
+									})}
+									inputProps={{ 'aria-label': 'controlled' }}
+								/>
+							}
+						/>
+					</TableCell>
+				</>
+			);
     }
   }
 
@@ -752,7 +665,7 @@ const getMenuItemQuitarSeleccion = ()=>{
     )
 }
 
-function getTitle(){
+const getTitle= ()=> {
    
   switch (actionUS) {
     case "selectExcercise":
@@ -763,32 +676,45 @@ function getTitle(){
 }
 
 const handleCloseFormExcerciseDialog = (evento) => {
-  setOpenFormDialog(false);
+  setOpenFormDialogUS(false);
   };
 
 const getDialogContent = ()=>{
  
   switch (actionToDoInExcerciseDialog) {
     case "newExercise" :
-      return <FormExcercise action={{action:"newExercise",setOpendialog:setOpenFormDialog,result:setResultActinDialog}}/>
+      return <FormExcercise action={{action:"newExercise",setOpendialog:setOpenFormDialogUS,result:setResultActinDialog}}/>
      
     case "editExercise" :
-     return <FormExcercise action={{action:"editExercise",excercise:exerciseToDeleteOrEdit,setOpendialog:setOpenFormDialog,result:setResultActinDialog}}/> 
+     return <FormExcercise action={{action:"editExercise",excercise:exerciseToDeleteOrEdit,setOpendialog:setOpenFormDialogUS,result:setResultActinDialog}}/> 
     
      case "viewExercise" :
-      return <FormExcercise action={{action:"viewExercise",excercise:exerciseToDeleteOrEdit,setOpendialog:setOpenFormDialog,result:setResultActinDialog}}/> 
+      return <FormExcercise action={{action:"viewExercise",excercise:exerciseToDeleteOrEdit,setOpendialog:setOpenFormDialogUS,result:setResultActinDialog}}/> 
      
     default:
       return <h1>No se puede cargar el formulario</h1>;
   }
-              
-
-
 }  
 
 const handleClickMostrarEjercicios = ()=>{
-  console.log(excerciseListToAddRoutine)
+  console.log(excercisesToAdd)
 }
+
+
+
+const devolverTimeoReps = (excerciseId)=>{
+   const a = excercisesToAdd.find(element => 
+    element.excercise._id === excerciseId)
+
+   if(a===undefined){ 
+    return ""
+  }else{
+    return a.timeOReps
+    
+  } 
+}
+
+
 
 
 if (!isLoadingExercise && !isLoadingExerciseAtributes) {
@@ -798,9 +724,9 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
 
 {/* ///////////////////// BOTON NUEVO  ///////////////////// */}
 <div style={{display: "flex", justifyContent: "flex-end"}}>
-  <Button variant="contained" onClick={handleClickNewExcerciseButton}>Nuevo Ejercicio</Button>
   <Button variant="contained" onClick={handleClickMostrarEjercicios}>Mostar Ejercicios a agregar</Button>
   <Button variant="contained" onClick={handleClickNewExcerciseDialogButton}>Nuevo Ejercicio Dialogo</Button>
+ 
 </div>
 
 {/* ///////////////////// FILTROS  ///////////////////// */}
@@ -1002,16 +928,16 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
       
 {/* ///////////////////// Mensaje de resultado  ///////////////////// */}              
       <div>
-        <Snackbar open={openAlert} autoHideDuration={6000} onClose={handleCloseMessage}>
-          <Alert variant="filled" onClose={handleCloseMessage} severity={severityAlert} sx={{ width: '100%' }}>
-            {messageAlert}
+        <Snackbar open={openAlertUS} autoHideDuration={6000} onClose={handleCloseMessage}>
+          <Alert variant="filled" onClose={handleCloseMessage} severity={severityAlertUS} sx={{ width: '100%' }}>
+            {messageAlertUS}
           </Alert>
         </Snackbar>
       </div>
 
 {/* ///////////////////// Dialogo de confirmación  ///////////////////// */}   
         <Dialog
-            open={openConfirmation}
+            open={openConfirmationUS}
             onClose={handleClickDelteExcercise}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
@@ -1033,11 +959,11 @@ if (!isLoadingExercise && !isLoadingExerciseAtributes) {
 {/* ///////////////////// Dialogo nuevo ejercicio  ///////////////////// */}   
           <div>
             <Dialog
-              open={openFormDialog}
+              open={openFormDialogUS}
               onClose={handleCloseFormExcerciseDialog}
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
-              fullWidth="xl"
+              /* fullWidth="xl" */
               maxWidth="xl"
             >
               <DialogContent>
