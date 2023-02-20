@@ -1,22 +1,47 @@
 import './App.css';
-import FormExercise from "./Components/formExercise"
-import ListExercises from "./Components/listExcercise"
-import HomePage from "./Components/homePage"
-import { Route, Routes,BrowserRouter } from  "react-router-dom"
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import NavBar from './components/Navbar';
+import Home from './components/view/Home';
+import Login from './components/view/Login';
+import Register from './components/view/Register';
+import Dashboard from './components/view/Dashboard';
+import Logout from './components/view/Logout';
 
 function App() {
-  return (
-    <div>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage/>}/>
-        <Route path="/Ejercicios" element={<ListExercises/>}/>
-        <Route path="/Ejercicios/Ejercicio" element={<FormExercise/>}/>
-      </Routes>
-    </BrowserRouter>
-     
-    </div>
-  );
+	return (
+		<BrowserRouter>
+			<NavBar />
+			<div className='App'>
+				<Routes>
+					<Route
+						exact
+						path='/'
+						element={<Home />}
+					/>
+					<Route
+						exact
+						path='/login'
+						element={<Login />}
+					/>
+					<Route
+						exact
+						path='/register'
+						element={<Register />}
+					/>
+					<Route
+						exact
+						path='/dashboard'
+						element={<Dashboard />}
+					/>
+					<Route
+						exact
+						path='/logout'
+						element={<Logout />}
+					/>
+				</Routes>
+			</div>
+		</BrowserRouter>
+	);
 }
 
 export default App;
