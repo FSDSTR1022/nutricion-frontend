@@ -2,10 +2,10 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 import {
-	getExcerciseAtribut,
-	saveExcercise,
-	updateExcercise,
-} from '../services/excerciseService';
+	getexerciseAtribut,
+	saveexercise,
+	updateexercise,
+} from '../services/exerciseService';
 import {
 	TextField,
 	FormControl,
@@ -28,15 +28,15 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 const FormExercise = props => {
 	const [isLoading, setIsLoading] = useState(true);
-	const [exerciseAtributsUS, setExerciseAtributesUS] = useState([]);
-	const [exerciseNameUS, setExerciseNameUS] = useState();
-	const [exerciseTypeUS, setExerciseTypeUS] = useState('');
-	const [exerciseDifficultUS, setExerciseDifficultUS] = useState('');
+	const [exerciseAtributsUS, setexerciseAtributesUS] = useState([]);
+	const [exerciseNameUS, setexerciseNameUS] = useState();
+	const [exerciseTypeUS, setexerciseTypeUS] = useState('');
+	const [exerciseDifficultUS, setexerciseDifficultUS] = useState('');
 	const [exerciseBodyPartsUS, setExcersiseBodyPartsUS] = useState([]);
-	const [exerciseEquipmentsUS, setExerciseEquipmentsUS] = useState([]);
-	const [exerciseMuclesUS, setExerciseMuclesUS] = useState([]);
-	const [exerciseExplanationUS, setExerciseExplanationUS] = useState();
-	const [exercisePrecautionsUS, setExercisePrecautionsUS] = useState();
+	const [exerciseEquipmentsUS, setexerciseEquipmentsUS] = useState([]);
+	const [exerciseMuclesUS, setexerciseMuclesUS] = useState([]);
+	const [exerciseExplanationUS, setexerciseExplanationUS] = useState();
+	const [exercisePrecautionsUS, setexercisePrecautionsUS] = useState();
 	/* const [imagenEjercicio, setImagenEjercicio] = useState();
   const [videoEjercicio, setVideoEjercicio] = useState(); */
 
@@ -46,7 +46,7 @@ const FormExercise = props => {
 	const [errorsUS, setErrorsUS] = useState({});
 
 	const [actionUS, setActionUS] = useState();
-	const [excerciseToEditODeleteUS, setExcerciseToEditODeleteUS] = useState();
+	const [exerciseToEditODeleteUS, setexerciseToEditODeleteUS] = useState();
 
 	/* const navigate = useNavigate(); */
 	/* const {state} = useLocation(); // hook para la navegacion */
@@ -64,50 +64,49 @@ const FormExercise = props => {
 	};
 
 	useEffect(() => {
-
 		let { action } = props;
 
 		if (action === undefined) {
-			action = { action: 'newExercise' };
+			action = { action: 'newexercise' };
 		}
 
 		setActionUS(action);
 
-		getExcerciseAtribut().then(data => {
-			setExerciseAtributesUS(data);
+		getexerciseAtribut().then(data => {
+			setexerciseAtributesUS(data);
 			setIsLoading(false);
 		});
 
 		switch (action.action) {
-			case 'newExercise':
-				 console.log('newExercise'); 
+			case 'newexercise':
+				console.log('newexercise');
 				break;
 
-			case 'editExercise':
-      case 'viewExercise':      
-				console.log('editExercise');
-				setExcerciseToEditODeleteUS(action.excercise);
-				setExerciseNameUS(action.excercise.name);
-				setExerciseTypeUS(action.excercise.exerciseType._id);
-				setExerciseDifficultUS(action.excercise.difficulty._id);
+			case 'editexercise':
+			case 'viewexercise':
+				console.log('editexercise');
+				setexerciseToEditODeleteUS(action.exercise);
+				setexerciseNameUS(action.exercise.name);
+				setexerciseTypeUS(action.exercise.exerciseType._id);
+				setexerciseDifficultUS(action.exercise.difficulty._id);
 				setExcersiseBodyPartsUS(
-					action.excercise.bodyParts.map(part => {
+					action.exercise.bodyParts.map(part => {
 						return part._id;
 					})
 				);
-				setExerciseMuclesUS(
-					action.excercise.muscles.map(part => {
+				setexerciseMuclesUS(
+					action.exercise.muscles.map(part => {
 						return part._id;
 					})
 				);
-				setExerciseEquipmentsUS(
-					action.excercise.equipments.map(part => {
+				setexerciseEquipmentsUS(
+					action.exercise.equipments.map(part => {
 						return part._id;
 					})
 				);
-				setExerciseNameUS(action.excercise.name);
-				setExerciseExplanationUS(action.excercise.explanation);
-				setExercisePrecautionsUS(action.excercise.precautions);
+				setexerciseNameUS(action.exercise.name);
+				setexerciseExplanationUS(action.exercise.explanation);
+				setexercisePrecautionsUS(action.exercise.precautions);
 				break;
 
 			default:
@@ -115,24 +114,24 @@ const FormExercise = props => {
 		}
 	}, []);
 
-	const handleChangeExerciseNameInput = event => {
-		setExerciseNameUS(event.target.value);
+	const handleChangeexerciseNameInput = event => {
+		setexerciseNameUS(event.target.value);
 		setErrorsUS(errorsUS => ({
 			...errorsUS,
 			excersiceName: false,
 		}));
 	};
 
-	const handleChangeExerciseType = event => {
-		setExerciseTypeUS(event.target.value);
+	const handleChangeexerciseType = event => {
+		setexerciseTypeUS(event.target.value);
 		setErrorsUS(errorsUS => ({
 			...errorsUS,
 			excersiceType: false,
 		}));
 	};
 
-	const handleChangeExerciseDificultSelector = event => {
-		setExerciseDifficultUS(event.target.value);
+	const handleChangeexerciseDificultSelector = event => {
+		setexerciseDifficultUS(event.target.value);
 		setErrorsUS(errorsUS => ({
 			...errorsUS,
 			excersiceDificult: false,
@@ -159,7 +158,7 @@ const FormExercise = props => {
 			target: { value },
 		} = event;
 
-		setExerciseEquipmentsUS(
+		setexerciseEquipmentsUS(
 			typeof value === 'string' ? value.split(',') : value
 		);
 
@@ -174,7 +173,7 @@ const FormExercise = props => {
 			target: { value },
 		} = event;
 
-		setExerciseMuclesUS(typeof value === 'string' ? value.split(',') : value);
+		setexerciseMuclesUS(typeof value === 'string' ? value.split(',') : value);
 
 		setErrorsUS(errorsUS => ({
 			...errorsUS,
@@ -183,11 +182,11 @@ const FormExercise = props => {
 	};
 
 	const handleChangeExplanationInput = event => {
-		setExerciseExplanationUS(event.target.value);
+		setexerciseExplanationUS(event.target.value);
 	};
 
 	const handleChangePrecautionsInput = event => {
-		setExercisePrecautionsUS(event.target.value);
+		setexercisePrecautionsUS(event.target.value);
 	};
 
 	const handleClickSaveButton = () => {
@@ -208,15 +207,12 @@ const FormExercise = props => {
 				'https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC5cFhphukFT-h24CWqwycbNcvVutbJeGlueYS4zwVmBzJVyiaz-QHbRCufuJJKe8_5SEVROgxGAKk9YlzyGlxBFX-Uyl0CIxObBSXxvow';
 
 			switch (actionUS.action) {
-				case 'newExercise':
-					saveExcercise(exerciseToSave).then(data => {
+				case 'newexercise':
+					saveexercise(exerciseToSave).then(data => {
 						// hay que hacer bien esta comprobación
 						if (data._id !== null) {
-						/* 	navigate('/Ejercicios', {
-								state: { action: 'newExercise', typeMessage: 'guardoConExito' },
-							}); */
-              actionUS.result("saveSuccessfully")
-              actionUS.setOpendialog(false)
+							actionUS.result('saveSuccessfully');
+							actionUS.setOpendialog(false);
 						} else {
 							setOpenMessage(true);
 							setMensajeAMostrar('No se pudo guardar el ejercicio');
@@ -225,18 +221,12 @@ const FormExercise = props => {
 
 					break;
 
-				case 'editExercise':
-					exerciseToSave._id = excerciseToEditODeleteUS._id;
-					updateExcercise(exerciseToSave).then(data => {
+				case 'editexercise':
+					exerciseToSave._id = exerciseToEditODeleteUS._id;
+					updateexercise(exerciseToSave).then(data => {
 						if (data._id !== null) {
-							/* navigate('/Ejercicios', {
-								state: {
-									action: 'editExercise',
-									typeMessage: 'modificadoConExito',
-								},
-							}); */
-              actionUS.result("modifiedSuccessfully")
-              actionUS.setOpendialog(false)
+							actionUS.result('modifiedSuccessfully');
+							actionUS.setOpendialog(false);
 						} else {
 							setOpenMessage(true);
 							setMensajeAMostrar('No se pudo editar el ejercicio');
@@ -331,12 +321,12 @@ const FormExercise = props => {
 
 	function getByTitle() {
 		switch (actionUS.action) {
-			case 'newExercise':
+			case 'newexercise':
 				return <h1>Nuevo Ejercicio</h1>;
-			case 'editExercise':
+			case 'editexercise':
 				return <h1>Modificar Ejercicio</h1>;
-      case 'viewExercise':
-          return <h1>Ver Ejercicio</h1>  
+			case 'viewexercise':
+				return <h1>Ver Ejercicio</h1>;
 		}
 	}
 
@@ -365,7 +355,7 @@ const FormExercise = props => {
 							error={!!errorsUS.excersiceName}
 							/*  error = "false" */
 							value={exerciseNameUS}
-							onChange={handleChangeExerciseNameInput}
+							onChange={handleChangeexerciseNameInput}
 						/>
 						{errorsUS.excersiceName ? (
 							<span style={{ color: 'red' }}>
@@ -387,7 +377,7 @@ const FormExercise = props => {
 							id='tipoEjercicioSelect'
 							value={exerciseTypeUS}
 							label='Dificultad'
-							onChange={handleChangeExerciseType}
+							onChange={handleChangeexerciseType}
 							error={!!errorsUS.excersiceType}
 						>
 							{exerciseAtributsUS.exerciseType.map((te, id) => (
@@ -415,7 +405,7 @@ const FormExercise = props => {
 							id='dificultadEjercicioSelect'
 							value={exerciseDifficultUS}
 							label='Dificultad Ejercicio'
-							onChange={handleChangeExerciseDificultSelector}
+							onChange={handleChangeexerciseDificultSelector}
 							error={!!errorsUS.excersiceDificult}
 						>
 							{exerciseAtributsUS.exerciseDifficult.map((de, id) => (
@@ -684,11 +674,18 @@ const FormExercise = props => {
 
 					{/* ///////////////////// Boton Guardar/////////////////////  */}
 
-          {actionUS.action!=="viewExercise"
-          ?<Button variant='contained' onClick={() => {handleClickSaveButton();}}>Guardar Ejercicio</Button>
-          :""}
-
-					
+					{actionUS.action !== 'viewexercise' ? (
+						<Button
+							variant='contained'
+							onClick={() => {
+								handleClickSaveButton();
+							}}
+						>
+							Guardar Ejercicio
+						</Button>
+					) : (
+						''
+					)}
 				</form>
 
 				{/* ///////////////////// Boton Guardar/////////////////////  */}
