@@ -2,7 +2,7 @@
 const URLEjercicio = 'http://localhost:3000/Ejercicios/Ejercicio';
 const URLejercicios = 'http://localhost:3000/Ejercicios';
 
-const getExerciseAtribut = () =>{
+const getExerciseAtribut = () => {
 	return fetch(URLEjercicio)
 		.then(response => response.json())
 		.then(jsonData => {
@@ -14,7 +14,7 @@ const getExerciseAtribut = () =>{
 		});
 };
 
-const saveExercise =  (data) =>{
+const saveExercise = data => {
 	const exercise = JSON.stringify(data);
 	const requestOptions = {
 		method: 'POST',
@@ -44,7 +44,7 @@ const getExercise = () => {
 		});
 };
 
-const updateExercise =  (data) => {
+const updateExercise = data => {
 	const exercise = JSON.stringify(data);
 
 	const requestOptions = {
@@ -53,8 +53,7 @@ const updateExercise =  (data) => {
 		body: exercise,
 	};
 
-	const URLEjercicio2 =
-		`http://localhost:3000/Ejercicios/Ejercicio?id=${  data._id}`;
+	const URLEjercicio2 = `http://localhost:3000/Ejercicios/Ejercicio?id=${data._id}`;
 
 	return fetch(URLEjercicio2, requestOptions)
 		.then(response => response.json())
@@ -66,7 +65,7 @@ const updateExercise =  (data) => {
 		});
 };
 
-const deleteExercise =  (data) => {
+const deleteExercise = data => {
 	const exercise = JSON.stringify(data);
 
 	const requestOptions = {
@@ -75,8 +74,7 @@ const deleteExercise =  (data) => {
 		body: exercise,
 	};
 
-	const URLEjercicio2 =
-		`http://localhost:3000/Ejercicios/Ejercicio?_id=${  data._id}`;
+	const URLEjercicio2 = `http://localhost:3000/Ejercicios/Ejercicio?_id=${data._id}`;
 
 	return fetch(URLEjercicio2, requestOptions)
 		.then(response => ({ data: response.json(), status: response.status }))
