@@ -41,6 +41,26 @@ const navConfig = [
 		path: '/404',
 		icon: icon('ic_disabled'),
 	},
+	{
+		title: 'Ejercicios',
+		path: '/dashboard/exercises',
+		icon: icon('ic_user'),
+	},
+	{
+		title: 'Nuevo Ejercicio',
+		path: '/dashboard/newexercise',
+		icon: icon('ic_user'),
+	},
+	{
+		title: 'Nuevo Paciente',
+		path: '/dashboard/newpacient',
+		icon: icon('ic_user'),
+	},
+	{
+		title: 'Pacientes',
+		path: '/dashboard/pacients',
+		icon: icon('ic_user'),
+	},
 ];
 
 export default navConfig;
