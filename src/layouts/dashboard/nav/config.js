@@ -61,6 +61,11 @@ const navConfig = [
 		path: '/dashboard/pacients',
 		icon: icon('ic_user'),
 	},
+	{
+		title: 'Calendario',
+		path: '/dashboard/pacients/calendario',
+		icon: icon('ic_user'),
+	},
 ];
 
 export default navConfig;

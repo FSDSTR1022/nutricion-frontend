@@ -13,6 +13,7 @@ import ListExercise from './pages/excercise/listExercise';
 import FormExercise from './pages/excercise/formExercise';
 import FormPatient from './pages/patient/formPatient';
 import PatientPage from './pages/patient/PatientPage';
+import Calendarh from './pages/patient/calendario/Calendarh';
 
 // ----------------------------------------------------------------------
 
@@ -31,7 +32,7 @@ export default function Router() {
 				{ path: 'newexercise', element: <FormExercise /> },
 				{ path: 'pacients', element: <PatientPage /> },
 				{ path: 'newpacient', element: <FormPatient /> },
-				{ path: 'pacients/calendar', element: <FormPatient /> },
+				{ path: 'pacients/calendario', element: <Calendarh /> },
 			],
 		},
 		{

@@ -33,14 +33,14 @@ const Calendarh = () => {
 			})
 			.catch(err => console.log('error', err));
 	};
-	let events = [];
+	const events = [];
 	rutinasList.map(ob =>
 		events.push({
 			id: ob._id,
 			title: ob.name,
 			start: ob.day,
 			allDay: true,
-			editable: false,
+			editable: true,
 		})
 	);
 
@@ -90,7 +90,7 @@ const Calendarh = () => {
 				}}
 				height={'85vh'}
 				initialView='dayGridMonth'
-				editable='false'
+				editable='true'
 				events={events}
 				eventClick={info => handleEventClick(info.event.id)}
 				dateClick={info => handleDateClick(info.dateStr)}
