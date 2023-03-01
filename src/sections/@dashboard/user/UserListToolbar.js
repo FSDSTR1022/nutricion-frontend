@@ -62,13 +62,13 @@ export default function UserListToolbar({
 				<Typography
 					component='div'
 					variant='subtitle1'>
-					{numSelected} selected
+					{numSelected} Seleccionado
 				</Typography>
 			) : (
 				<StyledSearch
 					value={filterName}
 					onChange={onFilterName}
-					placeholder='Search user...'
+					placeholder='Buscar ejercicio...'
 					startAdornment={
 						<InputAdornment position='start'>
 							<Iconify
@@ -78,6 +78,7 @@ export default function UserListToolbar({
 						</InputAdornment>
 					}
 				/>
+				
 			)}
 
 			{numSelected > 0 ? (

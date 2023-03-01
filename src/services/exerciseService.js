@@ -1,20 +1,15 @@
 /* eslint-disable arrow-body-style */
-const URLEjercicio = 'http://localhost:3000/Ejercicios/Ejercicio';
-const URLejercicios = 'http://localhost:3000/Ejercicios';
+const URL= 'http://localhost:3000'
 
-const getExerciseAtribut = () =>{
-	return fetch(URLEjercicio)
-		.then(response => response.json())
-		.then(jsonData => {
-			return jsonData;
-		})
-		.catch(e => {
-			console.log(e);
-			return e;
-		});
+const getExerciseAtribut = async() =>{
+	const result = await fetch(`${URL}/exercises/exerciseAtributes`)
+	const parseResult = await result.json()
+	const data = {data: parseResult, status: result.status}
+
+	return data
 };
 
-const saveExercise =  (data) =>{
+const saveExercise = async (data) =>{
 	const exercise = JSON.stringify(data);
 	const requestOptions = {
 		method: 'POST',
@@ -22,29 +17,24 @@ const saveExercise =  (data) =>{
 		body: exercise,
 	};
 
-	return fetch(URLEjercicio, requestOptions)
-		.then(response => response.json())
-		.then(data => {
-			return data;
-		})
-		.catch(error => {
-			return error;
-		});
+	const result = await fetch(`${URL}/exercises`,requestOptions)
+	const parseResult = await result.json()
+	const data2 = {data: parseResult, status: result.status}
+	return data2
+
 };
 
-const getExercise = () => {
-	return fetch(URLejercicios)
-		.then(response => response.json())
-		.then(jsonData => {
-			return jsonData;
-		})
-		.catch(e => {
-			console.log(e);
-			return e;
-		});
+const getExercise = async () => {
+
+	const result = await fetch(`${URL}/exercises`)
+	const parseResult = await result.json()
+	const data = {data: parseResult, status: result.status}
+
+	return data
+
 };
 
-const updateExercise =  (data) => {
+const updateExercise = async (data) => {
 	const exercise = JSON.stringify(data);
 
 	const requestOptions = {
@@ -53,17 +43,10 @@ const updateExercise =  (data) => {
 		body: exercise,
 	};
 
-	const URLEjercicio2 =
-		`http://localhost:3000/Ejercicios/Ejercicio?id=${  data._id}`;
-
-	return fetch(URLEjercicio2, requestOptions)
-		.then(response => response.json())
-		.then(data => {
-			return data;
-		})
-		.catch(error => {
-			return error;
-		});
+	const result = await fetch(`${URL}/exercises?id=${data._id}`, requestOptions)
+	const parseResult = await result.json()
+	const data2 = {data: parseResult, status: result.status}
+	return data2
 };
 
 const deleteExercise =  (data) => {
@@ -75,10 +58,7 @@ const deleteExercise =  (data) => {
 		body: exercise,
 	};
 
-	const URLEjercicio2 =
-		`http://localhost:3000/Ejercicios/Ejercicio?_id=${  data._id}`;
-
-	return fetch(URLEjercicio2, requestOptions)
+	return fetch(`${URL}/exercises?id=${data._id}`, requestOptions)
 		.then(response => ({ data: response.json(), status: response.status }))
 		.catch(error => {
 			return error;

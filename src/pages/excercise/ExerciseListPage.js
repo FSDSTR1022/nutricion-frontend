@@ -23,6 +23,10 @@ import {
 	IconButton,
 	TableContainer,
 	TablePagination,
+	Chip,
+	Box,
+	ImageList,
+	ImageListItem
 } from '@mui/material';
 // components
 import Label from '../../components/label';
@@ -32,15 +36,18 @@ import Scrollbar from '../../components/scrollbar';
 import { UserListHead, UserListToolbar } from '../../sections/@dashboard/user';
 
 import { getAllUsers } from '../../services/userService';
+import { getExercise, getExerciseAtribut } from '../../services/exerciseService';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
 	{ id: 'name', label: 'Nombre', alignRight: false },
-	{ id: 'lastName', label: 'Apellido', alignRight: false },
-	{ id: 'phone', label: 'Teléfono', alignRight: false },
-	{ id: 'dni', label: 'DNI', alignRight: false },
-	{ id: 'email', label: 'Correo', alignRight: false },
+	{ id: 'difficulty', label: 'Dificultad', alignRight: false },
+	{ id: 'exerciseType', label: 'Tipo', alignRight: false },
+	{ id: 'bodyPart', label: 'Pastes Cuerpos', alignRight: false },
+	{ id: 'muscles', label: 'Musculos', alignRight: false },
+	{ id: 'equipments', label: 'Equipamiento', alignRight: false },
+	{ id: 'video', label: 'Demostración', alignRight: false },
 	{ id: '' },
 ];
 
@@ -78,7 +85,7 @@ function applySortFilter(array, comparator, query) {
 	return stabilizedThis.map(el => el[0]);
 }
 
-export default function PatientPage() {
+export default function ExerciseListPage() {
 	const [open, setOpen] = useState(null);
 	const [page, setPage] = useState(0);
 	const [order, setOrder] = useState('asc');
@@ -87,21 +94,37 @@ export default function PatientPage() {
 	const [filterName, setFilterName] = useState('');
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 
-	const [isLoadingPatients, setIsLoadingPatients] =useState(true); 
-	const [patientsListUS, setPatientListUS] = useState([]);
+	const [isLoadingExerciseUS, setIsLoadingExerciseUS] =useState(true); 
+	const [isLoadingexerciseAtributes, setIsLoadingExcersiceAtributes] = useState(true);
+	const [exerciseListUS, setexerciseListUS] = useState([]);
+	const [exerciseAtributsUS, setExerciseAtributesUS] = useState();
 
 	useEffect(() => {
-		
-		const getAllusers =async ()=>{
-			const response = await getAllUsers()
-			if(response.status===200)
-			{
-				setPatientListUS(response.data)
-				setIsLoadingPatients(false)
-			}			
+		if (exerciseListUS.length === 0) {
+			
+			const getExe = async () => {
+				const responseExercise = await getExercise();
+				if (responseExercise.status === 200) {
+					console.log("response.data: ",responseExercise.data)
+					setexerciseListUS(responseExercise.data);
+					setIsLoadingExerciseUS(false);
+				}
+			};
+
+			const getEA =async ()=>{
+				const response = await getExerciseAtribut()
+				if(response.status===200)
+				{
+					console.log("Exercises Atribut: ",response.data)
+					setExerciseAtributesUS(response.data);
+					setIsLoadingExcersiceAtributes(false);
+				}			
+			}
+			getEA()
+			getExe();
+			
 		}
-		getAllusers()
-	}, []);
+	},);
 
 
 	const handleOpenMenu = event => {
@@ -120,7 +143,7 @@ export default function PatientPage() {
 
 	const handleSelectAllClick = event => {
 		if (event.target.checked) {
-			const newSelecteds = patientsListUS.map(n => n.name);
+			const newSelecteds = exerciseListUS.map(n => n.name);
 			setSelected(newSelecteds);
 			return;
 		}
@@ -161,18 +184,18 @@ export default function PatientPage() {
 
 	const emptyRows =
 		page > 0
-			? Math.max(0, (1 + page) * rowsPerPage - patientsListUS.length)
+			? Math.max(0, (1 + page) * rowsPerPage - exerciseListUS.length)
 			: 0;
 
 	const filteredPatients = applySortFilter(
-		patientsListUS,
+		exerciseListUS,
 		getComparator(order, orderBy),
 		filterName
 	);
 
 	const isNotFound = !filteredPatients.length && !!filterName;
 
-	if (!isLoadingPatients) {
+	if (!isLoadingExerciseUS && !isLoadingexerciseAtributes)  {
 		return (
 			<>
 				<Helmet>
@@ -188,12 +211,12 @@ export default function PatientPage() {
 						<Typography
 							variant='h4'
 							gutterBottom>
-							Pacientes
+							Ejercicios
 						</Typography>
 						<Button
 							variant='contained'
 							startIcon={<Iconify icon='eva:plus-fill' />}>
-							Nuevo Paciente
+							Nuevo Ejercicio
 						</Button>
 					</Stack>
 
@@ -203,7 +226,7 @@ export default function PatientPage() {
 							filterName={filterName}
 							onFilterName={handleFilterByName}
 						/>
-
+						
 						<Scrollbar>
 							<TableContainer sx={{ minWidth: 800 }}>
 								<Table>
@@ -211,7 +234,7 @@ export default function PatientPage() {
 										order={order}
 										orderBy={orderBy}
 										headLabel={TABLE_HEAD}
-										rowCount={patientsListUS.length}
+										rowCount={exerciseListUS.length}
 										numSelected={selected.length}
 										onRequestSort={handleRequestSort}
 										onSelectAllClick={handleSelectAllClick}
@@ -223,8 +246,8 @@ export default function PatientPage() {
 												page * rowsPerPage + rowsPerPage
 											)
 											.map(row => {
-												const { _id, name, lastName, phone, dni, email } = row;
-												const selectedUser = selected.indexOf(name) !== -1;
+												const { _id,name, difficulty, exerciseType, bodyParts, muscles, equipments, photo, video} = row;
+												const selectedExercise = selected.indexOf(name) !== -1;
 
 												return (
 													<TableRow
@@ -232,10 +255,10 @@ export default function PatientPage() {
 														key={_id}
 														tabIndex={-1}
 														role='checkbox'
-														selected={selectedUser}>
+														selected={selectedExercise}>
 														<TableCell padding='checkbox'>
 															<Checkbox
-																checked={selectedUser}
+																checked={selectedExercise}
 																onChange={event => handleClick(event, name)}
 															/>
 														</TableCell>
@@ -250,7 +273,7 @@ export default function PatientPage() {
 																spacing={2}>
 																<Avatar
 																	alt={name}
-																	src='/assets/images/avatars/avatar_1.jpg'
+																	src={photo}
 																/>
 																<Typography
 																	variant='subtitle2'
@@ -260,12 +283,77 @@ export default function PatientPage() {
 															</Stack>
 														</TableCell>
 
-														<TableCell align='left'>{lastName}</TableCell>
+														<TableCell align='left'>
+															{difficulty.exerciseDifficulty}
+														</TableCell>
 
-														<TableCell align='left'>{phone}</TableCell>
+														<TableCell align='left'>
+															{exerciseType.exerciseType}
+														</TableCell>
 
-														<TableCell align='left'>{dni}</TableCell>
-														<TableCell align='left'>{email}</TableCell>
+														<TableCell align='center'>
+															<Box
+																sx={{
+																	display: 'flex',
+																	flexWrap: 'wrap',
+																	gap: 0.2,
+																}}>
+																{bodyParts.map(part => (
+																	<Chip
+																		key={part._id}
+																		label={part.bodyPart}
+																	/>
+																))}
+															</Box>
+														</TableCell>
+														<TableCell>
+															<Box
+																sx={{
+																	display: 'flex',
+																	flexWrap: 'wrap',
+																	gap: 0.2,
+																}}>
+																{muscles.map(muscle => (
+																	<Chip
+																		key={muscle._id}
+																		label={muscle.muscle}
+																	/>
+																))}
+															</Box>
+														</TableCell>
+														<TableCell align='center'>
+															<Box
+																sx={{
+																	display: 'flex',
+																	flexWrap: 'wrap',
+																	gap: 0.2,
+																}}>
+																{equipments.map(equipment => (
+																	<Chip
+																		key={equipment._id}
+																		label={equipment.exerciseEquipment}
+																	/>
+																))}
+															</Box>
+														</TableCell>
+														<TableCell align='center'>
+															{														
+
+																<ImageList
+																	sx={{ width: 100, height: 50 }}
+																	cols={1}
+																	rowHeight={60}>
+																	<ImageListItem key={`video:${_id}`}>
+																		<img
+																			src={video}
+																			srcSet={video}
+																			alt={'Video'}
+																			loading='Cargando...'
+																		/>
+																	</ImageListItem>
+																</ImageList>
+															}
+														</TableCell>
 
 														<TableCell align='right'>
 															<IconButton
@@ -320,7 +408,7 @@ export default function PatientPage() {
 						<TablePagination
 							rowsPerPageOptions={[5, 10, 25]}
 							component='div'
-							count={patientsListUS.length}
+							count={exerciseListUS.length}
 							rowsPerPage={rowsPerPage}
 							page={page}
 							onPageChange={handleChangePage}

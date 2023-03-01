@@ -96,7 +96,6 @@ const NewRoutine = props => {
 		switch (action) {
 			case 'newRutine':
 				break;
-
 			case 'showRutine':
 				break;
 			case 'editRutine':

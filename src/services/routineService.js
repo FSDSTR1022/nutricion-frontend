@@ -3,7 +3,6 @@
 const URLRutina = 'http://localhost:3000/Rutinas';
 
 const saveRutine =  (data) => {
-	console.log('PARAMETRO: ', data);
 	const routine = JSON.stringify(data);
 	const requestOptions = {
 		method: 'POST',
