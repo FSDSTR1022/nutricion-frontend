@@ -9,11 +9,11 @@ import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
-import ListExercise from './pages/excercise/ExerciseListPage'
-import FormExercise from './pages/excercise/NewExercisePage'
-import FormPatient from './pages/patient/formPatient' 
-import PatientPage from './pages/patient/PatientPage'
-import RutinePage from './pages/rutine/RutinePage'
+import ListExercise from './pages/excercise/ExerciseListPage';
+import FormExercise from './pages/excercise/NewExercisePage';
+import FormPatient from './pages/patient/formPatient';
+import PatientPage from './pages/patient/PatientPage';
+import RutinePage from './pages/rutine/RutinePage';
 
 // ----------------------------------------------------------------------
 
@@ -31,6 +31,7 @@ export default function Router() {
 				{ path: 'exercises', element: <ListExercise /> },
 				{ path: 'newexercise', element: <FormExercise /> },
 				{ path: 'pacients', element: <PatientPage /> },
+				{ path: 'patient_calendar', element: <Calendar /> },
 				{ path: 'newpacient', element: <FormPatient /> },
 				{ path: 'newroutine', element: <RutinePage /> },
 			],
