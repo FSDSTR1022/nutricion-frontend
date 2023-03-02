@@ -54,7 +54,7 @@ const updateRutine = (data) =>{
 		});
 };
 
-const deleteexercise =  (data) => {
+const deleteRutine =  (data) => {
 	const routine = JSON.stringify(data);
 
 	const requestOptions = {
@@ -72,4 +72,4 @@ const deleteexercise =  (data) => {
 		});
 };
 
-module.exports = { saveRutine, getRutines, updateRutine, deleteexercise };
+module.exports = { saveRutine, getRutines, updateRutine, deleteRutine };
