@@ -14,6 +14,7 @@ import FormExercise from './pages/excercise/NewExercisePage';
 import FormPatient from './pages/patient/formPatient';
 import PatientPage from './pages/patient/PatientPage';
 import RutinePage from './pages/rutine/RutinePage';
+import Calendarh from './pages/patient/Calendarh';
 
 // ----------------------------------------------------------------------
 
@@ -31,7 +32,7 @@ export default function Router() {
 				{ path: 'exercises', element: <ListExercise /> },
 				{ path: 'newexercise', element: <FormExercise /> },
 				{ path: 'pacients', element: <PatientPage /> },
-				{ path: 'patient_calendar', element: <Calendar /> },
+				{ path: 'patient/calendar', element: <Calendarh /> },
 				{ path: 'newpacient', element: <FormPatient /> },
 				{ path: 'newroutine', element: <RutinePage /> },
 			],
