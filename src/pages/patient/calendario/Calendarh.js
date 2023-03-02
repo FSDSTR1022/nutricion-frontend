@@ -1,6 +1,4 @@
-import React from 'react';
-
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import { useTheme } from '@mui/material/styles';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -75,7 +73,7 @@ const Calendarh = () => {
 			},
 			body: JSON.stringify({ day: date }),
 		})
-			.then(res => res => res.json())
+			.then(res => res.json())
 			.then(getMeassures())
 
 			.catch(error => console.log('Error:', error));
