@@ -87,22 +87,22 @@ export default function PatientPage() {
 	const [filterName, setFilterName] = useState('');
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 
-	const [isLoadingPatients, setIsLoadingPatients] =useState(true); 
+	const [isLoadingPatients, setIsLoadingPatients] = useState(true);
 	const [patientsListUS, setPatientListUS] = useState([]);
 
-	useEffect(() => {
-		
-		const getAllusers =async ()=>{
-			const response = await getAllUsers()
-			if(response.status===200)
-			{
-				setPatientListUS(response.data)
-				setIsLoadingPatients(false)
-			}			
-		}
-		getAllusers()
-	}, []);
+	// seteo el pacient onHover(hector)
+	const [patient, setPatient] = useState({});
 
+	useEffect(() => {
+		const getAllusers = async () => {
+			const response = await getAllUsers();
+			if (response.status === 200) {
+				setPatientListUS(response.data);
+				setIsLoadingPatients(false);
+			}
+		};
+		getAllusers();
+	}, []);
 
 	const handleOpenMenu = event => {
 		setOpen(event.currentTarget);
@@ -157,6 +157,13 @@ export default function PatientPage() {
 	const handleFilterByName = event => {
 		setPage(0);
 		setFilterName(event.target.value);
+	};
+
+	// click on row-> coge datos del paciente
+
+	const handleClickRow = id => {
+		const pacientClicked = patientsListUS.filter(p => p._id === id);
+		setPatient(pacientClicked);
 	};
 
 	const emptyRows =
@@ -228,7 +235,8 @@ export default function PatientPage() {
 
 												return (
 													<TableRow
-														hover
+														hover='true'
+														onClick={() => handleClickRow(_id)}
 														key={_id}
 														tabIndex={-1}
 														role='checkbox'
