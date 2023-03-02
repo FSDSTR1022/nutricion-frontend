@@ -49,7 +49,7 @@ const updateExercise = async (data) => {
 	return data2
 };
 
-const deleteExercise =  (data) => {
+const deleteExercise = async (data) => {
 	const exercise = JSON.stringify(data);
 
 	const requestOptions = {
@@ -58,12 +58,11 @@ const deleteExercise =  (data) => {
 		body: exercise,
 	};
 
-	return fetch(`${URL}/exercises?id=${data._id}`, requestOptions)
-		.then(response => ({ data: response.json(), status: response.status }))
-		.catch(error => {
-			return error;
-		});
-};
+	const result = await fetch(`${URL}/exercises?_id=${data._id}`, requestOptions)
+	const parseResult = await result.json()
+	const data2 = {data: parseResult, status: result.status}
+	return data2
+}
 
 module.exports = {
 	getExerciseAtribut,

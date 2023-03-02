@@ -11,30 +11,18 @@ import {useLocation,useNavigate} from 'react-router-dom'
 // @mui
 import {
 	Card,
-	Table,
 	Stack,
 	Paper,
 	Avatar,
 	Button,
-	Popover,
-	Checkbox,
-	TableRow,
 	MenuItem,
-	TableBody,
-	TableCell,
 	Container,
 	Typography,
-	IconButton,
-	TableContainer,
-	TablePagination,
 	Chip,
 	Box,
-	ImageList,
-	ImageListItem,
 	FormControl,
 	TextField,
 	Grid,
-	Item,
 	Select,
 	InputLabel,
 	OutlinedInput
@@ -60,10 +48,10 @@ export default function NewExercisePage(props) {
 	const [videoEjercicio, setVideoEjercicio] = useState('');
 	const [errorsUS, setErrorsUS] = useState({});
 
-	const [actionUS, setActionUS] = useState("newExercise");
+	const [actionUS, setActionUS] = useState();
 	const [excerciseToEditODeleteUS, setExcerciseToEditODeleteUS] = useState({});
 
-	const { action, exercisesToEdit,  setExerciseToEdit } = props;
+	const {action} = props;
 
 	const navigate = useNavigate();
 
@@ -98,42 +86,44 @@ export default function NewExercisePage(props) {
 				}			
 			}
 			getEA()
-		} 		
-
-		switch (action) {
-			case undefined: 
-			case 'newExercise':
-				setActionUS('newExercise');
-				break
-			case 'editExercise':
-				if (exercisesToEdit !== undefined) {
-					setExcerciseToEditODeleteUS(exercisesToEdit);
-		
-					setExerciseNameUS(exercisesToEdit.name);
-					setExerciseTypeUS(exercisesToEdit.exerciseType._id);
-					setExerciseDifficultUS(exercisesToEdit.difficulty._id);
-					setExcersiseBodyPartsUS(
-						exercisesToEdit.bodyParts.map(part => part._id)
-					);
-					setExerciseMuclesUS(
-						exercisesToEdit.muscles.map(part => part._id)
-					);
-					setExerciseEquipmentsUS(
-						exercisesToEdit.equipments.map(part => part._id)
-					);
-					setExerciseNameUS(exercisesToEdit.name);
-					setExerciseExplanationUS(exercisesToEdit.explanation);
-					setExercisePrecautionsUS(exercisesToEdit.precautions);
-				}
-				break;
-			case 'viewExercise':
-				setActionUS('viewExercise');
-				break
-			default:
-				break;
 		}
 
-	},);
+		if(action===undefined){
+			setActionUS({action:'newExercise',openFrom:"home"});
+		}
+		else
+		{
+			setActionUS(action)
+
+			switch (action.action) {
+				case 'editExercise':					
+					if (action.exercise !== undefined) {
+						cargarCamposEjercicioAEditar(action.exercise)}
+					break
+				case 'viewExercise':
+					if (action.exercise !== undefined) {
+						cargarCamposEjercicioAEditar(action.exercise)}
+					break
+				default:
+					break;
+			}
+		}		
+
+	},[]);
+
+	const cargarCamposEjercicioAEditar = exercise => {
+		setExcerciseToEditODeleteUS(exercise);
+
+		setExerciseNameUS(exercise.name);
+		setExerciseTypeUS(exercise.exerciseType._id);
+		setExerciseDifficultUS(exercise.difficulty._id);
+		setExcersiseBodyPartsUS(exercise.bodyParts.map(part => part._id));
+		setExerciseMuclesUS(exercise.muscles.map(part => part._id));
+		setExerciseEquipmentsUS(exercise.equipments.map(part => part._id));
+		setExerciseNameUS(exercise.name);
+		setExerciseExplanationUS(exercise.explanation);
+		setExercisePrecautionsUS(exercise.precautions);
+	};
 
 	const handleChangeExerciseNameInput = event => {
 		setExerciseNameUS(event.target.value);
@@ -184,7 +174,6 @@ export default function NewExercisePage(props) {
 	const handleClickSaveButton = async () => {
 		if(checkForm())
 		{
-			console.log("Estamos por guardar")
 		 const exerciseToSave={}
    
 		  exerciseToSave.name = exerciseNameUS
@@ -199,15 +188,26 @@ export default function NewExercisePage(props) {
 		  exerciseToSave.video = "https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC5cFhphukFT-h24CWqwycbNcvVutbJeGlueYS4zwVmBzJVyiaz-QHbRCufuJJKe8_5SEVROgxGAKk9YlzyGlxBFX-Uyl0CIxObBSXxvow"
 
 
-		  switch (actionUS) {
+		  switch (actionUS.action) {
 			case "newExercise":
 				const responseSave= await saveExercise(exerciseToSave)
 				if(responseSave.status===200)
 				{
-					console.log("se guardo con exito")
-					navigate("/dashboard/exercises",
-					{state:{action:"listExercise",typeMessage:"saveSuccessfully"}}
-				 ) 
+					if (actionUS.openFrom === 'listExercise' ) {
+						actionUS.setOpendialog(false)
+						actionUS.setMessageAlert("Se guardó correctamente el ejercicio")	
+						actionUS.openAlert(true)
+						actionUS.severityAler("success")
+					}
+					else if(actionUS.openFrom === 'home' ||  actionUS.openFrom === 'formExercise'){
+						navigate('/dashboard/newexercise', {
+							action: {
+								action: 'newExercise',
+								openFrom:"formExercise",
+								typeMessage: 'saveSuccessfully',
+							},
+						});
+					}
 				}
 				else{
 					console.log("no se guardo con exito")
@@ -220,6 +220,12 @@ export default function NewExercisePage(props) {
 				if(responseUpdate.status===200)
 				{
 					console.log("se actualizo con exito")
+					if (actionUS.openFrom === 'listExercise' ) {
+						actionUS.setOpendialog(false)
+						actionUS.setMessageAlert("Se actualizó correctamente el ejercicio")	
+						actionUS.openAlert(true)
+						actionUS.severityAler("success")
+					}
 				}
 				else{
 					console.log("no se actualizó con exito")
@@ -309,7 +315,7 @@ export default function NewExercisePage(props) {
 	
 
 	const getTitle = () => {	
-		switch (actionUS) {
+		switch (actionUS.action) {
 			case 'newExercise':
 				return "Nuevo Ejercicio";
 			case 'editExercise':

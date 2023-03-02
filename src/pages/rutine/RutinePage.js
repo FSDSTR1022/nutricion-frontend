@@ -1,38 +1,38 @@
-/* eslint-disable import/extensions */
-/* eslint-disable arrow-body-style */
-/* eslint-disable react/jsx-boolean-value */
 /* eslint-disable no-plusplus */
 /* eslint-disable array-callback-return */
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { filter } from 'lodash';
+import { sentenceCase } from 'change-case';
+import { useState,useEffect } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
+// @mui
 import {
-	FormControlLabel,
-	Switch,
-	FormControl,
-	InputLabel,
-	Select,
-	MenuItem,
+	Card,
+	Stack,
+	Container,
+	Typography,
 	Accordion,
 	AccordionSummary,
-	Typography,
-	AccordionDetails,
-	Button,
-	Table,
-	TableHead,
-	TableBody,
-	TableRow,
-	TableCell,
 	Box,
 	TextField,
 	InputAdornment,
+	AccordionDetails,
+	Table,
+	TableHead,
+	TableRow,
+	TableCell,
+	TableBody,
+	Chip,
+	Dialog,
+	DialogTitle,
 	DialogContent,
 	DialogActions,
-	Dialog,
-	Chip,
-	DialogTitle,
 	DialogContentText,
+	Button,
+	FormControl
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -42,15 +42,18 @@ import EditIcon from '@mui/icons-material/Edit';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CheckIcon from '@mui/icons-material/Check';
-import ListExcersice from '../excercise/listExercise';
-import {
-	saveRutine,
-	getRutines,
-	updateRutine,
-	deleteexercise,
-} from '../../services/exerciseService';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import { saveRutine, getRutines, updateRutine, deleteexercise } from '../../services/routineService';
+import ListExcersice from "../excercise/ExerciseListPage";
+import FormExercise from '../excercise/NewExercisePage';
 
-const NewRoutine = props => {
+
+
+export default function RutinePage(props) {
+
+	const [isLoading, setIsLoading] = useState(true);
+
 	const [accordionExpanded, setAccordionExpanded] = useState(false);
 	const [rutineUS, setRutineUS] = useState({
 		name: '',
@@ -64,7 +67,7 @@ const NewRoutine = props => {
 	const [openSelectexerciseDialog, setOpenSelectexerciseDialog] =useState(false);
 	const [errorTextFild, setErrorTextFild] = useState(false);
 
-	const [exerciseToAddUS, setexerciseToAddUS] = useState([]);
+	const [exerciseToAddUS, setExerciseToAddUS] = useState([]);
 	const [roundDondeSeAgregaraElEjercicioUS,SetRoundDondeSeAgregaraElEjercicioUS,] = useState('');
 
 	const [rutineNameUS, setRutineNameUS] = useState('Fuerza');
@@ -82,7 +85,7 @@ const NewRoutine = props => {
 		useState(false); /* para mostrar el dialogo de confirmación */
 	const [confirmationAcionUS, setConfirmationAcionUS] = useState('');
 
-	const [actionUS, setActionUS] = useState({});
+	const [actionUS, setActionUS] = useState();
 
 	const [exerciseToDeleteOrEdit, setExerciseToDeleteOrEdit] = useState('');
 
@@ -90,20 +93,29 @@ const NewRoutine = props => {
 
 	const { action } = props;
 
+	const theme = useTheme();
+	const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-		setActionUS('editRutine');
-
-		switch (action) {
+	useEffect(() => {
+		switch (actionUS) {
+			case undefined: 
 			case 'newRutine':
+				setActionUS('newRutine');
+				setIsLoading(false)
 				break;
-			case 'showRutine':
+			case 'viewRutine':
+				setActionUS('viewRutine');
+				setIsLoading(false)
 				break;
 			case 'editRutine':
+				setActionUS('editRutine');
+				setIsLoading(false)
 				break;
 			default:
 				break;
 		}
-	
+
+	},[])
 
 	const handleChangeAcordion = roundOrder => (event, isExpanded) => {
 		if (roundOrder === 'addRound') {
@@ -276,7 +288,7 @@ const NewRoutine = props => {
 			round,
 		})); */
 
-		setexerciseToAddUS([]);
+		setExerciseToAddUS([]);
 		SetRoundDondeSeAgregaraElEjercicioUS('');
 		setOpenSelectexerciseDialog(false);
 
@@ -284,7 +296,7 @@ const NewRoutine = props => {
 	};
 
 	const handleCloseDialog = () => {
-		setexerciseToAddUS([]);
+		setExerciseToAddUS([]);
 		setOpenSelectexerciseDialog(false);
 	};
 
@@ -373,19 +385,6 @@ const NewRoutine = props => {
 			errors = false;
 		}
 		return errors;
-	};
-
-	const getTitle = () => {
-		switch (actionUS) {
-			case 'newRutine':
-				return <h1>Nueva Rutina de Ejercicios</h1>;
-			case 'showRutine':
-				return <h1>Rutina de Ejercicios</h1>;
-			case 'editRutine':
-				return <h1>Modificar Rutina de Ejercicios</h1>;
-			default:
-					return <></>
-		}
 	};
 
 	const mostrarDay = () => {
@@ -478,12 +477,11 @@ const NewRoutine = props => {
 						) : null}
 						<TableBody>
 							{round.exercises !== undefined
-								? round.exercises.map(exercise => {
-										return (
+								? round.exercises.map(exercise => (
 											<>
 												<TableRow
 													key={exercise.exerciseName}
-													hover={true}
+													hover
 													sx={{
 														'&:last-child td, &:last-child th': { border: 0 },
 													}}
@@ -530,13 +528,12 @@ const NewRoutine = props => {
 													)}
 												</TableRow>
 											</>
-										);
-								  })
+										))
 								: ''}
 							{actionUS !== 'showRutine' ? (
 								<TableRow
 									key='agregarEjercicio'
-									hover={true}
+									hover
 									sx={{
 										border: 0,
 									}} /* sx={{ '&:last-child td, &:last-child th': { border: 0 } }} */
@@ -604,15 +601,43 @@ const NewRoutine = props => {
 				</Dialog>
 			</>
 		);
+	};	
+
+	const getTitle = () => {
+		switch (actionUS) {
+			case 'newRutine':
+				return "Nueva Rutina de Ejercicios";
+			case 'viewRutine':
+				return "Rutina de Ejercicios";
+			case 'editRutine':
+				return "Modificar Rutina de Ejercicios";
+			default:
+				return <></>
+		}
 	};
 
-	return (
-		<>
-			<div>{getTitle()}</div>
-			<div>
-				<h2>Paciente: {pacientUS.name}</h2>
-
-				{actionUS === 'editRutine' ? (
+	if(!isLoading){
+		return (
+			<>
+				<Helmet>
+					<title>{getTitle()} </title>
+				</Helmet>
+	
+				<Container>
+					<Stack
+						direction='row'
+						alignItems='center'
+						justifyContent='space-between'
+						mb={5}>
+						<Typography
+							variant='h4'
+							gutterBottom>
+							{getTitle()}
+						</Typography>					
+					</Stack>
+	
+					<Card>
+					{actionUS === 'editRutine' ? (
 					<>
 						<LocalizationProvider dateAdapter={AdapterDayjs}>
 							<DatePicker
@@ -679,12 +704,8 @@ const NewRoutine = props => {
 						<span></span>
 					)}
 				</FormControl> */}
-			</div>
-
-			<div>
-				{rutineUS.rounds.map(round => {
-					return getAccordions(round);
-				})}
+				<div>
+				{rutineUS.rounds.map(round => getAccordions(round))}
 
 				{actionUS !== 'showRutine' ? (
 					<Accordion
@@ -725,17 +746,18 @@ const NewRoutine = props => {
 					open={openSelectexerciseDialog}
 					onClose={handleCloseDialog}
 					aria-labelledby='alert-dialog-title'
-					aria-describedby='alert-dialog-description'
-					/* fullWidth="xl" */
+					aria-describedby='alert-dialog-description'				
 					maxWidth='xl'
 				>
 					<DialogContent>
 						<ListExcersice
-							action={'selectexercise'}
-							exercisesToAdd={exerciseToAddUS}
-							setexerciseToAdd={setexerciseToAddUS}
-							setOpenDialog={setOpenSelectexerciseDialog}
-						 />
+							action={{
+								action:'selectExercise',
+								exercisesToAdd:exerciseToAddUS,
+								setExerciseToAdd:setExerciseToAddUS,
+								setOpenDialog:setOpenSelectexerciseDialog
+							}}
+						/>
 					</DialogContent>
 					<DialogActions>
 						<Button value='cancelar' onClick={handleCloseDialog}>
@@ -752,8 +774,14 @@ const NewRoutine = props => {
 			<Button value='agregar' onClick={mostrarDay}>
 				Agregar ejercicios
 			</Button>
-		</>
-	);
-};
+	
+					</Card>
+				</Container>
+	
+	
+			</>
+		);
 
-export default NewRoutine;
+	}
+	
+}

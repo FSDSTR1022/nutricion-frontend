@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-else-return */
 /* eslint-disable no-unused-vars */
 import { Helmet } from 'react-helmet-async';
@@ -26,8 +27,16 @@ import {
 	Chip,
 	Box,
 	ImageList,
-	ImageListItem
+	ImageListItem,
+	DialogContent,
+	Dialog,
+	DialogActions,
+	Snackbar,
+	Alert,
+	DialogTitle,
+	DialogContentText,
 } from '@mui/material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 // components
 import Label from '../../components/label';
 import Iconify from '../../components/iconify';
@@ -36,7 +45,12 @@ import Scrollbar from '../../components/scrollbar';
 import { UserListHead, UserListToolbar } from '../../sections/@dashboard/user';
 
 import { getAllUsers } from '../../services/userService';
-import { getExercise, getExerciseAtribut } from '../../services/exerciseService';
+import {
+	getExercise,
+	getExerciseAtribut,
+	deleteExercise,
+} from '../../services/exerciseService';
+import FormExercise from './NewExercisePage';
 
 // ----------------------------------------------------------------------
 
@@ -85,8 +99,8 @@ function applySortFilter(array, comparator, query) {
 	return stabilizedThis.map(el => el[0]);
 }
 
-export default function ExerciseListPage() {
-	const [open, setOpen] = useState(null);
+export default function ExerciseListPage(props) {
+	const [openUS, setOpenUS] = useState(null);
 	const [page, setPage] = useState(0);
 	const [order, setOrder] = useState('asc');
 	const [selected, setSelected] = useState([]);
@@ -94,45 +108,73 @@ export default function ExerciseListPage() {
 	const [filterName, setFilterName] = useState('');
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 
-	const [isLoadingExerciseUS, setIsLoadingExerciseUS] =useState(true); 
+	const [isLoadingExerciseUS, setIsLoadingExerciseUS] = useState(true);
 	const [isLoadingexerciseAtributes, setIsLoadingExcersiceAtributes] = useState(true);
 	const [exerciseListUS, setexerciseListUS] = useState([]);
 	const [exerciseAtributsUS, setExerciseAtributesUS] = useState();
 
+	const [openConfirmationUS, setOpenConfirmationUS] =
+		useState(false); /* para el dialogo de confirmación de eliminar ejercicio */
+
+	const [openFormDialogUS, setOpenFormDialogUS] =
+		useState(false); /* para abrir el dialog del formulario de ejercicios */
+	const [actionToDoInexerciseDialog, setActionToDoInexerciseDialogUS] =
+		useState(); /* para saber que accion se realiza con el formulario de ejercicio */
+	const [exerciseToDeleteOrEdit, setExerciseToDeleteOrEditUS] =
+		useState(''); /* para pasar el ejercicio al formulario de ejercicio */
+	const [resultActinDialogUs, setResultActinDialogUS] =
+		useState(''); /* para saber el resultado del formulario de ejercicio */
+
+	const [openAlertUS, setOpenAlertUS] = useState(false);
+	const [messageAlertUS, setMessageAlertUS] = useState('');
+	const [severityAlertUS, setSeverityAlertUS] = useState('success');
+
+	const [renderUS, setRenderizadoUS] = useState(false);
+
+	const [actionUS, setActionUS] = useState();
+
+	const {action} = props;
+
+
+
 	useEffect(() => {
-		if (exerciseListUS.length === 0) {
-			
-			const getExe = async () => {
-				const responseExercise = await getExercise();
-				if (responseExercise.status === 200) {
-					console.log("response.data: ",responseExercise.data)
-					setexerciseListUS(responseExercise.data);
-					setIsLoadingExerciseUS(false);
-				}
-			};
-
-			const getEA =async ()=>{
-				const response = await getExerciseAtribut()
-				if(response.status===200)
-				{
-					console.log("Exercises Atribut: ",response.data)
-					setExerciseAtributesUS(response.data);
-					setIsLoadingExcersiceAtributes(false);
-				}			
-			}
-			getEA()
-			getExe();
-			
+		switch (actionUS) {
+			case undefined:
+			case 'listExercise':
+				setActionUS('listExercise');
+				break;
+			case 'selectExercise':
+				setActionUS('selectExercise');
+				break;
+			default:
+				break;
 		}
-	},);
 
+		const getExe = async () => {
+			const responseExercise = await getExercise();
+			if (responseExercise.status === 200) {
+				setexerciseListUS(responseExercise.data);
+				setIsLoadingExerciseUS(false);
+			}
+		};
 
-	const handleOpenMenu = event => {
-		setOpen(event.currentTarget);
+		const getEA = async () => {
+			const response = await getExerciseAtribut();
+			if (response.status === 200) {
+				setExerciseAtributesUS(response.data);
+				setIsLoadingExcersiceAtributes(false);
+			}
+		};
+		getEA();
+		getExe();
+	}, [openAlertUS]);
+
+	const handleOpenMenu = id => event => {
+		setOpenUS({ _id: id, target: event.currentTarget });
 	};
 
 	const handleCloseMenu = () => {
-		setOpen(null);
+		setOpenUS(null);
 	};
 
 	const handleRequestSort = (event, property) => {
@@ -195,11 +237,151 @@ export default function ExerciseListPage() {
 
 	const isNotFound = !filteredPatients.length && !!filterName;
 
-	if (!isLoadingExerciseUS && !isLoadingexerciseAtributes)  {
+	const handleClickNewExweciseButton = event => {
+		setActionToDoInexerciseDialogUS('newExercise');
+		setOpenFormDialogUS(true);
+	};
+
+	const handleCloseFormExerciseDialog = evento => {
+		setOpenFormDialogUS(false);
+	};
+
+	const handleClickViewExercise = (event, id) => {
+		const excersiceToView = exerciseListUS.find(element => element._id === id);
+
+		setActionToDoInexerciseDialogUS('viewExercise');
+		setExerciseToDeleteOrEditUS(excersiceToView);
+		setOpenFormDialogUS(true);
+		setOpenUS(null)
+	};
+
+	const handleClickEditExercise = (event, id) => {
+		const excersiceToEdit = exerciseListUS.find(element => element._id === id);
+
+		setActionToDoInexerciseDialogUS('editExercise');
+		setExerciseToDeleteOrEditUS(excersiceToEdit);
+		setOpenFormDialogUS(true);
+		setOpenUS(null)
+	};
+
+	const handleClickDelteExercise = (event, id) => {
+		const excersiceToDelete = exerciseListUS.find(
+			exercise => exercise._id === id
+		);
+
+		setExerciseToDeleteOrEditUS(excersiceToDelete);
+		setOpenConfirmationUS(true);
+		setOpenUS(null)
+	};
+
+	const getDialogContent = () => {
+		switch (actionToDoInexerciseDialog) {
+			case 'newExercise':
+				return (
+					<FormExercise
+						action={{
+							action: 'newExercise',
+							openFrom: 'listExercise',							
+							setOpendialog: setOpenFormDialogUS,
+							setMessageAlert: setMessageAlertUS,
+							openAlert: setOpenAlertUS,
+							severityAler: setSeverityAlertUS,
+						}}
+					/>
+				);
+
+			case 'editExercise':
+				return (
+					<FormExercise
+						action={{
+							action: 'editExercise',
+							openFrom: 'listExercise',
+							exercise: exerciseToDeleteOrEdit,
+							setOpendialog: setOpenFormDialogUS,
+							setMessageAlert: setMessageAlertUS,
+							openAlert: setOpenAlertUS,
+							severityAler: setSeverityAlertUS,
+						}}
+					/>
+				);
+
+			case 'viewExercise':
+				return (
+					<FormExercise
+						action={{
+							action: 'viewExercise',
+							openFrom: 'listExercise',
+							exercise: exerciseToDeleteOrEdit,
+							setOpendialog: setOpenFormDialogUS,
+							setMessageAlert: setMessageAlertUS,
+							openAlert: setOpenAlertUS,
+							severityAler: setSeverityAlertUS,
+						}}
+					/>
+				);
+
+			default:
+				return <h1>No se puede cargar el formulario</h1>;
+		}
+	};
+
+	const handleCloseMessage = (event, reason) => {
+		if (reason === 'clickaway') {
+			setOpenAlertUS(false);
+		}
+		setOpenAlertUS(false);
+	};
+
+	const handleClickAceptDelteExercise = async event => {
+		if (event.target.value === 'aceptar') {
+			const responseSave = await deleteExercise(exerciseToDeleteOrEdit);
+			if (responseSave.status === 200) {
+				setMessageAlertUS('Se elimino el ejercicio');
+				setSeverityAlertUS('success');
+				setOpenAlertUS(true);
+				setOpenConfirmationUS(false);
+				setOpenUS(null);
+				setExerciseToDeleteOrEditUS('')
+			} else {
+				setMessageAlertUS('No se pudo eliminar el ejercicio');
+				setSeverityAlertUS('error');
+				setOpenAlertUS(true);
+				setOpenConfirmationUS(false);
+				setOpenUS(null);
+				setExerciseToDeleteOrEditUS('')
+			}
+		} else if (event.target.value === 'cancelar') {
+			setOpenConfirmationUS(false);
+			setExerciseToDeleteOrEditUS();
+			setOpenUS(null);
+			setExerciseToDeleteOrEditUS('')
+		}
+
+		if (renderUS) {
+			setRenderizadoUS(false);
+		} else {
+			setRenderizadoUS(true);
+		}
+	};
+
+	
+
+	const getTitle = () => {
+		switch (actionUS) {
+			case 'selectExercise':
+				return 'Seleccionar ejercicio';
+			case 'listExercise':
+				return 'Ejercicios';
+			default:
+				return <></>;
+		}
+	};
+
+	if (!isLoadingExerciseUS && !isLoadingexerciseAtributes) {
 		return (
 			<>
 				<Helmet>
-					<title> Pacientes </title>
+					<title> {getTitle()} </title>
 				</Helmet>
 
 				<Container>
@@ -211,11 +393,12 @@ export default function ExerciseListPage() {
 						<Typography
 							variant='h4'
 							gutterBottom>
-							Ejercicios
+							{getTitle()}
 						</Typography>
 						<Button
 							variant='contained'
-							startIcon={<Iconify icon='eva:plus-fill' />}>
+							startIcon={<Iconify icon='eva:plus-fill' />}
+							onClick={handleClickNewExweciseButton}>
 							Nuevo Ejercicio
 						</Button>
 					</Stack>
@@ -226,7 +409,7 @@ export default function ExerciseListPage() {
 							filterName={filterName}
 							onFilterName={handleFilterByName}
 						/>
-						
+
 						<Scrollbar>
 							<TableContainer sx={{ minWidth: 800 }}>
 								<Table>
@@ -246,7 +429,17 @@ export default function ExerciseListPage() {
 												page * rowsPerPage + rowsPerPage
 											)
 											.map(row => {
-												const { _id,name, difficulty, exerciseType, bodyParts, muscles, equipments, photo, video} = row;
+												const {
+													_id,
+													name,
+													difficulty,
+													exerciseType,
+													bodyParts,
+													muscles,
+													equipments,
+													photo,
+													video,
+												} = row;
 												const selectedExercise = selected.indexOf(name) !== -1;
 
 												return (
@@ -337,8 +530,7 @@ export default function ExerciseListPage() {
 															</Box>
 														</TableCell>
 														<TableCell align='center'>
-															{														
-
+															{
 																<ImageList
 																	sx={{ width: 100, height: 50 }}
 																	cols={1}
@@ -359,7 +551,7 @@ export default function ExerciseListPage() {
 															<IconButton
 																size='large'
 																color='inherit'
-																onClick={handleOpenMenu}>
+																onClick={handleOpenMenu(_id)}>
 																<Iconify icon={'eva:more-vertical-fill'} />
 															</IconButton>
 														</TableCell>
@@ -418,8 +610,9 @@ export default function ExerciseListPage() {
 				</Container>
 
 				<Popover
-					open={Boolean(open)}
-					anchorEl={open}
+					/* open={Boolean(openUS.target)} */
+					open={openUS !== null}
+					anchorEl={openUS === null ? openUS : openUS.target}
 					onClose={handleCloseMenu}
 					anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
 					transformOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -434,7 +627,26 @@ export default function ExerciseListPage() {
 							},
 						},
 					}}>
-					<MenuItem>
+					<MenuItem
+						onClick={event =>
+							handleClickViewExercise(
+								event,
+								openUS === null ? openUS : openUS._id
+							)
+						}>
+						<Iconify
+							icon={'eva:eye-fill'}
+							sx={{ mr: 2 }}
+						/>
+						Ver
+					</MenuItem>
+					<MenuItem
+						onClick={event =>
+							handleClickEditExercise(
+								event,
+								openUS === null ? openUS : openUS._id
+							)
+						}>
 						<Iconify
 							icon={'eva:edit-fill'}
 							sx={{ mr: 2 }}
@@ -442,7 +654,14 @@ export default function ExerciseListPage() {
 						Modificar
 					</MenuItem>
 
-					<MenuItem sx={{ color: 'error.main' }}>
+					<MenuItem
+						sx={{ color: 'error.main' }}
+						onClick={event =>
+							handleClickDelteExercise(
+								event,
+								openUS === null ? openUS : openUS._id
+							)
+						}>
 						<Iconify
 							icon={'eva:trash-2-outline'}
 							sx={{ mr: 2 }}
@@ -450,6 +669,69 @@ export default function ExerciseListPage() {
 						Borrar
 					</MenuItem>
 				</Popover>
+
+{/* ///////////////////// Dialogo de confirmación  ///////////////////// */}
+				<Dialog
+					open={openConfirmationUS}
+					onClose={handleClickDelteExercise}
+					aria-labelledby='alert-dialog-title'
+					aria-describedby='alert-dialog-description'>
+					<DialogTitle id='alert-dialog-title'>
+						{'Eliminar Ejercicio'}
+					</DialogTitle>
+					<DialogContent>
+						<DialogContentText id='alert-dialog-description'>
+							¿Desea eliminar el ejercicio?
+						</DialogContentText>
+					</DialogContent>
+					<DialogActions>
+						<Button
+							value='aceptar'
+							onClick={handleClickAceptDelteExercise}>
+							Aceptar
+						</Button>
+						<Button
+							value='cancelar'
+							onClick={handleClickAceptDelteExercise}>
+							{' '}
+							Cancelar{' '}
+						</Button>
+					</DialogActions>
+				</Dialog>
+
+{/* ///////////////////// Dialogo nuevo ejercicio  ///////////////////// */}
+				<Dialog
+					open={openFormDialogUS}
+					onClose={handleCloseFormExerciseDialog}
+					aria-labelledby='alert-dialog-title'
+					aria-describedby='alert-dialog-description'
+					/* fullWidth="xl" */
+					maxWidth='xl'>
+					<DialogContent>{getDialogContent()}</DialogContent>
+					<DialogActions>
+						<Button
+							value='cancelar'
+							onClick={handleCloseFormExerciseDialog}>
+							{' '}
+							Cancelar{' '}
+						</Button>
+					</DialogActions>
+				</Dialog>
+
+{/* ///////////////////// Mensaje de resultado  ///////////////////// */}
+
+				<Snackbar
+					open={openAlertUS}
+					autoHideDuration={6000}
+					onClose={handleCloseMessage}>
+					<Alert
+						variant='filled'
+						onClose={handleCloseMessage}
+						severity={severityAlertUS}
+						sx={{ width: '100%' }}>
+						{messageAlertUS}
+					</Alert>
+				</Snackbar>
 			</>
 		);
 	} else {
