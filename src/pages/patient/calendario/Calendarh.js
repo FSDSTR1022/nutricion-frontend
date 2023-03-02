@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useEffect, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
-
+import { useTheme } from '@mui/material/styles';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
@@ -12,9 +12,11 @@ import { Container } from '@mui/material';
 import PopRutina from './PopRutina';
 import NewRutina from './NewRutina';
 
-const rutineUrl = 'http://localhost:3000/Rutinas?id=';
+const rutineUrl = 'http://localhost:3000/Rutines?id=';
 
 const Calendarh = () => {
+	const theme = useTheme();
+
 	const [rutinasList, setRutinasList] = useState([]);
 	const [rutina, setRutina] = useState({});
 	const [openEvent, setOpenEvent] = useState(false);
@@ -26,7 +28,7 @@ const Calendarh = () => {
 	}, []);
 
 	const getMeassures = () => {
-		fetch('http://localhost:3000/rutinas/')
+		fetch('http://localhost:3000/rutines/')
 			.then(res => res.json())
 			.then(data => {
 				setRutinasList(data);
