@@ -20,7 +20,7 @@ import {
 	Paper,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useTheme, styled } from '@mui/material/styles';
+import { useTheme, styled  } from '@mui/material/styles';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { ConstructionOutlined } from '@mui/icons-material';
 import {
@@ -30,11 +30,11 @@ import {
 } from '../../services/exerciseService';
 
 const FormExercise = props => {
-	return (
-		<>
-			<h1>Nuevo Paciente</h1>
-		</>
-	);
+
+    return (<>
+    <h1>Nuevo Paciente</h1>
+    </>)
+
 };
 
 export default FormExercise;

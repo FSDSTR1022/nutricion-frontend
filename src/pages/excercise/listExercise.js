@@ -54,7 +54,7 @@ const ExercisesList = props => {
 	const [isLoadingexerciseAtributes, setIsLoadingExcersiceAtributes] =
 		useState(true);
 	const [exerciseListUS, setexerciseListUS] = useState();
-	const [exerciseAtributsUS, setexerciseAtributesUS] = useState([]);
+	const [exerciseAtributsUS, setexerciseAtributesUS] = useState();
 	const [exerciseBodyPartsSearchUS, setExcersiseBodyPartsSearchUS] = useState(
 		[]
 	);
@@ -127,17 +127,56 @@ const ExercisesList = props => {
 			default:
 				break;
 		}
+/* 
+		console.log(exerciseListUS)
+		console.log(exerciseAtributsUS) */
+	
 
-		getExerciseAtribut().then(data => {
+
+		const getExercise =async ()=>{
+			const response = await getExercise()
+			if(response.status===200)
+			{
+				console.log("Exercises: ",response.data)
+				setexerciseListUS(response.data);
+				setIsLoadingExcersice(false);
+			}			
+		}
+		
+		const getExerciseAtribut =async ()=>{
+			const response = await getExerciseAtribut()
+			if(response.status===200)
+			{
+				console.log("Exercises Atribut: ",response.data)
+				setexerciseAtributesUS(response.data);
+				setIsLoadingExcersice(false);
+			}			
+		}
+		
+		if(exerciseListUS===undefined)
+		{
+			getExercise()
+		}
+
+		if(exerciseAtributsUS===undefined)
+		{
+			getExerciseAtribut()
+		}
+
+		
+		
+
+		/* getExerciseAtribut().then(data => {
 			setexerciseAtributesUS(data);
 			setIsLoadingExcersiceAtributes(false);
-		});
+		}); */
 
-		getExercise().then(data => {
+		/* getExercise().then(data => {
+			console.log()
 			setexerciseListUS(data);
 			setIsLoadingExcersice(false);
 		});
-
+ */
 		if (resultActinDialog === 'saveSuccessfully') {
 			setOpenAlertUS(true);
 			setMessageAlertUS('Se guardo el ejercicio correctamente');
@@ -205,17 +244,17 @@ const ExercisesList = props => {
 					}
 				})
 				.catch(error => {
-					setMessageAlertUS(`No se pudo eliminar el ejercicio${error}`);
+					setMessageAlertUS(`No se pudo eliminar el ejercicio${  error}`);
 					setSeverityAlertUS('error'); /* "success":"error" */
 					setOpenAlertUS(true);
 				});
 
-			setOpenConfirmationUS(false);
+			setOpenConfirmationUS(false);			
 			return;
 		} else if (event.target.value === 'cancelar') {
 			setOpenConfirmationUS(false);
 			setexerciseToDeleteOrEdit();
-
+			
 			return;
 		}
 	};
@@ -488,9 +527,7 @@ const ExercisesList = props => {
 	const drawTableRows = exercise => {
 		const cells = (
 			<>
-				<TableCell
-					component='th'
-					scope='row'>
+				<TableCell component='th' scope='row'>
 					{exercise.name}{' '}
 				</TableCell>
 				<TableCell align='center'>
@@ -502,30 +539,21 @@ const ExercisesList = props => {
 				<TableCell align='center'>
 					<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
 						{exercise.bodyParts.map(part => (
-							<Chip
-								key={part._id}
-								label={part.bodyPart}
-							/>
+							<Chip key={part._id} label={part.bodyPart} />
 						))}
 					</Box>
 				</TableCell>
 				<TableCell>
 					<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
 						{exercise.muscles.map(muscle => (
-							<Chip
-								key={muscle._id}
-								label={muscle.muscle}
-							/>
+							<Chip key={muscle._id} label={muscle.muscle} />
 						))}
 					</Box>
 				</TableCell>
 				<TableCell align='center'>
 					<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
 						{exercise.equipments.map(equipment => (
-							<Chip
-								key={equipment._id}
-								label={equipment.exerciseEquipment}
-							/>
+							<Chip key={equipment._id} label={equipment.exerciseEquipment} />
 						))}
 					</Box>
 				</TableCell>
@@ -537,7 +565,8 @@ const ExercisesList = props => {
 				<TableRow
 					key={exercise._id}
 					hover
-					sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+					sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+				>
 					{cells}
 					<TableCell align='center'>{exercise.explanation}</TableCell>
 					<TableCell align='center'>{exercise.precautions}</TableCell>
@@ -546,8 +575,9 @@ const ExercisesList = props => {
 							<ImageList
 								sx={{ width: 250, height: 100 }}
 								cols={2}
-								rowHeight={100}>
-								<ImageListItem key={`photo:${exercise._id}`}>
+								rowHeight={100}
+							>
+								<ImageListItem key={`photo:${  exercise._id}`}>
 									<img
 										src={exercise.photo}
 										srcSet={exercise.photo}
@@ -555,7 +585,7 @@ const ExercisesList = props => {
 										loading='Cargando...'
 									/>
 								</ImageListItem>
-								<ImageListItem key={`video:${exercise._id}`}>
+								<ImageListItem key={`video:${  exercise._id}`}>
 									<img
 										src={exercise.video}
 										srcSet={exercise.video}
@@ -574,13 +604,12 @@ const ExercisesList = props => {
 				<TableRow
 					key={exercise._id}
 					hover
-					sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+					sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+				>
 					{cells}
 					{getIconsRow(exercise)}
 					<TableCell align='center'>
-						<FormControl
-							sx={{ m: 1, minWidth: 50 }}
-							value={exercise._id}>
+						<FormControl sx={{ m: 1, minWidth: 50 }} value={exercise._id}>
 							<TextField
 								id='standard-basic'
 								label='Repeticiones / tiempo'
@@ -652,9 +681,7 @@ const ExercisesList = props => {
 
 	const getMenuItemQuitarSeleccion = () => {
 		return (
-			<MenuItem
-				value={'quitarSeleccion'}
-				sx={{ color: 'red' }}>
+			<MenuItem value={'quitarSeleccion'} sx={{ color: 'red' }}>
 				Quitar Selección
 			</MenuItem>
 		);
@@ -667,7 +694,7 @@ const ExercisesList = props => {
 			case 'listexercise':
 				return <h1>Listado de Ejercicios</h1>;
 			default:
-				return <></>;
+				return <></>
 		}
 	};
 
@@ -740,14 +767,13 @@ const ExercisesList = props => {
 
 				{/* ///////////////////// BOTON NUEVO  ///////////////////// */}
 				<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-					<Button
-						variant='contained'
-						onClick={handleClickMostrarEjercicios}>
+					<Button variant='contained' onClick={handleClickMostrarEjercicios}>
 						Mostar Ejercicios a agregar
 					</Button>
 					<Button
 						variant='contained'
-						onClick={handleClickNewexerciseDialogButton}>
+						onClick={handleClickNewexerciseDialogButton}
+					>
 						Nuevo Ejercicio Dialogo
 					</Button>
 				</div>
@@ -782,14 +808,13 @@ const ExercisesList = props => {
 									id='excersiceTypeSearch'
 									label='Tipo de Ejercicio '
 								/>
-							}>
+							}
+						>
 							{exerciseTypeSearchUS.length !== 0
 								? getMenuItemQuitarSeleccion()
 								: null}
 							{exerciseAtributsUS.exerciseType.map((te, id) => (
-								<MenuItem
-									value={te.exerciseType}
-									key={id}>
+								<MenuItem value={te.exerciseType} key={id}>
 									{te.exerciseType}
 								</MenuItem>
 							))}
@@ -812,14 +837,13 @@ const ExercisesList = props => {
 									id='dificultadEjercicioSelect'
 									label='Dificultad de Ejercicio'
 								/>
-							}>
+							}
+						>
 							{exerciseDifficulSearchtUS.length !== 0
 								? getMenuItemQuitarSeleccion()
 								: null}
 							{exerciseAtributsUS.exerciseDifficult.map((de, id) => (
-								<MenuItem
-									value={de.exerciseDifficulty}
-									key={id}>
+								<MenuItem value={de.exerciseDifficulty} key={id}>
 									{de.exerciseDifficulty}
 								</MenuItem>
 							))}
@@ -856,7 +880,8 @@ const ExercisesList = props => {
 									))}
 								</Box>
 							)}
-							MenuProps={MenuProps}>
+							MenuProps={MenuProps}
+						>
 							{exerciseBodyPartsSearchUS.length !== 0
 								? getMenuItemQuitarSeleccion()
 								: null}
@@ -868,7 +893,8 @@ const ExercisesList = props => {
 										part.bodyPart,
 										exerciseBodyPartsSearchUS,
 										theme
-									)}>
+									)}
+								>
 									{part.bodyPart}
 								</MenuItem>
 							))}
@@ -904,7 +930,8 @@ const ExercisesList = props => {
 									))}
 								</Box>
 							)}
-							MenuProps={MenuProps}>
+							MenuProps={MenuProps}
+						>
 							{exerciseMuclesSearchUS.length !== 0
 								? getMenuItemQuitarSeleccion()
 								: null}
@@ -916,7 +943,8 @@ const ExercisesList = props => {
 										muscle.muscle,
 										exerciseMuclesSearchUS,
 										theme
-									)}>
+									)}
+								>
 									{muscle.muscle}
 								</MenuItem>
 							))}
@@ -933,10 +961,7 @@ const ExercisesList = props => {
 							value={exerciseEquipmentsSearchUS}
 							onChange={handleChangeEquipamiento}
 							input={
-								<OutlinedInput
-									id='select-multiple-chip'
-									label='Equipamiento'
-								/>
+								<OutlinedInput id='select-multiple-chip' label='Equipamiento' />
 							}
 							renderValue={selected => (
 								<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
@@ -953,7 +978,8 @@ const ExercisesList = props => {
 									))}
 								</Box>
 							)}
-							MenuProps={MenuProps}>
+							MenuProps={MenuProps}
+						>
 							{exerciseEquipmentsSearchUS.length !== 0
 								? getMenuItemQuitarSeleccion()
 								: null}
@@ -965,7 +991,8 @@ const ExercisesList = props => {
 										equipment.exerciseEquipment,
 										exerciseEquipmentsSearchUS,
 										theme
-									)}>
+									)}
+								>
 									{equipment.exerciseEquipment}
 								</MenuItem>
 							))}
@@ -976,9 +1003,7 @@ const ExercisesList = props => {
 				{/* ///////////////////// TABLA  ///////////////////// */}
 				<div>
 					<TableContainer component={Paper}>
-						<Table
-							sx={{ minWidth: 650 }}
-							aria-label='simple table'>
+						<Table sx={{ minWidth: 650 }} aria-label='simple table'>
 							<TableHead>{getTableHead()}</TableHead>
 							<TableBody>
 								{exerciseListUS.map(exercise => {
@@ -996,12 +1021,14 @@ const ExercisesList = props => {
 					<Snackbar
 						open={openAlertUS}
 						autoHideDuration={6000}
-						onClose={handleCloseMessage}>
+						onClose={handleCloseMessage}
+					>
 						<Alert
 							variant='filled'
 							onClose={handleCloseMessage}
 							severity={severityAlertUS}
-							sx={{ width: '100%' }}>
+							sx={{ width: '100%' }}
+						>
 							{messageAlertUS}
 						</Alert>
 					</Snackbar>
@@ -1012,7 +1039,8 @@ const ExercisesList = props => {
 					open={openConfirmationUS}
 					onClose={handleClickDelteexercise}
 					aria-labelledby='alert-dialog-title'
-					aria-describedby='alert-dialog-description'>
+					aria-describedby='alert-dialog-description'
+				>
 					<DialogTitle id='alert-dialog-title'>
 						{'Eliminar Ejercicio'}
 					</DialogTitle>
@@ -1022,14 +1050,10 @@ const ExercisesList = props => {
 						</DialogContentText>
 					</DialogContent>
 					<DialogActions>
-						<Button
-							value='aceptar'
-							onClick={handleClickAceptDelteExercise}>
+						<Button value='aceptar' onClick={handleClickAceptDelteExercise}>
 							Aceptar
 						</Button>
-						<Button
-							value='cancelar'
-							onClick={handleClickAceptDelteExercise}>
+						<Button value='cancelar' onClick={handleClickAceptDelteExercise}>
 							{' '}
 							Cancelar{' '}
 						</Button>
@@ -1044,12 +1068,11 @@ const ExercisesList = props => {
 						aria-labelledby='alert-dialog-title'
 						aria-describedby='alert-dialog-description'
 						/* fullWidth="xl" */
-						maxWidth='xl'>
+						maxWidth='xl'
+					>
 						<DialogContent>{getDialogContent()}</DialogContent>
 						<DialogActions>
-							<Button
-								value='cancelar'
-								onClick={handleCloseformexerciseDialog}>
+							<Button value='cancelar' onClick={handleCloseformexerciseDialog}>
 								{' '}
 								Cancelar{' '}
 							</Button>

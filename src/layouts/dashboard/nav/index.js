@@ -3,7 +3,13 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 // @mui
 import { styled, alpha } from '@mui/material/styles';
-import { Box, Link, Drawer, Typography, Avatar } from '@mui/material';
+import {
+	Box,
+	Link,
+	Drawer,
+	Typography,
+	Avatar,
+} from '@mui/material';
 // mock
 import account from '../../../_mock/account';
 // hooks
@@ -88,6 +94,7 @@ export default function Nav({ openNav, onCloseNav }) {
 			<NavSection data={navConfig} />
 
 			<Box sx={{ flexGrow: 1 }} />
+			
 		</Scrollbar>
 	);
 

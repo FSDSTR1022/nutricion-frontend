@@ -1,8 +1,8 @@
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-unused-vars */
-const URLPaciente = 'http://localhost:3000/patients';
+const URLPaciente = 'http://localhost:3000/users';
 
-const savePatient = data => {
+const savePatient =  (data) => {
 	const patient = JSON.stringify(data);
 	const requestOptions = {
 		method: 'POST',
@@ -20,7 +20,7 @@ const savePatient = data => {
 		});
 };
 
-const getPatients = () => {
+const getPatients =  () => {
 	return fetch(URLPaciente)
 		.then(response => response.json())
 		.then(jsonData => {
@@ -31,7 +31,7 @@ const getPatients = () => {
 		});
 };
 
-const updatePatient = data => {
+const updatePatient = (data) =>{
 	const routine = JSON.stringify(data);
 
 	const requestOptions = {
@@ -52,7 +52,7 @@ const updatePatient = data => {
 		});
 };
 
-const deletePatient = data => {
+const deletePatient =  (data) => {
 	const routine = JSON.stringify(data);
 
 	const requestOptions = {
@@ -70,4 +70,4 @@ const deletePatient = data => {
 		});
 };
 
-module.exports = { savePatient, getPatients, updatePatient, deletePatient };
+module.exports = { savePatient, getPatients,  updatePatient, deletePatient };

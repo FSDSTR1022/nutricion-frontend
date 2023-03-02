@@ -31,12 +31,12 @@ import Scrollbar from '../../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../../sections/@dashboard/user';
 
-import { getPatients } from '../../services/patientService';
+import { getAllUsers } from '../../services/userService';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-	{ id: 'name', label: 'Name', alignRight: false },
+	{ id: 'name', label: 'Nombre', alignRight: false },
 	{ id: 'lastName', label: 'Apellido', alignRight: false },
 	{ id: 'phone', label: 'Teléfono', alignRight: false },
 	{ id: 'dni', label: 'DNI', alignRight: false },
@@ -87,16 +87,22 @@ export default function PatientPage() {
 	const [filterName, setFilterName] = useState('');
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 
-	const [isLoadingPatients, setIsLoadingPatients] = useState(true);
+	const [isLoadingPatients, setIsLoadingPatients] =useState(true); 
 	const [patientsListUS, setPatientListUS] = useState([]);
-	const [exerciseListUS, setexerciseListUS] = useState();
 
 	useEffect(() => {
-		getPatients().then(patients => {
-			setPatientListUS(patients);
-			setIsLoadingPatients(false);
-		});
+		
+		const getAllusers =async ()=>{
+			const response = await getAllUsers()
+			if(response.status===200)
+			{
+				setPatientListUS(response.data)
+				setIsLoadingPatients(false)
+			}			
+		}
+		getAllusers()
 	}, []);
+
 
 	const handleOpenMenu = event => {
 		setOpen(event.currentTarget);
@@ -187,7 +193,7 @@ export default function PatientPage() {
 						<Button
 							variant='contained'
 							startIcon={<Iconify icon='eva:plus-fill' />}>
-							nuevo Paciente
+							Nuevo Paciente
 						</Button>
 					</Stack>
 

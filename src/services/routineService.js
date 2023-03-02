@@ -2,8 +2,7 @@
 /* eslint-disable no-unused-vars */
 const URLRutina = 'http://localhost:3000/Rutinas';
 
-const saveRutine = data => {
-	console.log('PARAMETRO: ', data);
+const saveRutine =  (data) => {
 	const routine = JSON.stringify(data);
 	const requestOptions = {
 		method: 'POST',
@@ -21,7 +20,7 @@ const saveRutine = data => {
 		});
 };
 
-const getRutines = () => {
+const getRutines =  () => {
 	return fetch(URLRutina)
 		.then(response => ({ data: response.json(), status: response.status }))
 		.then(jsonData => {
@@ -34,7 +33,7 @@ const getRutines = () => {
 		});
 };
 
-const updateRutine = data => {
+const updateRutine = (data) =>{
 	const routine = JSON.stringify(data);
 
 	const requestOptions = {
@@ -43,7 +42,7 @@ const updateRutine = data => {
 		body: routine,
 	};
 
-	const URLEjercicio2 = `http://localhost:3001/Rutina?id=${data._id}`;
+	const URLEjercicio2 = `http://localhost:3001/Rutina?id=${  data._id}`;
 
 	return fetch(URLEjercicio2, requestOptions)
 		.then(response => ({ data: response.json(), status: response.status }))
@@ -55,7 +54,7 @@ const updateRutine = data => {
 		});
 };
 
-const deleteexercise = data => {
+const deleteRutine =  (data) => {
 	const routine = JSON.stringify(data);
 
 	const requestOptions = {
@@ -64,7 +63,7 @@ const deleteexercise = data => {
 		body: routine,
 	};
 
-	const URLEjercicio2 = `http://localhost:3001/Rutina?id=${data._id}`;
+	const URLEjercicio2 = `http://localhost:3001/Rutina?id=${  data._id}`;
 
 	return fetch(URLEjercicio2, requestOptions)
 		.then(response => ({ data: response.json(), status: response.status }))
@@ -73,4 +72,4 @@ const deleteexercise = data => {
 		});
 };
 
-module.exports = { saveRutine, getRutines, updateRutine, deleteexercise };
+module.exports = { saveRutine, getRutines, updateRutine, deleteRutine };
