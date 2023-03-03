@@ -31,7 +31,6 @@ import Scrollbar from '../../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../../sections/@dashboard/user';
 
-
 import { getPatients } from '../../services/patientService';
 
 // ----------------------------------------------------------------------
@@ -88,10 +87,7 @@ export default function PatientPage() {
 	const [filterName, setFilterName] = useState('');
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 
-	const [isLoadingPatients, setIsLoadingPatients] =
-		useState(
-			true
-		); 
+	const [isLoadingPatients, setIsLoadingPatients] = useState(true);
 	const [patientsListUS, setPatientListUS] = useState([]);
 	const [exerciseListUS, setexerciseListUS] = useState();
 

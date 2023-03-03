@@ -20,7 +20,7 @@ import {
 	Paper,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useTheme, styled  } from '@mui/material/styles';
+import { useTheme, styled } from '@mui/material/styles';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { ConstructionOutlined } from '@mui/icons-material';
 import {
@@ -45,7 +45,7 @@ const FormExercise = props => {
 
 	const [errorsUS, setErrorsUS] = useState({});
 
-	const [actionUS, setActionUS] = useState("newExercise");
+	const [actionUS, setActionUS] = useState('newExercise');
 	const [excerciseToEditODeleteUS, setExcerciseToEditODeleteUS] = useState();
 
 	const { action, exercisesToAdd, setexerciseToAdd } = props;
@@ -67,7 +67,6 @@ const FormExercise = props => {
 	};
 
 	useEffect(() => {
-
 		if (action === undefined) {
 			setActionUS('newexercise');
 		} else {
@@ -88,7 +87,7 @@ const FormExercise = props => {
 
 				if (state.excercise !== undefined) {
 					setExcerciseToEditODeleteUS(state.excercise);
-		
+
 					setExerciseNameUS(state.excercise.name);
 					setExerciseTypeUS(state.excercise.exerciseType._id);
 					setExerciseDifficultUS(state.excercise.difficulty._id);
@@ -116,7 +115,7 @@ const FormExercise = props => {
 			default:
 				break;
 		}
-	},);
+	});
 
 	const handleChangeExerciseNameInput = event => {
 		setExerciseNameUS(event.target.value);
@@ -182,7 +181,6 @@ const FormExercise = props => {
 		exerciseToSave.video =
 			'https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC5cFhphukFT-h24CWqwycbNcvVutbJeGlueYS4zwVmBzJVyiaz-QHbRCufuJJKe8_5SEVROgxGAKk9YlzyGlxBFX-Uyl0CIxObBSXxvow';
 
-		
 		switch (actionUS) {
 			case 'newExercise':
 				saveExercise(exerciseToSave);
@@ -194,8 +192,8 @@ const FormExercise = props => {
 				navigate('/Ejercicios');
 				break;
 			default:
-					break
-		}		
+				break;
+		}
 	};
 
 	const checkForm = () => {
@@ -222,7 +220,6 @@ const FormExercise = props => {
 	}));
 
 	const getTitle = () => {
-	
 		switch (actionUS) {
 			case 'newexercise':
 				return <h1>Nuevo Ejercicio</h1>;
@@ -231,7 +228,7 @@ const FormExercise = props => {
 			default:
 				return <></>;
 		}
-	}
+	};
 
 	if (!isLoading) {
 		return (
@@ -254,9 +251,10 @@ const FormExercise = props => {
 						{errorsUS.ExcersiceName ? (
 							<span style={{ color: 'red' }}>Este campo es obligatorio</span>
 						) : (
-							<span><></></span>
+							<span>
+								<></>
+							</span>
 						)}
-						
 					</FormControl>
 
 					{/* Selectot Tipo Ejercicio */}
@@ -357,8 +355,6 @@ const FormExercise = props => {
 						</Select>
 					</FormControl>
 
-					
-
 					{/* Selector musculos Ejercicio */}
 					<FormControl
 						required
@@ -406,8 +402,6 @@ const FormExercise = props => {
 							))}
 						</Select>
 					</FormControl>
-
-					
 
 					<FormControl
 						required
@@ -457,8 +451,6 @@ const FormExercise = props => {
 						</Select>
 					</FormControl>
 
-
-
 					<FormControl
 						fullWidth
 						sx={{ m: 1 }}>
@@ -472,7 +464,6 @@ const FormExercise = props => {
 							onChange={handleChangeExplanationInput}
 						/>
 					</FormControl>
-
 
 					<FormControl
 						fullWidth
@@ -492,7 +483,6 @@ const FormExercise = props => {
 					</FormControl>
 					<br />
 					<br />
-
 
 					<Box sx={{ flexGrow: 1 }}>
 						<Grid
@@ -549,8 +539,6 @@ const FormExercise = props => {
 						</Grid>
 					</Box>
 
-				
-
 					<Button
 						variant='contained'
 						onClick={() => {
@@ -561,8 +549,7 @@ const FormExercise = props => {
 				</form>
 			</div>
 		);
-	} 
-	else {
+	} else {
 		return <h1>CARGANDO</h1>;
 	}
 };
