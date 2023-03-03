@@ -6,21 +6,13 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interaction from '@fullcalendar/interaction';
 // import { formatRange } from "@fullcalendar/core";
-import { styled } from '@mui/material/styles';
+// import { styled } from '@mui/material/styles';
 import { Stack, Typography } from '@mui/material';
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
+// import Button from '@mui/material/Button';
+// import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import PopRutina from './PopRutina';
 import NewRutina from './NewRutina';
-
-const Item = styled(Paper)(({ theme }) => ({
-	backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-	...theme.typography.body2,
-	padding: theme.spacing(1),
-	textAlign: 'center',
-	color: theme.palette.text.secondary,
-}));
 
 // import moment from "moment";
 
@@ -32,8 +24,8 @@ const patientExample = {
 	_id: '63fa12a0e716c52f3d4274ad',
 	email: 'federicogomdyezz.ar@gmail.com',
 	password: '',
-	name: 'Toto Wolf',
-	lastName: 'Paciente 1',
+	name: 'Toto',
+	lastName: 'Wolf',
 	dni: 'Y12345S',
 	phone: '1234556678',
 	isActive: true,
@@ -51,6 +43,7 @@ const Calendarh = () => {
 	const [rutina, setRutina] = useState({});
 	const [openEvent, setOpenEvent] = useState(false);
 	const [openNewRutina, setOpenNewRutina] = useState(false);
+	const [action, setAction] = useState('');
 	const [dateNewRutina, setDateNewRutina] = useState(new Date());
 	const [nextRutinas, setNextRutinas] = useState([]);
 
@@ -91,6 +84,7 @@ const Calendarh = () => {
 	const handleEventClick = id => {
 		const rutina = rutinasList.filter(e => e._id === id).pop();
 		setRutina(rutina);
+		setAction('editRutine');
 		setOpenEvent(true);
 	};
 
@@ -101,6 +95,7 @@ const Calendarh = () => {
 
 	const handleDateClick = date => {
 		setDateNewRutina(date);
+		setAction('newRutine');
 		setOpenNewRutina(true);
 	};
 
@@ -152,8 +147,8 @@ const Calendarh = () => {
 							variant='h4'
 							sx={{ justifyContent: 'space' }}>
 							{`Last Name: ${patientExample.lastName}`}
-							<span>{`DNI: ${patientExample.dni}`}</span>
 						</Typography>
+						<Typography variant='h4'>{`DNI: ${patientExample.dni}`}</Typography>
 						<Typography variant='h4'>
 							{`Paciente desde: ${patientExample.createdAt}`}
 						</Typography>
@@ -164,7 +159,7 @@ const Calendarh = () => {
 						</Typography>
 						<Typography
 							variant='h4'
-							textAlign='center'>
+							textAlign='left'>
 							{`Nombre: ${nextRutinas[0]?.name}`}
 						</Typography>
 						<Typography
@@ -209,11 +204,13 @@ const Calendarh = () => {
 
 			<PopRutina
 				handleEventClose={handleEventClose}
+				action={action}
 				openEvent={openEvent}
 				rutina={rutina}
 			/>
 			<NewRutina
 				handleNewRutinaClose={handleNewRutinaClose}
+				action={action}
 				openNewRutina={openNewRutina}
 				dateNewRutina={dateNewRutina}
 			/>
