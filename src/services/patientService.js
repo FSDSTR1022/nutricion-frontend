@@ -1,6 +1,6 @@
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-unused-vars */
-const URLPaciente = 'http://localhost:3000/patients';
+const URLPaciente = 'http://localhost:3000/users';
 
 const savePatient = data => {
 	const patient = JSON.stringify(data);

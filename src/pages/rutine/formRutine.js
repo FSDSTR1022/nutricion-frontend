@@ -50,7 +50,7 @@ import {
 	deleteexercise,
 } from '../../services/exerciseService';
 
-const NewRoutine = props => {
+const FormRutine = props => {
 	const [accordionExpanded, setAccordionExpanded] = useState(false);
 	const [rutineUS, setRutineUS] = useState({
 		name: '',
@@ -96,10 +96,11 @@ const NewRoutine = props => {
 
 	setActionUS('editRutine');
 
+	setActionUS('newRutine');
+
 	switch (action) {
 		case 'newRutine':
 			break;
-
 		case 'showRutine':
 			break;
 		case 'editRutine':
@@ -788,4 +789,4 @@ const NewRoutine = props => {
 	);
 };
 
-export default NewRoutine;
+export default FormRutine;

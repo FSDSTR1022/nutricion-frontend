@@ -61,6 +61,11 @@ const navConfig = [
 		path: '/dashboard/pacients',
 		icon: icon('ic_user'),
 	},
+	{
+		title: 'Nueva Rutina',
+		path: '/dashboard/newroutine',
+		icon: icon('ic_user'),
+	},
 ];
 
 export default navConfig;

@@ -1,35 +1,67 @@
-const URLUsers = 'http://localhost:3000/users';
+/* eslint-disable arrow-body-style */
+const UserURL = 'http://localhost:3000';
 
-const loginUser = async data => {
-	const userInfo = JSON.stringify(data);
+const getAllUsers = async () => {
+	const result = await fetch(`${UserURL}/users/all`);
+	const parseResult = await result.json();
+	const data = { data: parseResult, status: result.status };
+
+	return data;
+};
+
+const createUser = data => {
+	const patient = JSON.stringify(data);
 	const requestOptions = {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: userInfo,
+		body: patient,
 	};
 
-	try {
-		const res = await fetch(`${URLUsers}/login`, requestOptions);
-		return res.json();
-	} catch (error) {
-		return error;
-	}
+	return fetch(UserURL, requestOptions)
+		.then(response => ({ data: response.json(), status: response.status }))
+		.then(data => {
+			return data;
+		})
+		.catch(error => {
+			return error;
+		});
 };
 
-const registerUser = async data => {
-	const userInfo = JSON.stringify(data);
+const updateUser = data => {
+	const user = JSON.stringify(data);
+
 	const requestOptions = {
-		method: 'POST',
+		method: 'PUT',
 		headers: { 'Content-Type': 'application/json' },
-		body: userInfo,
+		body: user,
 	};
 
-	try {
-		const res = await fetch(URLUsers, requestOptions);
-		return res.json();
-	} catch (error) {
-		return error;
-	}
+	return fetch(`${UserURL}/users/${data._id}`, requestOptions)
+		.then(response => ({ data: response.json(), status: response.status }))
+		.then(data => {
+			return data;
+		})
+		.catch(error => {
+			return error;
+		});
 };
 
-module.exports = { registerUser, loginUser };
+const getUserByProfesional = data => {
+	return fetch(`${UserURL}/users/${data._id}`)
+		.then(response => ({ data: response.json(), status: response.status }))
+		.then(jsonData => {
+			console.log(jsonData);
+			return jsonData;
+		})
+		.catch(e => {
+			console.log(e);
+			return e;
+		});
+};
+
+module.exports = {
+	getAllUsers,
+	createUser,
+	updateUser,
+	getUserByProfesional,
+};

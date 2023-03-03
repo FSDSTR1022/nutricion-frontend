@@ -54,7 +54,7 @@ const ExercisesList = props => {
 	const [isLoadingexerciseAtributes, setIsLoadingExcersiceAtributes] =
 		useState(true);
 	const [exerciseListUS, setexerciseListUS] = useState();
-	const [exerciseAtributsUS, setexerciseAtributesUS] = useState([]);
+	const [exerciseAtributsUS, setexerciseAtributesUS] = useState();
 	const [exerciseBodyPartsSearchUS, setExcersiseBodyPartsSearchUS] = useState(
 		[]
 	);
@@ -127,17 +127,56 @@ const ExercisesList = props => {
 			default:
 				break;
 		}
+/* 
+		console.log(exerciseListUS)
+		console.log(exerciseAtributsUS) */
+	
 
-		getExerciseAtribut().then(data => {
+
+		const getExercise =async ()=>{
+			const response = await getExercise()
+			if(response.status===200)
+			{
+				console.log("Exercises: ",response.data)
+				setexerciseListUS(response.data);
+				setIsLoadingExcersice(false);
+			}			
+		}
+		
+		const getExerciseAtribut =async ()=>{
+			const response = await getExerciseAtribut()
+			if(response.status===200)
+			{
+				console.log("Exercises Atribut: ",response.data)
+				setexerciseAtributesUS(response.data);
+				setIsLoadingExcersice(false);
+			}			
+		}
+		
+		if(exerciseListUS===undefined)
+		{
+			getExercise()
+		}
+
+		if(exerciseAtributsUS===undefined)
+		{
+			getExerciseAtribut()
+		}
+
+		
+		
+
+		/* getExerciseAtribut().then(data => {
 			setexerciseAtributesUS(data);
 			setIsLoadingExcersiceAtributes(false);
-		});
+		}); */
 
-		getExercise().then(data => {
+		/* getExercise().then(data => {
+			console.log()
 			setexerciseListUS(data);
 			setIsLoadingExcersice(false);
 		});
-
+ */
 		if (resultActinDialog === 'saveSuccessfully') {
 			setOpenAlertUS(true);
 			setMessageAlertUS('Se guardo el ejercicio correctamente');
