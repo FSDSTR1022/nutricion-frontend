@@ -109,7 +109,8 @@ export default function ExerciseListPage(props) {
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 
 	const [isLoadingExerciseUS, setIsLoadingExerciseUS] = useState(true);
-	const [isLoadingexerciseAtributes, setIsLoadingExcersiceAtributes] = useState(true);
+	const [isLoadingexerciseAtributes, setIsLoadingExcersiceAtributes] =
+		useState(true);
 	const [exerciseListUS, setexerciseListUS] = useState([]);
 	const [exerciseAtributsUS, setExerciseAtributesUS] = useState();
 
@@ -133,9 +134,7 @@ export default function ExerciseListPage(props) {
 
 	const [actionUS, setActionUS] = useState();
 
-	const {action} = props;
-
-
+	const { action } = props;
 
 	useEffect(() => {
 		switch (actionUS) {
@@ -252,7 +251,7 @@ export default function ExerciseListPage(props) {
 		setActionToDoInexerciseDialogUS('viewExercise');
 		setExerciseToDeleteOrEditUS(excersiceToView);
 		setOpenFormDialogUS(true);
-		setOpenUS(null)
+		setOpenUS(null);
 	};
 
 	const handleClickEditExercise = (event, id) => {
@@ -261,7 +260,7 @@ export default function ExerciseListPage(props) {
 		setActionToDoInexerciseDialogUS('editExercise');
 		setExerciseToDeleteOrEditUS(excersiceToEdit);
 		setOpenFormDialogUS(true);
-		setOpenUS(null)
+		setOpenUS(null);
 	};
 
 	const handleClickDelteExercise = (event, id) => {
@@ -271,7 +270,7 @@ export default function ExerciseListPage(props) {
 
 		setExerciseToDeleteOrEditUS(excersiceToDelete);
 		setOpenConfirmationUS(true);
-		setOpenUS(null)
+		setOpenUS(null);
 	};
 
 	const getDialogContent = () => {
@@ -281,7 +280,7 @@ export default function ExerciseListPage(props) {
 					<FormExercise
 						action={{
 							action: 'newExercise',
-							openFrom: 'listExercise',							
+							openFrom: 'listExercise',
 							setOpendialog: setOpenFormDialogUS,
 							setMessageAlert: setMessageAlertUS,
 							openAlert: setOpenAlertUS,
@@ -341,20 +340,20 @@ export default function ExerciseListPage(props) {
 				setOpenAlertUS(true);
 				setOpenConfirmationUS(false);
 				setOpenUS(null);
-				setExerciseToDeleteOrEditUS('')
+				setExerciseToDeleteOrEditUS('');
 			} else {
 				setMessageAlertUS('No se pudo eliminar el ejercicio');
 				setSeverityAlertUS('error');
 				setOpenAlertUS(true);
 				setOpenConfirmationUS(false);
 				setOpenUS(null);
-				setExerciseToDeleteOrEditUS('')
+				setExerciseToDeleteOrEditUS('');
 			}
 		} else if (event.target.value === 'cancelar') {
 			setOpenConfirmationUS(false);
 			setExerciseToDeleteOrEditUS();
 			setOpenUS(null);
-			setExerciseToDeleteOrEditUS('')
+			setExerciseToDeleteOrEditUS('');
 		}
 
 		if (renderUS) {
@@ -363,8 +362,6 @@ export default function ExerciseListPage(props) {
 			setRenderizadoUS(true);
 		}
 	};
-
-	
 
 	const getTitle = () => {
 		switch (actionUS) {
@@ -670,7 +667,7 @@ export default function ExerciseListPage(props) {
 					</MenuItem>
 				</Popover>
 
-{/* ///////////////////// Dialogo de confirmación  ///////////////////// */}
+				{/* ///////////////////// Dialogo de confirmación  ///////////////////// */}
 				<Dialog
 					open={openConfirmationUS}
 					onClose={handleClickDelteExercise}
@@ -699,7 +696,7 @@ export default function ExerciseListPage(props) {
 					</DialogActions>
 				</Dialog>
 
-{/* ///////////////////// Dialogo nuevo ejercicio  ///////////////////// */}
+				{/* ///////////////////// Dialogo nuevo ejercicio  ///////////////////// */}
 				<Dialog
 					open={openFormDialogUS}
 					onClose={handleCloseFormExerciseDialog}
@@ -718,7 +715,7 @@ export default function ExerciseListPage(props) {
 					</DialogActions>
 				</Dialog>
 
-{/* ///////////////////// Mensaje de resultado  ///////////////////// */}
+				{/* ///////////////////// Mensaje de resultado  ///////////////////// */}
 
 				<Snackbar
 					open={openAlertUS}

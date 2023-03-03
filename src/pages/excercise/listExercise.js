@@ -127,44 +127,35 @@ const ExercisesList = props => {
 			default:
 				break;
 		}
-/* 
+		/* 
 		console.log(exerciseListUS)
 		console.log(exerciseAtributsUS) */
-	
 
-
-		const getExercise =async ()=>{
-			const response = await getExercise()
-			if(response.status===200)
-			{
-				console.log("Exercises: ",response.data)
+		const getExercise = async () => {
+			const response = await getExercise();
+			if (response.status === 200) {
+				console.log('Exercises: ', response.data);
 				setexerciseListUS(response.data);
 				setIsLoadingExcersice(false);
-			}			
-		}
-		
-		const getExerciseAtribut =async ()=>{
-			const response = await getExerciseAtribut()
-			if(response.status===200)
-			{
-				console.log("Exercises Atribut: ",response.data)
+			}
+		};
+
+		const getExerciseAtribut = async () => {
+			const response = await getExerciseAtribut();
+			if (response.status === 200) {
+				console.log('Exercises Atribut: ', response.data);
 				setexerciseAtributesUS(response.data);
 				setIsLoadingExcersice(false);
-			}			
-		}
-		
-		if(exerciseListUS===undefined)
-		{
-			getExercise()
+			}
+		};
+
+		if (exerciseListUS === undefined) {
+			getExercise();
 		}
 
-		if(exerciseAtributsUS===undefined)
-		{
-			getExerciseAtribut()
+		if (exerciseAtributsUS === undefined) {
+			getExerciseAtribut();
 		}
-
-		
-		
 
 		/* getExerciseAtribut().then(data => {
 			setexerciseAtributesUS(data);

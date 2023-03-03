@@ -78,7 +78,6 @@ export default function UserListToolbar({
 						</InputAdornment>
 					}
 				/>
-				
 			)}
 
 			{numSelected > 0 ? (
