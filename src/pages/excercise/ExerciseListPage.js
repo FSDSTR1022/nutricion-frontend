@@ -138,16 +138,12 @@ export default function ExerciseListPage(props) {
 
 
 	useEffect(() => {
-		switch (actionUS) {
-			case undefined:
-			case 'listExercise':
-				setActionUS('listExercise');
-				break;
-			case 'selectExercise':
-				setActionUS('selectExercise');
-				break;
-			default:
-				break;
+
+		if(action===undefined)		{
+			setActionUS({action:'listExercise'});
+		}
+		else{
+			setActionUS(action)			
 		}
 
 		const getExe = async () => {
@@ -367,7 +363,7 @@ export default function ExerciseListPage(props) {
 	
 
 	const getTitle = () => {
-		switch (actionUS) {
+		switch (actionUS.action) {
 			case 'selectExercise':
 				return 'Seleccionar ejercicio';
 			case 'listExercise':
