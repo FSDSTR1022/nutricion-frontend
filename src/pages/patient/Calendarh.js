@@ -7,13 +7,12 @@ import listPlugin from '@fullcalendar/list';
 import interaction from '@fullcalendar/interaction';
 // import { formatRange } from "@fullcalendar/core";
 import { styled } from '@mui/material/styles';
-import { Typography } from '@mui/material';
-import { Stack } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
+import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import PopRutina from './PopRutina';
 import NewRutina from './NewRutina';
-import { space } from '@chakra-ui/react';
 
 const Item = styled(Paper)(({ theme }) => ({
 	backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -53,6 +52,7 @@ const Calendarh = () => {
 	const [openEvent, setOpenEvent] = useState(false);
 	const [openNewRutina, setOpenNewRutina] = useState(false);
 	const [dateNewRutina, setDateNewRutina] = useState(new Date());
+	const [nextRutinas, setNextRutinas] = useState([]);
 
 	useEffect(() => {
 		getMeassures();
@@ -63,9 +63,19 @@ const Calendarh = () => {
 			.then(res => res.json())
 			.then(data => {
 				setRutinasList(data);
+				const nextR = data.filter(rut => Date.parse(rut.day) >= today);
+				const nextRs = nextR.sort(
+					(a, b) => Date.parse(a.day) - Date.parse(b.day)
+				);
+
+				setNextRutinas(nextRs);
 			})
+
 			.catch(err => console.log('error', err));
+		handleNextRutines();
 	};
+
+	const today = Date.now() - 86400000;
 
 	const events = [];
 	rutinasList.map(ob =>
@@ -96,6 +106,13 @@ const Calendarh = () => {
 
 	const handleNewRutinaClose = () => {
 		setOpenNewRutina(false);
+	};
+
+	const handleNextRutines = async () => {
+		const nextR = await rutinasList.filter(rut => Date.parse(rut.day) >= today);
+
+		console.log('array de proximas', nextR);
+		setNextRutinas(nextR);
 	};
 
 	function putDropEvent(id, date) {
@@ -140,8 +157,33 @@ const Calendarh = () => {
 						<Typography variant='h4'>
 							{`Paciente desde: ${patientExample.createdAt}`}
 						</Typography>
-
-						<Item>Item 3</Item>
+						<Typography
+							variant='h3'
+							textAlign='center'>
+							{`Próxima Rutina`}
+						</Typography>
+						<Typography
+							variant='h4'
+							textAlign='center'>
+							{`Nombre: ${nextRutinas[0]?.name}`}
+						</Typography>
+						<Typography
+							variant='h4'
+							textAlign='left'>
+							{`Fecha:  ${nextRutinas[0]?.day}`}
+						</Typography>
+						<Typography
+							variant='h4'
+							textAlign='left'>
+							{`Rounds: ${nextRutinas[0]?.rounds.length}`}
+						</Typography>
+						<Typography
+							variant='h4'
+							textAlign='left'>
+							{`Estimated time = ${
+								nextRutinas[0]?.rounds.length * 12 + 8
+							} minutes`}
+						</Typography>
 					</Stack>
 				</Grid>
 				<Grid
