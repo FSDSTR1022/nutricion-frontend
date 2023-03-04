@@ -33,7 +33,6 @@ const loginUser = async data => {
 		body: userInfo,
 	};
 
-	console.log('ENV', process.env.REACT_APP_BACK_URL);
 	try {
 		const response = await fetch(
 			`${process.env.REACT_APP_BACK_URL}/users/login`,
