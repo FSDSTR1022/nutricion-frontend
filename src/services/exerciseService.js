@@ -1,15 +1,15 @@
 /* eslint-disable arrow-body-style */
-const URL= 'http://localhost:3000'
+const URL = 'http://localhost:3000';
 
-const getExerciseAtribut = async() =>{
-	const result = await fetch(`${URL}/exercises/exerciseAtributes`)
-	const parseResult = await result.json()
-	const data = {data: parseResult, status: result.status}
+const getExerciseAtribut = async () => {
+	const result = await fetch(`${URL}/exercises/exerciseAtributes`);
+	const parseResult = await result.json();
+	const data = { data: parseResult, status: result.status };
 
-	return data
+	return data;
 };
 
-const saveExercise = async (data) =>{
+const saveExercise = async data => {
 	const exercise = JSON.stringify(data);
 	const requestOptions = {
 		method: 'POST',
@@ -17,24 +17,21 @@ const saveExercise = async (data) =>{
 		body: exercise,
 	};
 
-	const result = await fetch(`${URL}/exercises`,requestOptions)
-	const parseResult = await result.json()
-	const data2 = {data: parseResult, status: result.status}
-	return data2
-
+	const result = await fetch(`${URL}/exercises`, requestOptions);
+	const parseResult = await result.json();
+	const data2 = { data: parseResult, status: result.status };
+	return data2;
 };
 
 const getExercise = async () => {
+	const result = await fetch(`${URL}/exercises`);
+	const parseResult = await result.json();
+	const data = { data: parseResult, status: result.status };
 
-	const result = await fetch(`${URL}/exercises`)
-	const parseResult = await result.json()
-	const data = {data: parseResult, status: result.status}
-
-	return data
-
+	return data;
 };
 
-const updateExercise = async (data) => {
+const updateExercise = async data => {
 	const exercise = JSON.stringify(data);
 
 	const requestOptions = {
@@ -43,13 +40,13 @@ const updateExercise = async (data) => {
 		body: exercise,
 	};
 
-	const result = await fetch(`${URL}/exercises?id=${data._id}`, requestOptions)
-	const parseResult = await result.json()
-	const data2 = {data: parseResult, status: result.status}
-	return data2
+	const result = await fetch(`${URL}/exercises?id=${data._id}`, requestOptions);
+	const parseResult = await result.json();
+	const data2 = { data: parseResult, status: result.status };
+	return data2;
 };
 
-const deleteExercise = async (data) => {
+const deleteExercise = async data => {
 	const exercise = JSON.stringify(data);
 
 	const requestOptions = {
@@ -58,11 +55,14 @@ const deleteExercise = async (data) => {
 		body: exercise,
 	};
 
-	const result = await fetch(`${URL}/exercises?_id=${data._id}`, requestOptions)
-	const parseResult = await result.json()
-	const data2 = {data: parseResult, status: result.status}
-	return data2
-}
+	const result = await fetch(
+		`${URL}/exercises?_id=${data._id}`,
+		requestOptions
+	);
+	const parseResult = await result.json();
+	const data2 = { data: parseResult, status: result.status };
+	return data2;
+};
 
 module.exports = {
 	getExerciseAtribut,

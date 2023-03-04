@@ -1,13 +1,13 @@
 /* eslint-disable arrow-body-style */
 const UserURL = 'http://localhost:3000';
 
-const getAllUsers = async () =>{
-    const result = await fetch(`${UserURL}/users/all`)
-	const parseResult = await result.json()
-	const data = {data: parseResult, status: result.status}
+const getAllUsers = async () => {
+	const result = await fetch(`${UserURL}/users/all`);
+	const parseResult = await result.json();
+	const data = { data: parseResult, status: result.status };
 
-	return data
-}
+	return data;
+};
 
 const createUser = data => {
 	const patient = JSON.stringify(data);
@@ -27,7 +27,7 @@ const createUser = data => {
 		});
 };
 
-const updateUser = (data) =>{
+const updateUser = data => {
 	const user = JSON.stringify(data);
 
 	const requestOptions = {
@@ -46,8 +46,7 @@ const updateUser = (data) =>{
 		});
 };
 
-const getUserByProfesional = (data) => {
-
+const getUserByProfesional = data => {
 	return fetch(`${UserURL}/users/${data._id}`)
 		.then(response => ({ data: response.json(), status: response.status }))
 		.then(jsonData => {
@@ -60,12 +59,9 @@ const getUserByProfesional = (data) => {
 		});
 };
 
-
-
-
 module.exports = {
-    getAllUsers,
-    createUser,
-    updateUser,
-    getUserByProfesional
-  };
+	getAllUsers,
+	createUser,
+	updateUser,
+	getUserByProfesional,
+};

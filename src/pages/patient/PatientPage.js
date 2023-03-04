@@ -25,7 +25,6 @@ import {
 	TablePagination,
 } from '@mui/material';
 // components
-import Label from '../../components/label';
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
 // sections
@@ -87,22 +86,19 @@ export default function PatientPage() {
 	const [filterName, setFilterName] = useState('');
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 
-	const [isLoadingPatients, setIsLoadingPatients] =useState(true); 
+	const [isLoadingPatients, setIsLoadingPatients] = useState(true);
 	const [patientsListUS, setPatientListUS] = useState([]);
 
 	useEffect(() => {
-		
-		const getAllusers =async ()=>{
-			const response = await getAllUsers()
-			if(response.status===200)
-			{
-				setPatientListUS(response.data)
-				setIsLoadingPatients(false)
-			}			
-		}
-		getAllusers()
+		const getAllusers = async () => {
+			const response = await getAllUsers();
+			if (response.status === 200) {
+				setPatientListUS(response.data);
+				setIsLoadingPatients(false);
+			}
+		};
+		getAllusers();
 	}, []);
-
 
 	const handleOpenMenu = event => {
 		setOpen(event.currentTarget);
