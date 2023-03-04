@@ -1,4 +1,4 @@
-const URLPaciente = `${process.env.BASE_URL}/users`;
+const URLPaciente = `${process.env.REACT_APP_BACK_URL}/users`;
 
 const savePatient = async data => {
 	const patient = JSON.stringify(data);
@@ -35,7 +35,7 @@ const updatePatient = async data => {
 		body: routine,
 	};
 
-	const URLEjercicio2 = `${process.env.BASE_URL}/patients/${data._id}`;
+	const URLEjercicio2 = `${process.env.REACT_APP_BACK_URL}/patients/${data._id}`;
 
 	try {
 		const response = await fetch(URLEjercicio2, requestOptions);
@@ -54,7 +54,7 @@ const deletePatient = async data => {
 		body: routine,
 	};
 
-	const URLEjercicio2 = `${process.env.BASE_URL}/patients/${data._id}`;
+	const URLEjercicio2 = `${process.env.REACT_APP_BACK_URL}/patients/${data._id}`;
 
 	try {
 		const response = await fetch(URLEjercicio2, requestOptions);
