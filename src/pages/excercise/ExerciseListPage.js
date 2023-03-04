@@ -134,8 +134,6 @@ export default function ExerciseListPage(props) {
 
 	const [actionUS, setActionUS] = useState();
 
-	const { action } = props;
-
 	useEffect(() => {
 		switch (actionUS) {
 			case undefined:

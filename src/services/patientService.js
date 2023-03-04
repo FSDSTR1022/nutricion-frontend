@@ -1,8 +1,6 @@
-/* eslint-disable arrow-body-style */
-/* eslint-disable no-unused-vars */
-const URLPaciente = 'http://localhost:3000/users';
+const URLPaciente = `${process.env.BASE_URL}/users`;
 
-const savePatient = data => {
+const savePatient = async data => {
 	const patient = JSON.stringify(data);
 	const requestOptions = {
 		method: 'POST',
@@ -10,28 +8,25 @@ const savePatient = data => {
 		body: patient,
 	};
 
-	return fetch(URLPaciente, requestOptions)
-		.then(response => ({ data: response.json(), status: response.status }))
-		.then(data => {
-			return data;
-		})
-		.catch(error => {
-			return error;
-		});
+	try {
+		const response = await fetch(URLPaciente, requestOptions);
+		return { data: response.json(), status: response.status };
+	} catch (error) {
+		return error;
+	}
 };
 
-const getPatients = () => {
-	return fetch(URLPaciente)
-		.then(response => response.json())
-		.then(jsonData => {
-			return jsonData;
-		})
-		.catch(e => {
-			return e;
-		});
+const getPatients = async () => {
+	try {
+		const response = await fetch(URLPaciente);
+		const jsonData = await response.json();
+		return jsonData;
+	} catch (e) {
+		return e;
+	}
 };
 
-const updatePatient = data => {
+const updatePatient = async data => {
 	const routine = JSON.stringify(data);
 
 	const requestOptions = {
@@ -40,19 +35,17 @@ const updatePatient = data => {
 		body: routine,
 	};
 
-	const URLEjercicio2 = `http://localhost:3001/patients/${data._id}`;
+	const URLEjercicio2 = `${process.env.BASE_URL}/patients/${data._id}`;
 
-	return fetch(URLEjercicio2, requestOptions)
-		.then(response => ({ data: response.json(), status: response.status }))
-		.then(data => {
-			return data;
-		})
-		.catch(error => {
-			return error;
-		});
+	try {
+		const response = await fetch(URLEjercicio2, requestOptions);
+		return { data: response.json(), status: response.status };
+	} catch (error) {
+		return error;
+	}
 };
 
-const deletePatient = data => {
+const deletePatient = async data => {
 	const routine = JSON.stringify(data);
 
 	const requestOptions = {
@@ -61,13 +54,14 @@ const deletePatient = data => {
 		body: routine,
 	};
 
-	const URLEjercicio2 = `http://localhost:3001/patients/${data._id}`;
+	const URLEjercicio2 = `${process.env.BASE_URL}/patients/${data._id}`;
 
-	return fetch(URLEjercicio2, requestOptions)
-		.then(response => ({ data: response.json(), status: response.status }))
-		.catch(error => {
-			return error;
-		});
+	try {
+		const response = await fetch(URLEjercicio2, requestOptions);
+		return { data: response.json(), status: response.status };
+	} catch (error) {
+		return error;
+	}
 };
 
 module.exports = { savePatient, getPatients, updatePatient, deletePatient };
