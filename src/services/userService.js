@@ -1,4 +1,3 @@
-/* eslint-disable arrow-body-style */
 const UserURL = 'http://localhost:3000';
 
 const getAllUsers = async () => {
@@ -9,7 +8,7 @@ const getAllUsers = async () => {
 	return data;
 };
 
-const createUser = data => {
+const createUser = async data => {
 	const patient = JSON.stringify(data);
 	const requestOptions = {
 		method: 'POST',
@@ -17,17 +16,15 @@ const createUser = data => {
 		body: patient,
 	};
 
-	return fetch(UserURL, requestOptions)
-		.then(response => ({ data: response.json(), status: response.status }))
-		.then(data => {
-			return data;
-		})
-		.catch(error => {
-			return error;
-		});
+	try {
+		const response = await fetch(UserURL, requestOptions);
+		return { data: response.json(), status: response.status };
+	} catch (error) {
+		return error;
+	}
 };
 
-const updateUser = data => {
+const updateUser = async data => {
 	const user = JSON.stringify(data);
 
 	const requestOptions = {
@@ -36,27 +33,25 @@ const updateUser = data => {
 		body: user,
 	};
 
-	return fetch(`${UserURL}/users/${data._id}`, requestOptions)
-		.then(response => ({ data: response.json(), status: response.status }))
-		.then(data => {
-			return data;
-		})
-		.catch(error => {
-			return error;
-		});
+	try {
+		const response = await fetch(
+			`${UserURL}/users/${data._id}`,
+			requestOptions
+		);
+		return { data: response.json(), status: response.status };
+	} catch (error) {
+		return error;
+	}
 };
 
-const getUserByProfesional = data => {
-	return fetch(`${UserURL}/users/${data._id}`)
-		.then(response => ({ data: response.json(), status: response.status }))
-		.then(jsonData => {
-			console.log(jsonData);
-			return jsonData;
-		})
-		.catch(e => {
-			console.log(e);
-			return e;
-		});
+const getUserByProfesional = async data => {
+	try {
+		const response = await fetch(`${UserURL}/users/${data._id}`);
+		const jsonData = { data: response.json(), status: response.status };
+		return jsonData;
+	} catch (error) {
+		return error;
+	}
 };
 
 module.exports = {

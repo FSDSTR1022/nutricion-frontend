@@ -39,8 +39,6 @@ export default function Nav({ openNav, onCloseNav }) {
 
 	const isDesktop = useResponsive('up', 'lg');
 
-	const user = localStorage.getItem('user');
-
 	useEffect(() => {
 		if (openNav) {
 			onCloseNav();
