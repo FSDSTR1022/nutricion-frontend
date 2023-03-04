@@ -1,14 +1,12 @@
-const UserURL = 'http://localhost:3000';
-
 const getAllUsers = async () => {
-	const result = await fetch(`${UserURL}/users/all`);
+	const result = await fetch(`${process.env.REACT_APP_BACK_URL}/users/all`);
 	const parseResult = await result.json();
 	const data = { data: parseResult, status: result.status };
 
 	return data;
 };
 
-const createUser = async data => {
+const registerUser = async data => {
 	const patient = JSON.stringify(data);
 	const requestOptions = {
 		method: 'POST',
@@ -17,8 +15,31 @@ const createUser = async data => {
 	};
 
 	try {
-		const response = await fetch(UserURL, requestOptions);
+		const response = await fetch(
+			`${process.env.REACT_APP_BACK_URL}/users`,
+			requestOptions
+		);
 		return { data: response.json(), status: response.status };
+	} catch (error) {
+		return error;
+	}
+};
+
+const loginUser = async data => {
+	const userInfo = JSON.stringify(data);
+	const requestOptions = {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: userInfo,
+	};
+
+	console.log('ENV', process.env.REACT_APP_BACK_URL);
+	try {
+		const response = await fetch(
+			`${process.env.REACT_APP_BACK_URL}/users/login`,
+			requestOptions
+		);
+		return response.json();
 	} catch (error) {
 		return error;
 	}
@@ -35,7 +56,7 @@ const updateUser = async data => {
 
 	try {
 		const response = await fetch(
-			`${UserURL}/users/${data._id}`,
+			`${process.env.REACT_APP_BACK_URL}/users/${data._id}`,
 			requestOptions
 		);
 		return { data: response.json(), status: response.status };
@@ -46,7 +67,9 @@ const updateUser = async data => {
 
 const getUserByProfesional = async data => {
 	try {
-		const response = await fetch(`${UserURL}/users/${data._id}`);
+		const response = await fetch(
+			`${process.env.REACT_APP_BACK_URL}/users/${data._id}`
+		);
 		const jsonData = { data: response.json(), status: response.status };
 		return jsonData;
 	} catch (error) {
@@ -56,7 +79,8 @@ const getUserByProfesional = async data => {
 
 module.exports = {
 	getAllUsers,
-	createUser,
+	registerUser,
 	updateUser,
 	getUserByProfesional,
+	loginUser,
 };

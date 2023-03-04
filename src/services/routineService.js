@@ -1,4 +1,4 @@
-const URLRutina = `${process.env.BASE_URL}/rutinas`;
+const URLRutina = `${process.env.REACT_APP_BACK_URL}/rutinas`;
 
 const saveRutine = async data => {
 	const routine = JSON.stringify(data);
@@ -37,7 +37,7 @@ const updateRutine = async data => {
 		body: routine,
 	};
 
-	const URLEjercicio2 = `http://localhost:3001/Rutina?id=${data._id}`;
+	const URLEjercicio2 = `${process.env.REACT_APP_BACK_URL}/Rutina?id=${data._id}`;
 
 	try {
 		const response = await fetch(URLEjercicio2, requestOptions);
@@ -56,7 +56,7 @@ const deleteRutine = async data => {
 		body: routine,
 	};
 
-	const URLEjercicio2 = `http://localhost:3001/Rutina?id=${data._id}`;
+	const URLEjercicio2 = `${process.env.REACT_APP_BACK_URL}/Rutina?id=${data._id}`;
 
 	try {
 		const response = await fetch(URLEjercicio2, requestOptions);

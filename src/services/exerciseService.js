@@ -1,6 +1,6 @@
 const getExerciseAtribut = async () => {
 	const result = await fetch(
-		`${process.env.BASE_URL}/exercises/exerciseAtributes`
+		`${process.env.REACT_APP_BACK_URL}/exercises/exerciseAtributes`
 	);
 	const parseResult = await result.json();
 	const data = { data: parseResult, status: result.status };
@@ -17,7 +17,7 @@ const saveExercise = async data => {
 	};
 
 	const result = await fetch(
-		`${process.env.BASE_URL}/exercises`,
+		`${process.env.REACT_APP_BACK_URL}/exercises`,
 		requestOptions
 	);
 	const parseResult = await result.json();
@@ -26,7 +26,7 @@ const saveExercise = async data => {
 };
 
 const getExercise = async () => {
-	const result = await fetch(`${process.env.BASE_URL}/exercises`);
+	const result = await fetch(`${process.env.REACT_APP_BACK_URL}/exercises`);
 	const parseResult = await result.json();
 	const data = { data: parseResult, status: result.status };
 
@@ -43,7 +43,7 @@ const updateExercise = async data => {
 	};
 
 	const result = await fetch(
-		`${process.env.BASE_URL}/exercises?id=${data._id}`,
+		`${process.env.REACT_APP_BACK_URL}/exercises?id=${data._id}`,
 		requestOptions
 	);
 	const parseResult = await result.json();
@@ -61,7 +61,7 @@ const deleteExercise = async data => {
 	};
 
 	const result = await fetch(
-		`${process.env.BASE_URL}/exercises?_id=${data._id}`,
+		`${process.env.REACT_APP_BACK_URL}/exercises?_id=${data._id}`,
 		requestOptions
 	);
 	const parseResult = await result.json();
