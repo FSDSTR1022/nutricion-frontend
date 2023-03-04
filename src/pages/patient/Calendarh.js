@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+
 import FullCalendar from '@fullcalendar/react';
 // import { Calendar } from "@fullcalendar/core";
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -47,8 +49,11 @@ const Calendarh = () => {
 	const [dateNewRutina, setDateNewRutina] = useState(new Date());
 	const [nextRutinas, setNextRutinas] = useState([]);
 
+	const state = useParams();
+
 	useEffect(() => {
 		getMeassures();
+		console.log(JSON.stringify(state));
 	}, []);
 
 	const getMeassures = () => {
@@ -69,6 +74,8 @@ const Calendarh = () => {
 	};
 
 	const today = Date.now() - 86400000;
+
+	// console.log('el state es', props);
 
 	const events = [];
 	rutinasList.map(ob =>
