@@ -1,6 +1,6 @@
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-unused-vars */
-const URLRutina = 'http://localhost:3000/Rutinas';
+const URLRutina = 'http://localhost:3000/rutines';
 
 const saveRutine =  (data) => {
 	const routine = JSON.stringify(data);
