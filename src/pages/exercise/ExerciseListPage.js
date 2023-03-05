@@ -816,7 +816,7 @@ export default function ExerciseListPage(props) {
 					</DialogActions>
 				</Dialog>
 
-				{/* ///////////////////// Dialogo nuevo ejercicio  ///////////////////// */}
+{/* ///////////////////// Dialogo nuevo ejercicio  ///////////////////// */}
 				<Dialog
 					open={openFormDialogUS}
 					onClose={handleCloseFormExerciseDialog}
@@ -835,7 +835,7 @@ export default function ExerciseListPage(props) {
 					</DialogActions>
 				</Dialog>
 
-				{/* ///////////////////// Mensaje de resultado  ///////////////////// */}
+{/* ///////////////////// Mensaje de resultado  ///////////////////// */}
 
 				<Snackbar
 					open={openAlertUS}

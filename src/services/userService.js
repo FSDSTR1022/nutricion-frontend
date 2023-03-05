@@ -46,6 +46,7 @@ const loginUser = async data => {
 
 const updateUser = async data => {
 	const user = JSON.stringify(data);
+	console.log("SERVICE data:",data)
 
 	const requestOptions = {
 		method: 'PUT',

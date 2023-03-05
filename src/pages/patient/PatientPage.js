@@ -23,14 +23,22 @@ import {
 	IconButton,
 	TableContainer,
 	TablePagination,
+	Dialog,
+	DialogTitle,
+	DialogContent,
+	DialogContentText,
+	DialogActions,
+	Snackbar,
+	Alert
 } from '@mui/material';
+import Label from '../../components/label';
 // components
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../../sections/@dashboard/exercise';
 
-import { getAllUsers } from '../../services/userService';
+import { getAllUsers,updateUser } from '../../services/userService';
 
 // ----------------------------------------------------------------------
 
@@ -40,6 +48,7 @@ const TABLE_HEAD = [
 	{ id: 'phone', label: 'Teléfono', alignRight: false },
 	{ id: 'dni', label: 'DNI', alignRight: false },
 	{ id: 'email', label: 'Correo', alignRight: false },
+	{ id: 'status', label: 'Estado', alignRight: false },
 	{ id: '' },
 ];
 
@@ -78,97 +87,186 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function PatientPage() {
-	const [open, setOpen] = useState(null);
-	const [page, setPage] = useState(0);
-	const [order, setOrder] = useState('asc');
-	const [selected, setSelected] = useState([]);
-	const [orderBy, setOrderBy] = useState('name');
-	const [filterName, setFilterName] = useState('');
-	const [rowsPerPage, setRowsPerPage] = useState(5);
+	const [openUS, setOpenUS] = useState(null);
+	const [pageUS, setPageUS] = useState(0);
+	const [orderUS, setOrderUS] = useState('asc');
+	const [selectedUS, setSelectedUS] = useState([]);
+	const [orderByUS, setOrderByUS] = useState('name');
+	const [filterNameUS, setFilterNameUS] = useState('');
+	const [rowsPerPage, setRowsPerPageUS] = useState(5);
 
-	const [isLoadingPatients, setIsLoadingPatients] = useState(true);
+	const [isLoadingPatientsUS, setIsLoadingPatientsUS] = useState(true);
 	const [patientsListUS, setPatientListUS] = useState([]);
+	const [openConfirmationUS, setOpenConfirmationUS] =useState(false);
+	const [patientToDeleteOrEditUS, setPatientToDeleteOrEditUS] = useState('');
+
+	const [openAlertUS, setOpenAlertUS] = useState(false);
+	const [messageAlertUS, setMessageAlertUS] = useState('');
+	const [severityAlertUS, setSeverityAlertUS] = useState('success');
 
 	useEffect(() => {
 		const getAllusers = async () => {
 			const response = await getAllUsers();
 			if (response.status === 200) {
 				setPatientListUS(response.data);
-				setIsLoadingPatients(false);
+				setIsLoadingPatientsUS(false);
 			}
 		};
 		getAllusers();
 	}, []);
 
-	const handleOpenMenu = event => {
-		setOpen(event.currentTarget);
+	const handleOpenMenu = id => event => {
+		setOpenUS({ _id: id, target: event.currentTarget });
 	};
 
 	const handleCloseMenu = () => {
-		setOpen(null);
+		setOpenUS(null);
 	};
 
 	const handleRequestSort = (event, property) => {
-		const isAsc = orderBy === property && order === 'asc';
-		setOrder(isAsc ? 'desc' : 'asc');
-		setOrderBy(property);
+		const isAsc = orderByUS === property && orderUS === 'asc';
+		setOrderUS(isAsc ? 'desc' : 'asc');
+		setOrderByUS(property);
 	};
 
 	const handleSelectAllClick = event => {
 		if (event.target.checked) {
 			const newSelecteds = patientsListUS.map(n => n.name);
-			setSelected(newSelecteds);
+			setSelectedUS(newSelecteds);
 			return;
 		}
-		setSelected([]);
+		setSelectedUS([]);
 	};
 
 	const handleClick = (event, name) => {
-		const selectedIndex = selected.indexOf(name);
+		const selectedIndex = selectedUS.indexOf(name);
 		let newSelected = [];
 		if (selectedIndex === -1) {
-			newSelected = newSelected.concat(selected, name);
+			newSelected = newSelected.concat(selectedUS, name);
 		} else if (selectedIndex === 0) {
-			newSelected = newSelected.concat(selected.slice(1));
-		} else if (selectedIndex === selected.length - 1) {
-			newSelected = newSelected.concat(selected.slice(0, -1));
+			newSelected = newSelected.concat(selectedUS.slice(1));
+		} else if (selectedIndex === selectedUS.length - 1) {
+			newSelected = newSelected.concat(selectedUS.slice(0, -1));
 		} else if (selectedIndex > 0) {
 			newSelected = newSelected.concat(
-				selected.slice(0, selectedIndex),
-				selected.slice(selectedIndex + 1)
+				selectedUS.slice(0, selectedIndex),
+				selectedUS.slice(selectedIndex + 1)
 			);
 		}
-		setSelected(newSelected);
+		setSelectedUS(newSelected);
 	};
 
 	const handleChangePage = (event, newPage) => {
-		setPage(newPage);
+		setPageUS(newPage);
 	};
 
 	const handleChangeRowsPerPage = event => {
-		setPage(0);
-		setRowsPerPage(parseInt(event.target.value, 10));
+		setPageUS(0);
+		setRowsPerPageUS(parseInt(event.target.value, 10));
 	};
 
 	const handleFilterByName = event => {
-		setPage(0);
-		setFilterName(event.target.value);
+		setPageUS(0);
+		setFilterNameUS(event.target.value);
 	};
 
+	const handleClickDelteExercise = (event, id) => {
+		const excersiceToDelete = patientsListUS.find(
+			exercise => exercise._id === id
+		);
+
+		setPatientToDeleteOrEditUS(excersiceToDelete);
+		setOpenConfirmationUS(true);
+		setOpenUS(null);
+	};
+
+	const handleClickAceptDelteExercise = async event => {
+		if (event.target.value === 'aceptar') {
+			
+			const patient = patientToDeleteOrEditUS
+			patient.isActive=false
+			
+			const responseSave = await updateUser(patient);
+			if (responseSave.status === 200) {
+				console.log("se dio de baja")
+				console.log("responseSave: ",responseSave)
+				setMessageAlertUS('Se dio de baja al paciente');
+				setSeverityAlertUS('success');
+			} else {
+				console.log("NO se dio de baja")
+				console.log("responseSave: ",responseSave)
+				setMessageAlertUS('No se pudo dar de baja al paciente');
+				setSeverityAlertUS('error');
+			}
+			setMessageAlertUS("Se dio de baja el paciente");
+			setOpenAlertUS(true)
+			setOpenConfirmationUS(false);
+		} else if (event.target.value === 'cancelar') {
+			setOpenConfirmationUS(false);
+			setPatientToDeleteOrEditUS();
+		}
+		setOpenUS(null);
+		setPatientToDeleteOrEditUS('');
+	};
+
+	
+
 	const emptyRows =
-		page > 0
-			? Math.max(0, (1 + page) * rowsPerPage - patientsListUS.length)
+		pageUS > 0
+			? Math.max(0, (1 + pageUS) * rowsPerPage - patientsListUS.length)
 			: 0;
 
 	const filteredPatients = applySortFilter(
 		patientsListUS,
-		getComparator(order, orderBy),
-		filterName
+		getComparator(orderUS, orderByUS),
+		filterNameUS
 	);
 
-	const isNotFound = !filteredPatients.length && !!filterName;
+	const isNotFound = !filteredPatients.length && !!filterNameUS;
 
-	if (!isLoadingPatients) {
+	const handleClickDeltePatient = (event, id) => {
+
+		console.log(`Delte paciente: ${id}`)
+		const patientToDelete = patientsListUS.find(
+			exercise => exercise._id === id
+		);
+
+		setPatientToDeleteOrEditUS(patientToDelete);
+		setOpenConfirmationUS(true);
+		setOpenUS(null);
+	};
+
+	const handleClickViewPatient = (event, id) => {
+
+		console.log(`Ver paciente: ${id}`)
+		
+		/* const excersiceToView = exerciseListUS.find(element => element._id === id);
+
+		setActionToDoInexerciseDialogUS('viewExercise');
+		setExerciseToDeleteOrEditUS(excersiceToView);
+		setOpenFormDialogUS(true);
+		setOpenUS(null); */
+	}; 
+
+	const handleClickEditPatient = (event, id) => {
+		console.log(`Ver paciente: ${id}`)
+		/* const excersiceToEdit = exerciseListUS.find(element => element._id === id);
+
+		setActionToDoInexerciseDialogUS('editExercise');
+		setExerciseToDeleteOrEditUS(excersiceToEdit);
+		setOpenFormDialogUS(true);
+		setOpenUS(null); */
+	};
+
+	const handleCloseMessage = (event, reason) => {
+		if (reason === 'clickaway') {
+			setOpenAlertUS(false);
+		}
+		setOpenAlertUS(false);
+	};
+
+	
+	if (!isLoadingPatientsUS) {
 		return (
 			<>
 				<Helmet>
@@ -195,8 +293,8 @@ export default function PatientPage() {
 
 					<Card>
 						<UserListToolbar
-							numSelected={selected.length}
-							filterName={filterName}
+							numSelected={selectedUS.length}
+							filterName={filterNameUS}
 							onFilterName={handleFilterByName}
 						/>
 
@@ -204,23 +302,23 @@ export default function PatientPage() {
 							<TableContainer sx={{ minWidth: 800 }}>
 								<Table>
 									<UserListHead
-										order={order}
-										orderBy={orderBy}
+										order={orderUS}
+										orderBy={orderByUS}
 										headLabel={TABLE_HEAD}
 										rowCount={patientsListUS.length}
-										numSelected={selected.length}
+										numSelected={selectedUS.length}
 										onRequestSort={handleRequestSort}
 										onSelectAllClick={handleSelectAllClick}
 									/>
 									<TableBody>
 										{filteredPatients
 											.slice(
-												page * rowsPerPage,
-												page * rowsPerPage + rowsPerPage
+												pageUS * rowsPerPage,
+												pageUS * rowsPerPage + rowsPerPage
 											)
 											.map(row => {
-												const { _id, name, lastName, phone, dni, email } = row;
-												const selectedUser = selected.indexOf(name) !== -1;
+												const { _id, name, lastName, phone, dni, email,isActive } = row;
+												const selectedPatient = selectedUS.indexOf(name) !== -1;
 
 												return (
 													<TableRow
@@ -228,10 +326,10 @@ export default function PatientPage() {
 														key={_id}
 														tabIndex={-1}
 														role='checkbox'
-														selected={selectedUser}>
+														selected={selectedPatient}>
 														<TableCell padding='checkbox'>
 															<Checkbox
-																checked={selectedUser}
+																checked={selectedPatient}
 																onChange={event => handleClick(event, name)}
 															/>
 														</TableCell>
@@ -262,12 +360,20 @@ export default function PatientPage() {
 
 														<TableCell align='left'>{dni}</TableCell>
 														<TableCell align='left'>{email}</TableCell>
+														<TableCell align='left'>
+															<Label
+																color={
+																	(isActive === false && 'error') || 'success'
+																}>
+																{isActive ? 'Activo' : 'No Activo'}
+															</Label>
+														</TableCell>
 
 														<TableCell align='right'>
 															<IconButton
 																size='large'
 																color='inherit'
-																onClick={handleOpenMenu}>
+																onClick={handleOpenMenu(_id)}>
 																<Iconify icon={'eva:more-vertical-fill'} />
 															</IconButton>
 														</TableCell>
@@ -300,7 +406,7 @@ export default function PatientPage() {
 
 														<Typography variant='body2'>
 															No results found for &nbsp;
-															<strong>&quot;{filterName}&quot;</strong>.
+															<strong>&quot;{filterNameUS}&quot;</strong>.
 															<br /> Try checking for typos or using complete
 															words.
 														</Typography>
@@ -318,7 +424,7 @@ export default function PatientPage() {
 							component='div'
 							count={patientsListUS.length}
 							rowsPerPage={rowsPerPage}
-							page={page}
+							page={pageUS}
 							onPageChange={handleChangePage}
 							onRowsPerPageChange={handleChangeRowsPerPage}
 						/>
@@ -326,8 +432,8 @@ export default function PatientPage() {
 				</Container>
 
 				<Popover
-					open={Boolean(open)}
-					anchorEl={open}
+					open={openUS !== null}
+					anchorEl={openUS === null ? openUS : openUS.target}
 					onClose={handleCloseMenu}
 					anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
 					transformOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -342,7 +448,24 @@ export default function PatientPage() {
 							},
 						},
 					}}>
-					<MenuItem>
+						<MenuItem
+						onClick={event =>
+							handleClickViewPatient(
+								event,
+								openUS === null ? openUS : openUS._id
+							)
+						}>
+						<Iconify
+							icon={'eva:eye-fill'}
+							sx={{ mr: 2 }}
+						/>
+						Ver
+					</MenuItem>
+					<MenuItem
+					onClick={event => handleClickEditPatient(
+						event,
+						openUS === null ? openUS : openUS._id
+					)}>
 						<Iconify
 							icon={'eva:edit-fill'}
 							sx={{ mr: 2 }}
@@ -350,14 +473,63 @@ export default function PatientPage() {
 						Modificar
 					</MenuItem>
 
-					<MenuItem sx={{ color: 'error.main' }}>
+					<MenuItem 
+					sx={{ color: 'error.main' }}
+					onClick={event => handleClickDeltePatient(
+						event,
+						openUS === null ? openUS : openUS._id
+					)}>
 						<Iconify
 							icon={'eva:trash-2-outline'}
 							sx={{ mr: 2 }}
 						/>
-						Borrar
+						Dar de baja
 					</MenuItem>
 				</Popover>
+
+{/* ///////////////////// Dialogo de confirmación  ///////////////////// */}
+				<Dialog
+					open={openConfirmationUS}
+					onClose={handleClickDelteExercise}
+					aria-labelledby='alert-dialog-title'
+					aria-describedby='alert-dialog-description'>
+					<DialogTitle id='alert-dialog-title'>
+						{'Dar de baja paciente'}
+					</DialogTitle>
+					<DialogContent>
+						<DialogContentText id='alert-dialog-description'>
+							¿Desea dar de baja al paciente?
+						</DialogContentText>
+					</DialogContent>
+					<DialogActions>
+						<Button
+							value='aceptar'
+							onClick={handleClickAceptDelteExercise}>
+							Aceptar
+						</Button>
+						<Button
+							value='cancelar'
+							onClick={handleClickAceptDelteExercise}>
+							{' '}
+							Cancelar{' '}
+						</Button>
+					</DialogActions>
+				</Dialog>
+
+{/* ///////////////////// Mensaje de resultado  ///////////////////// */}
+
+				<Snackbar
+					open={openAlertUS}
+					autoHideDuration={6000}
+					onClose={handleCloseMessage}>
+					<Alert
+						variant='filled'
+						onClose={handleCloseMessage}
+						severity={severityAlertUS}
+						sx={{ width: '100%' }}>
+						{messageAlertUS}
+					</Alert>
+				</Snackbar>
 			</>
 		);
 	} else {
