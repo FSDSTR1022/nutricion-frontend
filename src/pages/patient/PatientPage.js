@@ -1,9 +1,12 @@
+/* eslint-disable object-shorthand */
 /* eslint-disable no-else-return */
 /* eslint-disable no-unused-vars */
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 // @mui
 import {
 	Card,
@@ -89,9 +92,9 @@ export default function PatientPage() {
 
 	const [isLoadingPatients, setIsLoadingPatients] = useState(true);
 	const [patientsListUS, setPatientListUS] = useState([]);
-
-	// seteo el pacient onHover(hector)
 	const [patient, setPatient] = useState({});
+
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const getAllusers = async () => {
@@ -110,6 +113,14 @@ export default function PatientPage() {
 
 	const handleCloseMenu = () => {
 		setOpen(null);
+	};
+
+	// función ir a calendario de paciente
+
+	const handleClickViewPatient = () => {
+		navigate('/dashboard/pacients/calendar', {
+			state: { messge: 'fucking A' },
+		});
 	};
 
 	const handleRequestSort = (event, property) => {
@@ -354,6 +365,13 @@ export default function PatientPage() {
 							},
 						},
 					}}>
+					<MenuItem onClick={() => handleClickViewPatient()}>
+						<Iconify
+							icon={'eva:eye-fill'}
+							sx={{ mr: 2 }}
+						/>
+						Ver
+					</MenuItem>
 					<MenuItem>
 						<Iconify
 							icon={'eva:edit-fill'}
