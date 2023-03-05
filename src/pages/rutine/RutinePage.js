@@ -52,9 +52,10 @@ import Iconify from '../../components/iconify';
 import {
 	saveRutine
 } from '../../services/routineService';
-import ListExcersice from '../exercise/ExerciseListPage';
+
 import PatientPage from '../patient/PatientPage';
 import FormExercise from '../exercise/NewExercisePage';
+import ExerciseListPage from '../exercise/ExerciseListPage';
 
 export default function RutinePage(props) {
 	const [isLoading, setIsLoading] = useState(true);
@@ -924,7 +925,7 @@ export default function RutinePage(props) {
 								fullWidth='xl'
 								maxWidth='xl'>
 								<DialogContent>
-									<ListExcersice
+									<ExerciseListPage
 										action={'selectExercise'}
 										exercisesToAdd={exerciseToAddUS}
 										setExerciseToAdd={setExerciseToAddUS}

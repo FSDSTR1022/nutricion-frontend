@@ -125,11 +125,8 @@ export default function ExerciseListPage(props) {
 
 	const [actionUS, setActionUS] = useState();
 
-<<<<<<< HEAD:src/pages/exercise/ExerciseListPage.js
 	const { action, exercisesToAdd, setExerciseToAdd } = props;
 
-=======
->>>>>>> 193a76bc097037c34809b67b9e530a1752cfd3fe:src/pages/excercise/ExerciseListPage.js
 	useEffect(() => {
 		if (action === undefined) {
 			setActionUS('listExercise');
@@ -409,34 +406,15 @@ export default function ExerciseListPage(props) {
 			if (responseSave.status === 200) {
 				setMessageAlertUS('Se elimino el ejercicio');
 				setSeverityAlertUS('success');
-<<<<<<< HEAD:src/pages/exercise/ExerciseListPage.js
 			} else {
 				setMessageAlertUS('No se pudo eliminar el ejercicio');
 				setSeverityAlertUS('error');
-=======
-				setOpenAlertUS(true);
-				setOpenConfirmationUS(false);
-				setOpenUS(null);
-				setExerciseToDeleteOrEditUS('');
-			} else {
-				setMessageAlertUS('No se pudo eliminar el ejercicio');
-				setSeverityAlertUS('error');
-				setOpenAlertUS(true);
-				setOpenConfirmationUS(false);
-				setOpenUS(null);
-				setExerciseToDeleteOrEditUS('');
->>>>>>> 193a76bc097037c34809b67b9e530a1752cfd3fe:src/pages/excercise/ExerciseListPage.js
 			}
 			setOpenAlertUS(true);
 			setOpenConfirmationUS(false);
 		} else if (event.target.value === 'cancelar') {
 			setOpenConfirmationUS(false);
 			setExerciseToDeleteOrEditUS();
-<<<<<<< HEAD:src/pages/exercise/ExerciseListPage.js
-=======
-			setOpenUS(null);
-			setExerciseToDeleteOrEditUS('');
->>>>>>> 193a76bc097037c34809b67b9e530a1752cfd3fe:src/pages/excercise/ExerciseListPage.js
 		}
 		setOpenUS(null);
 		setExerciseToDeleteOrEditUS('');
@@ -448,7 +426,6 @@ export default function ExerciseListPage(props) {
 		}
 	};
 
-<<<<<<< HEAD:src/pages/exercise/ExerciseListPage.js
 	const handleChangeExerciseRepTimeTexField = exerciseId => event => {
 
 		if (exercisesToAdd !== undefined) {
@@ -467,8 +444,6 @@ export default function ExerciseListPage(props) {
 		}
 	};
 
-=======
->>>>>>> 193a76bc097037c34809b67b9e530a1752cfd3fe:src/pages/excercise/ExerciseListPage.js
 	const getTitle = () => {
 		switch (actionUS) {
 			case 'selectExercise':
@@ -811,13 +786,8 @@ export default function ExerciseListPage(props) {
 					):(<></>)}
 					
 				</Popover>
-<<<<<<< HEAD:src/pages/exercise/ExerciseListPage.js
 				
 {/* ///////////////////// Dialogo de confirmación  ///////////////////// */}
-=======
-
-				{/* ///////////////////// Dialogo de confirmación  ///////////////////// */}
->>>>>>> 193a76bc097037c34809b67b9e530a1752cfd3fe:src/pages/excercise/ExerciseListPage.js
 				<Dialog
 					open={openConfirmationUS}
 					onClose={handleClickDelteExercise}
