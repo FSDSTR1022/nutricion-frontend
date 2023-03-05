@@ -1,15 +1,12 @@
-/* eslint-disable arrow-body-style */
-const UserURL = 'http://localhost:3000';
+const getAllUsers = async () => {
+	const result = await fetch(`${process.env.REACT_APP_BACK_URL}/users/all`);
+	const parseResult = await result.json();
+	const data = { data: parseResult, status: result.status };
 
-const getAllUsers = async () =>{
-    const result = await fetch(`${UserURL}/users/all`)
-	const parseResult = await result.json()
-	const data = {data: parseResult, status: result.status}
+	return data;
+};
 
-	return data
-}
-
-const createUser = data => {
+const registerUser = async data => {
 	const patient = JSON.stringify(data);
 	const requestOptions = {
 		method: 'POST',
@@ -17,17 +14,37 @@ const createUser = data => {
 		body: patient,
 	};
 
-	return fetch(UserURL, requestOptions)
-		.then(response => ({ data: response.json(), status: response.status }))
-		.then(data => {
-			return data;
-		})
-		.catch(error => {
-			return error;
-		});
+	try {
+		const response = await fetch(
+			`${process.env.REACT_APP_BACK_URL}/users`,
+			requestOptions
+		);
+		return { data: response.json(), status: response.status };
+	} catch (error) {
+		return error;
+	}
 };
 
-const updateUser = (data) =>{
+const loginUser = async data => {
+	const userInfo = JSON.stringify(data);
+	const requestOptions = {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: userInfo,
+	};
+
+	try {
+		const response = await fetch(
+			`${process.env.REACT_APP_BACK_URL}/users/login`,
+			requestOptions
+		);
+		return response.json();
+	} catch (error) {
+		return error;
+	}
+};
+
+const updateUser = async data => {
 	const user = JSON.stringify(data);
 
 	const requestOptions = {
@@ -36,36 +53,33 @@ const updateUser = (data) =>{
 		body: user,
 	};
 
-	return fetch(`${UserURL}/users/${data._id}`, requestOptions)
-		.then(response => ({ data: response.json(), status: response.status }))
-		.then(data => {
-			return data;
-		})
-		.catch(error => {
-			return error;
-		});
+	try {
+		const response = await fetch(
+			`${process.env.REACT_APP_BACK_URL}/users/${data._id}`,
+			requestOptions
+		);
+		return { data: response.json(), status: response.status };
+	} catch (error) {
+		return error;
+	}
 };
 
-const getUserByProfesional = (data) => {
-
-	return fetch(`${UserURL}/users/${data._id}`)
-		.then(response => ({ data: response.json(), status: response.status }))
-		.then(jsonData => {
-			console.log(jsonData);
-			return jsonData;
-		})
-		.catch(e => {
-			console.log(e);
-			return e;
-		});
+const getUserByProfesional = async data => {
+	try {
+		const response = await fetch(
+			`${process.env.REACT_APP_BACK_URL}/users/${data._id}`
+		);
+		const jsonData = { data: response.json(), status: response.status };
+		return jsonData;
+	} catch (error) {
+		return error;
+	}
 };
-
-
-
 
 module.exports = {
-    getAllUsers,
-    createUser,
-    updateUser,
-    getUserByProfesional
-  };
+	getAllUsers,
+	registerUser,
+	updateUser,
+	getUserByProfesional,
+	loginUser,
+};

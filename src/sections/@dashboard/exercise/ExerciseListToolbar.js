@@ -80,7 +80,6 @@ export default function ExerciseListToolbar({
 						</InputAdornment>
 					}
 				/>
-				
 			)}
 
 			{numSelected > 0 ? (

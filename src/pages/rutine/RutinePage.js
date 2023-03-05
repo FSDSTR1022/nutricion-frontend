@@ -74,7 +74,10 @@ export default function RutinePage(props) {
 	const [errorTextFild, setErrorTextFild] = useState(false);
 
 	const [exerciseToAddUS, setExerciseToAddUS] = useState([]);
-	const [roundDondeSeAgregaraElEjercicioUS,SetRoundDondeSeAgregaraElEjercicioUS,] = useState('');
+	const [
+		roundDondeSeAgregaraElEjercicioUS,
+		SetRoundDondeSeAgregaraElEjercicioUS,
+	] = useState('');
 
 	const [patientToAddUS, setPatientToAddUS] = useState([]);
 	const [openSelectPatientDialog,setOpenSelectPatientDialog] = useState('');
@@ -318,7 +321,6 @@ export default function RutinePage(props) {
 	const handleClickAddExerciseButton = () => {
 		
 		const rutina = rutineUS;
-
 		const round = rutina.rounds.find(
 			round => round.roundName === roundDondeSeAgregaraElEjercicioUS
 		);

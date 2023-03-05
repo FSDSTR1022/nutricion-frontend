@@ -1,8 +1,6 @@
-/* eslint-disable arrow-body-style */
-/* eslint-disable no-unused-vars */
-const URLRutina = 'http://localhost:3000/rutines';
+const URLRutina = `${process.env.REACT_APP_BACK_URL}/rutinas`;
 
-const saveRutine =  (data) => {
+const saveRutine = async data => {
 	const routine = JSON.stringify(data);
 	const requestOptions = {
 		method: 'POST',
@@ -10,30 +8,27 @@ const saveRutine =  (data) => {
 		body: routine,
 	};
 
-	return fetch(URLRutina, requestOptions)
-		.then(response => ({ data: response.json(), status: response.status }))
-		.then(data => {
-			return data;
-		})
-		.catch(error => {
-			return error;
-		});
+	try {
+		const response = await fetch(URLRutina, requestOptions);
+		return { data: response.json(), status: response.status };
+	} catch (error) {
+		return error;
+	}
 };
 
-const getRutines =  () => {
-	return fetch(URLRutina)
-		.then(response => ({ data: response.json(), status: response.status }))
-		.then(jsonData => {
-			console.log(jsonData);
-			return jsonData;
-		})
-		.catch(e => {
-			console.log(e);
-			return e;
-		});
+const getRutines = async () => {
+	try {
+		const response = await fetch(URLRutina);
+		const jsonData = { data: response.json(), status: response.status };
+		console.log(jsonData);
+		return jsonData;
+	} catch (e) {
+		console.log(e);
+		return e;
+	}
 };
 
-const updateRutine = (data) =>{
+const updateRutine = async data => {
 	const routine = JSON.stringify(data);
 
 	const requestOptions = {
@@ -42,19 +37,17 @@ const updateRutine = (data) =>{
 		body: routine,
 	};
 
-	const URLEjercicio2 = `http://localhost:3001/Rutina?id=${  data._id}`;
+	const URLEjercicio2 = `${process.env.REACT_APP_BACK_URL}/Rutina?id=${data._id}`;
 
-	return fetch(URLEjercicio2, requestOptions)
-		.then(response => ({ data: response.json(), status: response.status }))
-		.then(data => {
-			return data;
-		})
-		.catch(error => {
-			return error;
-		});
+	try {
+		const response = await fetch(URLEjercicio2, requestOptions);
+		return { data: response.json(), status: response.status };
+	} catch (error) {
+		return error;
+	}
 };
 
-const deleteRutine =  (data) => {
+const deleteRutine = async data => {
 	const routine = JSON.stringify(data);
 
 	const requestOptions = {
@@ -63,13 +56,14 @@ const deleteRutine =  (data) => {
 		body: routine,
 	};
 
-	const URLEjercicio2 = `http://localhost:3001/Rutina?id=${  data._id}`;
+	const URLEjercicio2 = `${process.env.REACT_APP_BACK_URL}/Rutina?id=${data._id}`;
 
-	return fetch(URLEjercicio2, requestOptions)
-		.then(response => ({ data: response.json(), status: response.status }))
-		.catch(error => {
-			return error;
-		});
+	try {
+		const response = await fetch(URLEjercicio2, requestOptions);
+		return { data: response.json(), status: response.status };
+	} catch (error) {
+		return error;
+	}
 };
 
 module.exports = { saveRutine, getRutines, updateRutine, deleteRutine };
