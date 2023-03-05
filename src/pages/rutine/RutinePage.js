@@ -131,7 +131,7 @@ export default function RutinePage(props) {
 				break;
 		}
 
-		setActionUS('viewRutine');
+	/* 	setActionUS('viewRutine'); */
 
 		
 	}, []);
