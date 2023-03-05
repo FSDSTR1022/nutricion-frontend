@@ -42,7 +42,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CheckIcon from '@mui/icons-material/Check';
-import ListExcersice from '../excercise/listExercise';
+import ListExcersice from '../exercise/listExercise';
 import {
 	saveRutine,
 	getRutines,

@@ -52,9 +52,9 @@ import Iconify from '../../components/iconify';
 import {
 	saveRutine
 } from '../../services/routineService';
-import ListExcersice from '../excercise/ExerciseListPage';
+import ListExcersice from '../exercise/ExerciseListPage';
 import PatientPage from '../patient/PatientPage';
-import FormExercise from '../excercise/NewExercisePage';
+import FormExercise from '../exercise/NewExercisePage';
 
 export default function RutinePage(props) {
 	const [isLoading, setIsLoading] = useState(true);
@@ -127,7 +127,7 @@ export default function RutinePage(props) {
 				break;
 		}
 
-		/* setActionUS('viewRutine'); */
+		setActionUS('viewRutine');
 
 		
 	}, []);
@@ -892,7 +892,7 @@ export default function RutinePage(props) {
 								Guardar Rutina
 							</Button>
 						</div>
-						<div>
+						{/* <div>
 							<br />
 							<Button
 								variant='contained'
@@ -910,7 +910,7 @@ export default function RutinePage(props) {
 								onClick={mostrarDay}>
 								Mostrar día
 							</Button>
-						</div>
+						</div> */}
 
 	{/* /////////////////// dialogo seleccion de ejercicios /////////////////// */}
 						<div>

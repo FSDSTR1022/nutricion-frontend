@@ -9,8 +9,8 @@ import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
-import ListExercise from './pages/excercise/ExerciseListPage'
-import FormExercise from './pages/excercise/NewExercisePage'
+import ListExercise from './pages/exercise/ExerciseListPage'
+import FormExercise from './pages/exercise/NewExercisePage'
 import FormPatient from './pages/patient/formPatient' 
 import PatientPage from './pages/patient/PatientPage'
 import RutinePage from './pages/rutine/RutinePage'

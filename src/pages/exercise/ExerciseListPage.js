@@ -310,19 +310,6 @@ export default function ExerciseListPage(props) {
 		setOpenFormDialogUS(true);
 	};
 
-	
-
-	const prueba = event => {
-		console.log(exercisesToAdd)
-		/* checkRepsTime() */
-	};
-
-	
-	const prueba2 = event => {
-		console.log(exercisesToAdd)
-		/* checkRepsTime() */
-	};
-
 	const handleCloseFormExerciseDialog = evento => {
 		setOpenFormDialogUS(false);
 	};
@@ -468,11 +455,7 @@ export default function ExerciseListPage(props) {
 		}
 	};
 
-	const checkRepsTime = () =>{
-		console.log("seleccionados: ", selectedExerciseUS) // -> id
-		console.log("exercisesToAdd: ", exercisesToAdd) // -> [{timeOReps}]
 
-	}
 
 	if (!isLoadingExerciseUS && !isLoadingexerciseAtributes) {
 		return (
@@ -497,17 +480,6 @@ export default function ExerciseListPage(props) {
 							startIcon={<Iconify icon='eva:plus-fill' />}
 							onClick={handleClickNewExweciseButton}>
 							Nuevo Ejercicio
-						</Button>
-
-						<Button
-							variant='contained'
-							onClick={prueba}>
-							mostrar
-						</Button>
-						<Button
-							variant='contained'
-							onClick={prueba2}>
-							mostrar ejecios a agregar
 						</Button>
 					</Stack>
 
