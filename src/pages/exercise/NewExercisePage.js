@@ -7,7 +7,7 @@
 /* eslint-disable no-unused-vars */
 import { Helmet } from 'react-helmet-async';
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import {useLocation,useNavigate} from 'react-router-dom'
 // @mui
 import {
 	Card,
@@ -25,19 +25,16 @@ import {
 	Grid,
 	Select,
 	InputLabel,
-	OutlinedInput,
+	OutlinedInput
 } from '@mui/material';
-import { useTheme, styled } from '@mui/material/styles';
-import {
-	saveExercise,
-	updateExercise,
-	getExercise,
-	getExerciseAtribut,
-} from '../../services/exerciseService';
+import { useTheme, styled  } from '@mui/material/styles';
+import { saveExercise,updateExercise,getExercise, getExerciseAtribut } from '../../services/exerciseService';
+
+
 
 export default function NewExercisePage(props) {
-	const [isLoadingexerciseAtributes, setIsLoadingexerciseAtributes] =
-		useState(true);
+
+	const [isLoadingexerciseAtributes, setIsLoadingexerciseAtributes] = useState(true);
 	const [exerciseAtributsUS, setExerciseAtributesUS] = useState([]);
 	const [exerciseNameUS, setExerciseNameUS] = useState();
 	const [exerciseTypeUS, setExerciseTypeUS] = useState('');
@@ -54,7 +51,7 @@ export default function NewExercisePage(props) {
 	const [actionUS, setActionUS] = useState();
 	const [excerciseToEditODeleteUS, setExcerciseToEditODeleteUS] = useState({});
 
-	const { action } = props;
+	const {action} = props;
 
 	const navigate = useNavigate();
 
@@ -78,38 +75,41 @@ export default function NewExercisePage(props) {
 	}));
 
 	useEffect(() => {
+
 		if (exerciseAtributsUS.length === 0) {
-			const getEA = async () => {
-				const response = await getExerciseAtribut();
-				if (response.status === 200) {
+			const getEA =async ()=>{
+				const response = await getExerciseAtribut()
+				if(response.status===200)
+				{
 					setExerciseAtributesUS(response.data);
 					setIsLoadingexerciseAtributes(false);
-				}
-			};
-			getEA();
+				}			
+			}
+			getEA()
 		}
 
-		if (action === undefined) {
-			setActionUS({ action: 'newExercise', openFrom: 'home' });
-		} else {
-			setActionUS(action);
+		if(action===undefined){
+			setActionUS({action:'newExercise',openFrom:"home"});
+		}
+		else
+		{
+			setActionUS(action)
 
 			switch (action.action) {
-				case 'editExercise':
+				case 'editExercise':					
 					if (action.exercise !== undefined) {
-						cargarCamposEjercicioAEditar(action.exercise);
-					}
-					break;
+						cargarCamposEjercicioAEditar(action.exercise)}
+					break
 				case 'viewExercise':
 					if (action.exercise !== undefined) {
-						cargarCamposEjercicioAEditar(action.exercise);
-					}
-					break;
+						cargarCamposEjercicioAEditar(action.exercise)}
+					break
 				default:
 					break;
 			}
-		}
-	}, []);
+		}		
+
+	},[]);
 
 	const cargarCamposEjercicioAEditar = exercise => {
 		setExcerciseToEditODeleteUS(exercise);
@@ -171,129 +171,140 @@ export default function NewExercisePage(props) {
 		setExercisePrecautionsUS(event.target.value);
 	};
 
+	const prueba =  () => {
+		console.log(actionUS)
+	}
+
 	const handleClickSaveButton = async () => {
-		if (checkForm()) {
-			const exerciseToSave = {};
+		if(checkForm())
+		{
+		 const exerciseToSave={}
+   
+		  exerciseToSave.name = exerciseNameUS
+		  exerciseToSave.exerciseType = exerciseTypeUS
+		  exerciseToSave.difficulty = exerciseDifficultUS
+		  exerciseToSave.bodyParts = exerciseBodyPartsUS
+		  exerciseToSave.muscles = exerciseMuclesUS
+		  exerciseToSave.equipments = exerciseEquipmentsUS
+		  exerciseToSave.explanation = exerciseExplanationUS
+		  exerciseToSave.precautions = exercisePrecautionsUS
+		  exerciseToSave.photo = "https://images.unsplash.com/photo-1516802273409-68526ee1bdd6"
+		  exerciseToSave.video = "https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC5cFhphukFT-h24CWqwycbNcvVutbJeGlueYS4zwVmBzJVyiaz-QHbRCufuJJKe8_5SEVROgxGAKk9YlzyGlxBFX-Uyl0CIxObBSXxvow"
 
-			exerciseToSave.name = exerciseNameUS;
-			exerciseToSave.exerciseType = exerciseTypeUS;
-			exerciseToSave.difficulty = exerciseDifficultUS;
-			exerciseToSave.bodyParts = exerciseBodyPartsUS;
-			exerciseToSave.muscles = exerciseMuclesUS;
-			exerciseToSave.equipments = exerciseEquipmentsUS;
-			exerciseToSave.explanation = exerciseExplanationUS;
-			exerciseToSave.precautions = exercisePrecautionsUS;
-			exerciseToSave.photo =
-				'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6';
-			exerciseToSave.video =
-				'https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC5cFhphukFT-h24CWqwycbNcvVutbJeGlueYS4zwVmBzJVyiaz-QHbRCufuJJKe8_5SEVROgxGAKk9YlzyGlxBFX-Uyl0CIxObBSXxvow';
 
-			switch (actionUS.action) {
-				case 'newExercise':
-					const responseSave = await saveExercise(exerciseToSave);
-					if (responseSave.status === 200) {
-						if (actionUS.openFrom === 'listExercise') {
-							actionUS.setOpendialog(false);
-							actionUS.setMessageAlert('Se guardó correctamente el ejercicio');
-							actionUS.openAlert(true);
-							actionUS.severityAler('success');
-						} else if (
-							actionUS.openFrom === 'home' ||
-							actionUS.openFrom === 'formExercise'
-						) {
-							navigate('/dashboard/newexercise', {
-								action: {
-									action: 'newExercise',
-									openFrom: 'formExercise',
-									typeMessage: 'saveSuccessfully',
-								},
-							});
-						}
-					} else {
-						console.log('no se guardo con exito');
+		  switch (actionUS.action) {
+			case "newExercise":
+				const responseSave= await saveExercise(exerciseToSave)
+				if(responseSave.status===200)
+				{
+					if (actionUS.openFrom === 'listExercise' ) {
+						actionUS.setOpendialog(false)
+						actionUS.setMessageAlert("Se guardó correctamente el ejercicio")	
+						actionUS.openAlert(true)
+						actionUS.severityAler("success")
 					}
-					break;
-
-				case 'editExercise':
-					exerciseToSave._id = excerciseToEditODeleteUS._id;
-					const responseUpdate = await updateExercise(exerciseToSave);
-					if (responseUpdate.status === 200) {
-						console.log('se actualizo con exito');
-						if (actionUS.openFrom === 'listExercise') {
-							actionUS.setOpendialog(false);
-							actionUS.setMessageAlert(
-								'Se actualizó correctamente el ejercicio'
-							);
-							actionUS.openAlert(true);
-							actionUS.severityAler('success');
-						}
-					} else {
-						console.log('no se actualizó con exito');
+					else if(actionUS.openFrom === 'home' ||  actionUS.openFrom === 'formExercise'){
+						navigate('/dashboard/newexercise', {
+							action: {
+								action: 'newExercise',
+								openFrom:"formExercise",
+								typeMessage: 'saveSuccessfully',
+							},
+						});
 					}
-					break;
+				}
+				else{
+					console.log("no se guardo con exito")
+				}
+				break;
+			
+			case "editExercise":
+				exerciseToSave._id = excerciseToEditODeleteUS._id
+				const responseUpdate= await updateExercise(exerciseToSave)
+				if(responseUpdate.status===200)
+				{
+					console.log("se actualizo con exito")
+					if (actionUS.openFrom === 'listExercise' ) {
+						actionUS.setOpendialog(false)
+						actionUS.setMessageAlert("Se actualizó correctamente el ejercicio")	
+						actionUS.openAlert(true)
+						actionUS.severityAler("success")
+					}
+				}
+				else{
+					console.log("no se actualizó con exito")
+				}
+			break;
+		  
+			default:
+				break;
+		  } 
+	   }
+	}
 
-				default:
-					break;
-			}
-		}
-	};
 
 	const checkForm = () => {
-		let errors = true;
-
-		if (exerciseNameUS === undefined || exerciseNameUS === '') {
-			setErrorsUS(errorsUS => ({
-				...errorsUS,
-				excersiceName: true,
-			}));
-
-			errors = false;
+		let errors = true
+   
+		if(exerciseNameUS===undefined || exerciseNameUS==="")
+		{
+		  setErrorsUS(errorsUS =>({
+			...errorsUS,
+			excersiceName:true
+		  }))
+	
+		  errors = false 
 		}
-		if (exerciseTypeUS === undefined || exerciseTypeUS === '') {
-			setErrorsUS(errorsUS => ({
-				...errorsUS,
-				excersiceType: true,
-			}));
-
-			errors = false;
+		if(exerciseTypeUS===undefined || exerciseTypeUS==="")
+		{
+		  setErrorsUS(errorsUS =>({
+			...errorsUS,
+			excersiceType:true
+		  }))
+	
+		  errors = false
 		}
-		if (exerciseDifficultUS === undefined || exerciseDifficultUS === '') {
-			setErrorsUS(errorsUS => ({
-				...errorsUS,
-				excersiceDificult: true,
-			}));
-
-			errors = false;
+		if(exerciseDifficultUS===undefined || exerciseDifficultUS==="")
+		{
+		  setErrorsUS(errorsUS =>({
+			...errorsUS,
+			excersiceDificult:true
+		  }))
+	
+		  errors = false
 		}
-
-		if (exerciseBodyPartsUS.length === 0) {
-			setErrorsUS(errorsUS => ({
-				...errorsUS,
-				excersiceBodyParts: true,
-			}));
-
-			errors = false;
+	
+		if(exerciseBodyPartsUS.length===0)
+		{
+		  setErrorsUS(errorsUS =>({
+			...errorsUS,
+			excersiceBodyParts:true
+		  }))
+	
+		  errors = false
 		}
-
-		if (exerciseMuclesUS.length === 0) {
-			setErrorsUS(errorsUS => ({
-				...errorsUS,
-				excersiceMuscles: true,
-			}));
-
-			errors = false;
+	
+		if(exerciseMuclesUS.length===0)
+		{
+		  setErrorsUS(errorsUS =>({
+			...errorsUS,
+			excersiceMuscles:true
+		  }))
+	
+		  errors = false
 		}
-
-		if (exerciseEquipmentsUS.length === 0) {
-			setErrorsUS(errorsUS => ({
-				...errorsUS,
-				excersiceEquipment: true,
-			}));
-
-			errors = false;
+	
+		if(exerciseEquipmentsUS.length===0)
+		{
+		  setErrorsUS(errorsUS =>({
+			...errorsUS,
+			excersiceEquipment:true
+		  }))
+	
+		  errors = false
 		}
-
-		return errors;
+		
+		return errors
 	};
 
 	function getStylesItemSelector(name, partesCuerpo, theme) {
@@ -305,20 +316,22 @@ export default function NewExercisePage(props) {
 		};
 	}
 
-	const getTitle = () => {
+	
+
+	const getTitle = () => {	
 		switch (actionUS.action) {
 			case 'newExercise':
-				return 'Nuevo Ejercicio';
+				return "Nuevo Ejercicio";
 			case 'editExercise':
-				return 'Modificar Ejercicio';
+				return "Modificar Ejercicio";
 			case 'viewExercise':
-				return 'Ejercicio';
+				return "Ejercicio";
 			default:
 				return <></>;
 		}
-	};
+	}
 
-	if (!isLoadingexerciseAtributes) {
+	if ( !isLoadingexerciseAtributes)  {
 		return (
 			<>
 				<Helmet>
@@ -339,19 +352,21 @@ export default function NewExercisePage(props) {
 					</Stack>
 
 					<Card>
-						{/*  //////////////// Campo nombre ejercicio //////////////// */}
+{/*  //////////////////////////////// Campo nombre ejercicio //////////////// */}
 						<FormControl
-							required
+							required={actionUS.action !== 'viewExercise'}
 							fullWidth>
 							<TextField
 								sx={{ m: 1 }}
 								id='standard-basic'
 								label='Nombre Ejercicio'
-								variant='outlined'
-								required
+								variant='outlined'								
 								errro={errorsUS.ExcersiceName}
 								value={exerciseNameUS}
 								onChange={handleChangeExerciseNameInput}
+								inputProps={{
+									readOnly: actionUS.action === 'viewExercise'
+								  }}
 							/>
 							{errorsUS.excersiceName ? (
 								<span style={{ color: 'red' }}>
@@ -362,10 +377,10 @@ export default function NewExercisePage(props) {
 							)}
 						</FormControl>
 
-						{/*  //////////////// Selectot Tipo Ejercicio //////////////// */}
-
+{/*  //////////////////////////////// Selectot Tipo Ejercicio //////////////// */}
+						
 						<FormControl
-							required
+							required={actionUS.action !== 'viewExercise'}													
 							fullWidth>
 							<InputLabel
 								sx={{ m: 1 }}
@@ -378,7 +393,10 @@ export default function NewExercisePage(props) {
 								id='tipoEjercicioSelect'
 								value={exerciseTypeUS}
 								label='Tipo de Ejercicio'
-								onChange={handleChangeExerciseType}>
+								onChange={handleChangeExerciseType}
+								inputProps={{
+									readOnly: actionUS.action === 'viewExercise'}}
+								> 
 								{exerciseAtributsUS.exerciseType.map((te, id) => (
 									<MenuItem
 										value={te._id}
@@ -396,9 +414,9 @@ export default function NewExercisePage(props) {
 							)}
 						</FormControl>
 
-						{/*  //////////////// Selector Dificultad Ejercicio //////////////// */}
+{/*  //////////////////////////////// Selector Dificultad Ejercicio //////////////// */}
 						<FormControl
-							required
+							required={actionUS.action !== 'viewExercise'}
 							fullWidth>
 							<InputLabel
 								sx={{ m: 1 }}
@@ -411,7 +429,10 @@ export default function NewExercisePage(props) {
 								id='dificultadEjercicioSelect'
 								value={exerciseDifficultUS}
 								label='Dificultad Ejercicio'
-								onChange={handleChangeExerciseDificultSelector}>
+								onChange={handleChangeExerciseDificultSelector}
+								inputProps={{
+									readOnly: actionUS.action === 'viewExercise'}}
+								>
 								{exerciseAtributsUS.exerciseDifficult.map((de, id) => (
 									<MenuItem
 										value={de._id}
@@ -431,7 +452,7 @@ export default function NewExercisePage(props) {
 
 						{/*  //////////////// Selector partes cuerpo //////////////// */}
 						<FormControl
-							required
+							required={actionUS.action !== 'viewExercise'}
 							fullWidth>
 							<InputLabel
 								sx={{ m: 1 }}
@@ -446,6 +467,8 @@ export default function NewExercisePage(props) {
 								multiple
 								value={exerciseBodyPartsUS}
 								onChange={handleChangeBodyPartSelector}
+								inputProps={{
+									readOnly: actionUS.action === 'viewExercise'}}
 								input={
 									<OutlinedInput
 										id='select-multiple-chip'
@@ -489,7 +512,7 @@ export default function NewExercisePage(props) {
 
 						{/*  //////////////// Selector musculos Ejercicio //////////////// */}
 						<FormControl
-							required
+							required={actionUS.action !== 'viewExercise'}
 							fullWidth>
 							<InputLabel
 								sx={{ m: 1 }}
@@ -503,6 +526,8 @@ export default function NewExercisePage(props) {
 								multiple
 								value={exerciseMuclesUS}
 								onChange={handleChangeMuscleSelector}
+								inputProps={{
+									readOnly: actionUS.action === 'viewExercise'}}
 								input={
 									<OutlinedInput
 										id='OutlinedInputMusculos'
@@ -546,7 +571,7 @@ export default function NewExercisePage(props) {
 
 						{/*  //////////////// Selector Equipamiento //////////////// */}
 						<FormControl
-							required
+							required={actionUS.action !== 'viewExercise'}
 							fullWidth>
 							<InputLabel
 								sx={{ m: 1 }}
@@ -560,6 +585,8 @@ export default function NewExercisePage(props) {
 								multiple
 								value={exerciseEquipmentsUS}
 								onChange={handleChangeEquipamiento}
+								inputProps={{
+									readOnly: actionUS.action === 'viewExercise'}}
 								input={
 									<OutlinedInput
 										id='select-multiple-chip2'
@@ -606,7 +633,7 @@ export default function NewExercisePage(props) {
 
 						{/*  //////////////// explicación //////////////// */}
 						<FormControl
-							required
+							required={actionUS.action !== 'viewExercise'}
 							fullWidth>
 							<Typography sx={{ m: 1 }}>
 								Detalle la explicación para realizar el ejercicio:
@@ -614,6 +641,8 @@ export default function NewExercisePage(props) {
 
 							<TextField
 								sx={{ m: 1 }}
+								inputProps={{
+									readOnly: actionUS.action === 'viewExercise'}}
 								id='explicaciónEjercicio'
 								label='Explicación Ejercicio'
 								multiline
@@ -638,6 +667,8 @@ export default function NewExercisePage(props) {
 								rows={5}
 								value={exercisePrecautionsUS}
 								onChange={handleChangePrecautionsInput}
+								inputProps={{
+									readOnly: actionUS.action === 'viewExercise'}}
 							/>
 						</FormControl>
 						<br />
@@ -656,18 +687,22 @@ export default function NewExercisePage(props) {
 											loading='lazy'
 										/>
 										<br />
-										<Button
-											id='imagenButton'
-											variant='contained'
-											component='label'>
-											Cargar Imagen
-											<input
-												hidden
-												accept='image/*'
-												multiple
-												type='file'
-											/>
-										</Button>
+										{actionUS.action !== 'viewExercise' ? (
+											<Button
+												id='imagenButton'
+												variant='contained'
+												component='label'>
+												Cargar Imagen
+												<input
+													hidden
+													accept='image/*'
+													multiple
+													type='file'
+												/>
+											</Button>
+										) : (
+											<></>
+										)}
 									</Item>
 								</Grid>
 								<Grid>
@@ -680,31 +715,40 @@ export default function NewExercisePage(props) {
 												loading='lazy'
 											/>
 											<br />
-											<Button
-												id='videoButton'
-												variant='contained'
-												component='label'>
-												Cargar Video
-												<input
-													hidden
-													accept='image/*'
-													multiple
-													type='file'
-												/>
-											</Button>
+											{actionUS.action !== 'viewExercise' ? (
+												<Button
+													id='videoButton'
+													variant='contained'
+													component='label'>
+													Cargar Video
+													<input
+														hidden
+														accept='image/*'
+														multiple
+														type='file'
+													/>
+												</Button>
+											) : (
+												<></>
+											)}
 										</Item>
 									</Grid>
 								</Grid>
 							</Grid>
 						</Box>
-						<Button
-							sx={{ m: 2 }}
-							variant='contained'
-							onClick={() => {
-								handleClickSaveButton();
-							}}>
-							Guardar Ejercicio
-						</Button>
+
+						{actionUS.action !== 'viewExercise' ? (
+							<Button
+								sx={{ m: 2 }}
+								variant='contained'
+								onClick={() => {
+									handleClickSaveButton();
+								}}>
+								Guardar Ejercicio
+							</Button>
+						) : (
+							<></>
+						)}						
 					</Card>
 				</Container>
 			</>

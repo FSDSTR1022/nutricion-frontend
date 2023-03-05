@@ -1,3 +1,9 @@
+/* eslint-disable no-lonely-if */
+/* eslint-disable arrow-body-style */
+/* eslint-disable consistent-return */
+/* eslint-disable spaced-comment */
+/* eslint-disable array-callback-return */
+/* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-else-return */
 /* eslint-disable no-unused-vars */
@@ -35,37 +41,22 @@ import {
 	Alert,
 	DialogTitle,
 	DialogContentText,
+	FormControl,
+	TextField,
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 // components
-import Label from '../../components/label';
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
 // sections
-import { UserListHead, UserListToolbar } from '../../sections/@dashboard/user';
-
-import { getAllUsers } from '../../services/userService';
+import ExerciseListHead from '../../sections/@dashboard/exercise/UserListHead';
+import ExerciseListToolbar from '../../sections/@dashboard/exercise/ExerciseListToolbar';
 import {
 	getExercise,
 	getExerciseAtribut,
 	deleteExercise,
 } from '../../services/exerciseService';
 import FormExercise from './NewExercisePage';
-
-// ----------------------------------------------------------------------
-
-const TABLE_HEAD = [
-	{ id: 'name', label: 'Nombre', alignRight: false },
-	{ id: 'difficulty', label: 'Dificultad', alignRight: false },
-	{ id: 'exerciseType', label: 'Tipo', alignRight: false },
-	{ id: 'bodyPart', label: 'Pastes Cuerpos', alignRight: false },
-	{ id: 'muscles', label: 'Musculos', alignRight: false },
-	{ id: 'equipments', label: 'Equipamiento', alignRight: false },
-	{ id: 'video', label: 'Demostración', alignRight: false },
-	{ id: '' },
-];
-
-// ----------------------------------------------------------------------
 
 function descendingComparator(a, b, orderBy) {
 	if (b[orderBy] < a[orderBy]) {
@@ -101,12 +92,12 @@ function applySortFilter(array, comparator, query) {
 
 export default function ExerciseListPage(props) {
 	const [openUS, setOpenUS] = useState(null);
-	const [page, setPage] = useState(0);
-	const [order, setOrder] = useState('asc');
-	const [selected, setSelected] = useState([]);
-	const [orderBy, setOrderBy] = useState('name');
-	const [filterName, setFilterName] = useState('');
-	const [rowsPerPage, setRowsPerPage] = useState(5);
+	const [pageUS, setPageUS] = useState(0);
+	const [orderUS, setOrderUS] = useState('asc');
+	const [selectedExerciseUS, setSelectedExerciseUS] = useState([]);
+	const [orderByUS, setOrderByUS] = useState('name');
+	const [filterNameUS, setFilterNameUS] = useState('');
+	const [rowsPerPageUS, setRowsPerPageUS] = useState(5);
 
 	const [isLoadingExerciseUS, setIsLoadingExerciseUS] = useState(true);
 	const [isLoadingexerciseAtributes, setIsLoadingExcersiceAtributes] =
@@ -119,9 +110,9 @@ export default function ExerciseListPage(props) {
 
 	const [openFormDialogUS, setOpenFormDialogUS] =
 		useState(false); /* para abrir el dialog del formulario de ejercicios */
-	const [actionToDoInexerciseDialog, setActionToDoInexerciseDialogUS] =
+	const [actionToDoInexerciseDialogUS, setActionToDoInexerciseDialogUS] =
 		useState(); /* para saber que accion se realiza con el formulario de ejercicio */
-	const [exerciseToDeleteOrEdit, setExerciseToDeleteOrEditUS] =
+	const [exerciseToDeleteOrEditUS, setExerciseToDeleteOrEditUS] =
 		useState(''); /* para pasar el ejercicio al formulario de ejercicio */
 	const [resultActinDialogUs, setResultActinDialogUS] =
 		useState(''); /* para saber el resultado del formulario de ejercicio */
@@ -134,17 +125,13 @@ export default function ExerciseListPage(props) {
 
 	const [actionUS, setActionUS] = useState();
 
+	const { action, exercisesToAdd, setExerciseToAdd } = props;
+
 	useEffect(() => {
-		switch (actionUS) {
-			case undefined:
-			case 'listExercise':
-				setActionUS('listExercise');
-				break;
-			case 'selectExercise':
-				setActionUS('selectExercise');
-				break;
-			default:
-				break;
+		if (action === undefined) {
+			setActionUS('listExercise');
+		} else {
+			setActionUS(action);
 		}
 
 		const getExe = async () => {
@@ -166,6 +153,32 @@ export default function ExerciseListPage(props) {
 		getExe();
 	}, [openAlertUS]);
 
+	const getTableHead = () => {
+		const TABLE_HEAD = [
+			{ id: 'name', label: 'Nombre', alignRight: false },
+			{ id: 'difficulty', label: 'Dificultad', alignRight: false },
+			{ id: 'exerciseType', label: 'Tipo', alignRight: false },
+			{ id: 'bodyPart', label: 'Pastes Cuerpos', alignRight: false },
+			{ id: 'muscles', label: 'Musculos', alignRight: false },
+			{ id: 'equipments', label: 'Equipamiento', alignRight: false },
+		];
+
+		let arrayConcat = [];
+
+		if (actionUS === 'listExercise') {
+			arrayConcat = TABLE_HEAD.concat([
+				{ id: 'video', label: 'Demostración', alignRight: false },
+				{ id: '' },
+			]);
+		} else if (actionUS === 'selectExercise') {
+			arrayConcat = TABLE_HEAD.concat([
+				{ id: 'repsTime', label: 'Repeticiones/Tiempo', alignRight: false },
+				{ id: '' },
+			]);
+		}
+		return arrayConcat;
+	};
+
 	const handleOpenMenu = id => event => {
 		setOpenUS({ _id: id, target: event.currentTarget });
 	};
@@ -175,64 +188,122 @@ export default function ExerciseListPage(props) {
 	};
 
 	const handleRequestSort = (event, property) => {
-		const isAsc = orderBy === property && order === 'asc';
-		setOrder(isAsc ? 'desc' : 'asc');
-		setOrderBy(property);
+		const isAsc = orderByUS === property && orderUS === 'asc';
+		setOrderUS(isAsc ? 'desc' : 'asc');
+		setOrderByUS(property);
 	};
 
 	const handleSelectAllClick = event => {
+		console.log(event.target.checked)
+
 		if (event.target.checked) {
-			const newSelecteds = exerciseListUS.map(n => n.name);
-			setSelected(newSelecteds);
-			return;
+			const newSelecteds = exerciseListUS.map(n => n._id);
+			setSelectedExerciseUS(newSelecteds);			
+			
+			if (action === 'selectExercise' && setExerciseToAdd !== undefined) {
+
+				const detalleEjerciciosAAgregar = newSelecteds.map(exer => ({
+					exercise: exerciseListUS.find(({ _id }) => _id === exer),
+				}));
+
+				if (exercisesToAdd.length === 0) {
+					setExerciseToAdd(detalleEjerciciosAAgregar);
+				} else {
+					console.log(detalleEjerciciosAAgregar);
+
+					const exercisesToAddLimpio = detalleEjerciciosAAgregar.filter(
+						deaa => {
+							return !exercisesToAdd.some(
+								eta => eta.exercise._id === deaa.exercise._id
+							);
+						}
+					);
+
+					setExerciseToAdd(exercisesToAdd.concat(exercisesToAddLimpio));
+				}
+			}
 		}
-		setSelected([]);
+		else{
+			setSelectedExerciseUS([]);
+			setExerciseToAdd([])
+		}
 	};
 
-	const handleClick = (event, name) => {
-		const selectedIndex = selected.indexOf(name);
-		let newSelected = [];
+	const handleClickSelectExerciseCheckBox = (event, id) => {
+
+
+		const selectedIndex = selectedExerciseUS.indexOf(id);
+		let exerciseSelected = [];
 		if (selectedIndex === -1) {
-			newSelected = newSelected.concat(selected, name);
+			exerciseSelected = exerciseSelected.concat(selectedExerciseUS, id);
 		} else if (selectedIndex === 0) {
-			newSelected = newSelected.concat(selected.slice(1));
-		} else if (selectedIndex === selected.length - 1) {
-			newSelected = newSelected.concat(selected.slice(0, -1));
+			exerciseSelected = exerciseSelected.concat(selectedExerciseUS.slice(1));
+		} else if (selectedIndex === selectedExerciseUS.length - 1) {
+			exerciseSelected = exerciseSelected.concat(
+				selectedExerciseUS.slice(0, -1)
+			);
 		} else if (selectedIndex > 0) {
-			newSelected = newSelected.concat(
-				selected.slice(0, selectedIndex),
-				selected.slice(selectedIndex + 1)
+			exerciseSelected = exerciseSelected.concat(
+				selectedExerciseUS.slice(0, selectedIndex),
+				selectedExerciseUS.slice(selectedIndex + 1)
 			);
 		}
-		setSelected(newSelected);
+		setSelectedExerciseUS(exerciseSelected);
+
+		if (action === 'selectExercise' && setExerciseToAdd !== undefined) {
+
+			const detalleEjerciciosAAgregar = 	exerciseSelected.map(exer =>({exercise: exerciseListUS.find(({_id})=>_id===exer)}))
+
+			if(exercisesToAdd.length===0){
+				setExerciseToAdd(detalleEjerciciosAAgregar)
+			}
+			else{				
+				if(event.target.checked){ 
+					const exercisesToAddLimpio = detalleEjerciciosAAgregar.filter((deaa)=>{
+						return !exercisesToAdd.some(eta=>eta.exercise._id===deaa.exercise._id)
+					   })
+
+				   setExerciseToAdd(exercisesToAdd.concat(exercisesToAddLimpio))
+				}
+				else
+				{
+					const exercisesToAddLimpio = exercisesToAdd.filter((el)=>{
+						return detalleEjerciciosAAgregar.some(deaa=>el.exercise._id===deaa.exercise._id)
+					})
+					
+					setExerciseToAdd(exercisesToAddLimpio)
+				}
+			}	
+			
+		}
 	};
 
 	const handleChangePage = (event, newPage) => {
-		setPage(newPage);
+		setPageUS(newPage);
 	};
 
 	const handleChangeRowsPerPage = event => {
-		setPage(0);
-		setRowsPerPage(parseInt(event.target.value, 10));
+		setPageUS(0);
+		setRowsPerPageUS(parseInt(event.target.value, 10));
 	};
 
 	const handleFilterByName = event => {
-		setPage(0);
-		setFilterName(event.target.value);
+		setPageUS(0);
+		setFilterNameUS(event.target.value);
 	};
 
 	const emptyRows =
-		page > 0
-			? Math.max(0, (1 + page) * rowsPerPage - exerciseListUS.length)
+		pageUS > 0
+			? Math.max(0, (1 + pageUS) * rowsPerPageUS - exerciseListUS.length)
 			: 0;
 
 	const filteredPatients = applySortFilter(
 		exerciseListUS,
-		getComparator(order, orderBy),
-		filterName
+		getComparator(orderUS, orderByUS),
+		filterNameUS
 	);
 
-	const isNotFound = !filteredPatients.length && !!filterName;
+	const isNotFound = !filteredPatients.length && !!filterNameUS;
 
 	const handleClickNewExweciseButton = event => {
 		setActionToDoInexerciseDialogUS('newExercise');
@@ -272,7 +343,7 @@ export default function ExerciseListPage(props) {
 	};
 
 	const getDialogContent = () => {
-		switch (actionToDoInexerciseDialog) {
+		switch (actionToDoInexerciseDialogUS) {
 			case 'newExercise':
 				return (
 					<FormExercise
@@ -293,7 +364,7 @@ export default function ExerciseListPage(props) {
 						action={{
 							action: 'editExercise',
 							openFrom: 'listExercise',
-							exercise: exerciseToDeleteOrEdit,
+							exercise: exerciseToDeleteOrEditUS,
 							setOpendialog: setOpenFormDialogUS,
 							setMessageAlert: setMessageAlertUS,
 							openAlert: setOpenAlertUS,
@@ -308,7 +379,7 @@ export default function ExerciseListPage(props) {
 						action={{
 							action: 'viewExercise',
 							openFrom: 'listExercise',
-							exercise: exerciseToDeleteOrEdit,
+							exercise: exerciseToDeleteOrEditUS,
 							setOpendialog: setOpenFormDialogUS,
 							setMessageAlert: setMessageAlertUS,
 							openAlert: setOpenAlertUS,
@@ -331,28 +402,22 @@ export default function ExerciseListPage(props) {
 
 	const handleClickAceptDelteExercise = async event => {
 		if (event.target.value === 'aceptar') {
-			const responseSave = await deleteExercise(exerciseToDeleteOrEdit);
+			const responseSave = await deleteExercise(exerciseToDeleteOrEditUS);
 			if (responseSave.status === 200) {
 				setMessageAlertUS('Se elimino el ejercicio');
 				setSeverityAlertUS('success');
-				setOpenAlertUS(true);
-				setOpenConfirmationUS(false);
-				setOpenUS(null);
-				setExerciseToDeleteOrEditUS('');
 			} else {
 				setMessageAlertUS('No se pudo eliminar el ejercicio');
 				setSeverityAlertUS('error');
-				setOpenAlertUS(true);
-				setOpenConfirmationUS(false);
-				setOpenUS(null);
-				setExerciseToDeleteOrEditUS('');
 			}
+			setOpenAlertUS(true);
+			setOpenConfirmationUS(false);
 		} else if (event.target.value === 'cancelar') {
 			setOpenConfirmationUS(false);
 			setExerciseToDeleteOrEditUS();
-			setOpenUS(null);
-			setExerciseToDeleteOrEditUS('');
 		}
+		setOpenUS(null);
+		setExerciseToDeleteOrEditUS('');
 
 		if (renderUS) {
 			setRenderizadoUS(false);
@@ -361,16 +426,36 @@ export default function ExerciseListPage(props) {
 		}
 	};
 
+	const handleChangeExerciseRepTimeTexField = exerciseId => event => {
+
+		if (exercisesToAdd !== undefined) {
+
+			const updateArray = exercisesToAdd.map(detalleEjercicio =>{
+				if(detalleEjercicio.exercise._id===exerciseId){
+					return {
+						...detalleEjercicio,
+						timeOReps: event.target.value
+					}
+				}
+				return detalleEjercicio
+			})
+
+			setExerciseToAdd(updateArray)
+		}
+	};
+
 	const getTitle = () => {
 		switch (actionUS) {
 			case 'selectExercise':
-				return 'Seleccionar ejercicio';
+				return 'Seleccionar ejercicios';
 			case 'listExercise':
 				return 'Ejercicios';
 			default:
 				return <></>;
 		}
 	};
+
+
 
 	if (!isLoadingExerciseUS && !isLoadingexerciseAtributes) {
 		return (
@@ -399,29 +484,30 @@ export default function ExerciseListPage(props) {
 					</Stack>
 
 					<Card>
-						<UserListToolbar
-							numSelected={selected.length}
-							filterName={filterName}
+						<ExerciseListToolbar
+							numSelected={selectedExerciseUS.length}
+							filterName={filterNameUS}
 							onFilterName={handleFilterByName}
+							deleteOption={actionUS!=="selectExercise"}
 						/>
 
 						<Scrollbar>
 							<TableContainer sx={{ minWidth: 800 }}>
 								<Table>
-									<UserListHead
-										order={order}
-										orderBy={orderBy}
-										headLabel={TABLE_HEAD}
+									<ExerciseListHead
+										order={orderUS}
+										orderBy={orderByUS}
+										headLabel={getTableHead()}
 										rowCount={exerciseListUS.length}
-										numSelected={selected.length}
+										numSelected={selectedExerciseUS.length}
 										onRequestSort={handleRequestSort}
 										onSelectAllClick={handleSelectAllClick}
 									/>
 									<TableBody>
 										{filteredPatients
 											.slice(
-												page * rowsPerPage,
-												page * rowsPerPage + rowsPerPage
+												pageUS * rowsPerPageUS,
+												pageUS * rowsPerPageUS + rowsPerPageUS
 											)
 											.map(row => {
 												const {
@@ -435,7 +521,8 @@ export default function ExerciseListPage(props) {
 													photo,
 													video,
 												} = row;
-												const selectedExercise = selected.indexOf(name) !== -1;
+												const selectedExercise =
+													selectedExerciseUS.indexOf(_id) !== -1;
 
 												return (
 													<TableRow
@@ -447,7 +534,9 @@ export default function ExerciseListPage(props) {
 														<TableCell padding='checkbox'>
 															<Checkbox
 																checked={selectedExercise}
-																onChange={event => handleClick(event, name)}
+																onChange={event =>
+																	handleClickSelectExerciseCheckBox(event, _id)
+																}
 															/>
 														</TableCell>
 
@@ -524,23 +613,61 @@ export default function ExerciseListPage(props) {
 																))}
 															</Box>
 														</TableCell>
-														<TableCell align='center'>
-															{
-																<ImageList
-																	sx={{ width: 100, height: 50 }}
-																	cols={1}
-																	rowHeight={60}>
-																	<ImageListItem key={`video:${_id}`}>
-																		<img
-																			src={video}
-																			srcSet={video}
-																			alt={'Video'}
-																			loading='Cargando...'
-																		/>
-																	</ImageListItem>
-																</ImageList>
-															}
-														</TableCell>
+
+														{actionUS === 'listExercise' ? (
+															<TableCell align='center'>
+																{
+																	<ImageList
+																		sx={{ width: 100, height: 50 }}
+																		cols={1}
+																		rowHeight={60}>
+																		<ImageListItem key={`video:${_id}`}>
+																			<img
+																				src={video}
+																				srcSet={video}
+																				alt={'Video'}
+																				loading='Cargando...'
+																			/>
+																		</ImageListItem>
+																	</ImageList>
+																}
+															</TableCell>
+														) : (
+															<TableCell align='center'>
+																<FormControl
+																	sx={{ m: 1, minWidth: 50 }}
+																>
+																	<TextField
+																		id='repsTime'
+																		required
+																		label='Repeticiones / Tiempo'
+																		variant='outlined'
+																		
+																		disabled={
+																			!exercisesToAdd.some(excerciseDetail => (
+																				excerciseDetail.exercise._id === _id
+																				))
+																		}
+
+																		error={!!exercisesToAdd.some(excerciseDetail => {
+																			if(excerciseDetail.exercise._id === _id)
+																			{
+																				if(excerciseDetail.timeOReps===""){
+																					return true
+																				}else {
+																					return false
+																				}
+																			}
+																			
+																		})}
+																		
+																		helperText="Ingresar un valor"
+																		/* value={devolverTimeoReps(exercise._id)} */
+																		onChange={handleChangeExerciseRepTimeTexField(_id)}
+																	/>
+																</FormControl>
+															</TableCell>
+														)}
 
 														<TableCell align='right'>
 															<IconButton
@@ -579,7 +706,7 @@ export default function ExerciseListPage(props) {
 
 														<Typography variant='body2'>
 															No results found for &nbsp;
-															<strong>&quot;{filterName}&quot;</strong>.
+															<strong>&quot;{filterNameUS}&quot;</strong>.
 															<br /> Try checking for typos or using complete
 															words.
 														</Typography>
@@ -596,8 +723,8 @@ export default function ExerciseListPage(props) {
 							rowsPerPageOptions={[5, 10, 25]}
 							component='div'
 							count={exerciseListUS.length}
-							rowsPerPage={rowsPerPage}
-							page={page}
+							rowsPerPage={rowsPerPageUS}
+							page={pageUS}
 							onPageChange={handleChangePage}
 							onRowsPerPageChange={handleChangeRowsPerPage}
 						/>
@@ -605,7 +732,6 @@ export default function ExerciseListPage(props) {
 				</Container>
 
 				<Popover
-					/* open={Boolean(openUS.target)} */
 					open={openUS !== null}
 					anchorEl={openUS === null ? openUS : openUS.target}
 					onClose={handleCloseMenu}
@@ -635,37 +761,33 @@ export default function ExerciseListPage(props) {
 						/>
 						Ver
 					</MenuItem>
-					<MenuItem
-						onClick={event =>
-							handleClickEditExercise(
+					{actionUS==="listExercise"?(
+						<><MenuItem
+							onClick={event => handleClickEditExercise(
 								event,
 								openUS === null ? openUS : openUS._id
-							)
-						}>
-						<Iconify
-							icon={'eva:edit-fill'}
-							sx={{ mr: 2 }}
-						/>
-						Modificar
-					</MenuItem>
-
-					<MenuItem
-						sx={{ color: 'error.main' }}
-						onClick={event =>
-							handleClickDelteExercise(
+							)}>
+							<Iconify
+								icon={'eva:edit-fill'}
+								sx={{ mr: 2 }} />
+							Modificar
+						</MenuItem>
+						<MenuItem
+							sx={{ color: 'error.main' }}
+							onClick={event => handleClickDelteExercise(
 								event,
 								openUS === null ? openUS : openUS._id
-							)
-						}>
-						<Iconify
-							icon={'eva:trash-2-outline'}
-							sx={{ mr: 2 }}
-						/>
-						Borrar
-					</MenuItem>
+							)}>
+								<Iconify
+									icon={'eva:trash-2-outline'}
+									sx={{ mr: 2 }} />
+								Borrar
+							</MenuItem></>
+					):(<></>)}
+					
 				</Popover>
-
-				{/* ///////////////////// Dialogo de confirmación  ///////////////////// */}
+				
+{/* ///////////////////// Dialogo de confirmación  ///////////////////// */}
 				<Dialog
 					open={openConfirmationUS}
 					onClose={handleClickDelteExercise}

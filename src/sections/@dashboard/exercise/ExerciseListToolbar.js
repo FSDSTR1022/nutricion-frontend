@@ -39,16 +39,18 @@ const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-UserListToolbar.propTypes = {
+ExerciseListToolbar.propTypes = {
 	numSelected: PropTypes.number,
 	filterName: PropTypes.string,
 	onFilterName: PropTypes.func,
+	deleteOption: PropTypes.bool
 };
 
-export default function UserListToolbar({
+export default function ExerciseListToolbar({
 	numSelected,
 	filterName,
 	onFilterName,
+	deleteOption
 }) {
 	return (
 		<StyledRoot
@@ -81,11 +83,15 @@ export default function UserListToolbar({
 			)}
 
 			{numSelected > 0 ? (
-				<Tooltip title='Delete'>
+				deleteOption?(
+					<Tooltip title='Delete'>
 					<IconButton>
 						<Iconify icon='eva:trash-2-fill' />
 					</IconButton>
 				</Tooltip>
+				):(
+					<></>
+				)				
 			) : (
 				<Tooltip title='Filter list'>
 					<IconButton>

@@ -28,7 +28,7 @@ import {
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
 // sections
-import { UserListHead, UserListToolbar } from '../../sections/@dashboard/user';
+import { UserListHead, UserListToolbar } from '../../sections/@dashboard/exercise';
 
 import { getAllUsers } from '../../services/userService';
 

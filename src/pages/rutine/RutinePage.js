@@ -33,6 +33,10 @@ import {
 	DialogContentText,
 	Button,
 	FormControl,
+	IconButton,
+	Popover,
+	MenuItem
+
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -44,14 +48,14 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CheckIcon from '@mui/icons-material/Check';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
+import Iconify from '../../components/iconify';
 import {
-	saveRutine,
-	getRutines,
-	updateRutine,
-	deleteexercise,
+	saveRutine
 } from '../../services/routineService';
-import ListExcersice from '../excercise/ExerciseListPage';
-import FormExercise from '../excercise/NewExercisePage';
+
+import PatientPage from '../patient/PatientPage';
+import FormExercise from '../exercise/NewExercisePage';
+import ExerciseListPage from '../exercise/ExerciseListPage';
 
 export default function RutinePage(props) {
 	const [isLoading, setIsLoading] = useState(true);
@@ -66,8 +70,8 @@ export default function RutinePage(props) {
 	const [roundToEdit, setRoundToEdit] = useState('');
 	const [roundNameToEdit, setRoundNameToEdit] = useState('');
 
-	const [openSelectexerciseDialog, setOpenSelectexerciseDialog] =
-		useState(false);
+	const [openSelectExerciseDialog, setOpenSelectExerciseDialog] =useState(false);
+	const [openViewExerciseDialog, setOpenViewExerciseDialog] =useState(false);
 	const [errorTextFild, setErrorTextFild] = useState(false);
 
 	const [exerciseToAddUS, setExerciseToAddUS] = useState([]);
@@ -76,10 +80,12 @@ export default function RutinePage(props) {
 		SetRoundDondeSeAgregaraElEjercicioUS,
 	] = useState('');
 
+	const [patientToAddUS, setPatientToAddUS] = useState([]);
+	const [openSelectPatientDialog,setOpenSelectPatientDialog] = useState('');
+
 	const [rutineNameUS, setRutineNameUS] = useState('Fuerza');
-	const [pacientUS, setPacienteNameUS] = useState({
-		name: 'Juan Carlos Todo Poderoso',
-		_id: '63c3d4407a71c2a2014d7501',
+	const [pacientUS, setPacientUS] = useState({
+		_id: '64024755a6db697eb1b40d77',
 	});
 	const [rutineDateUS, setRutineDateUS] = useState('2023-02-03');
 	const [valueDay, setValueDay] = useState(null);
@@ -87,20 +93,24 @@ export default function RutinePage(props) {
 	const [errorsUS, setErrorsUS] = useState({});
 
 	/* para las confirmaciones de eliminación */
-	const [openConfirmationUS, setOpenConfirmationUS] =
-		useState(false); /* para mostrar el dialogo de confirmación */
+	const [openConfirmationUS, setOpenConfirmationUS] = useState(false);
+	/* para mostrar el dialogo de confirmación */
 	const [confirmationAcionUS, setConfirmationAcionUS] = useState('');
 
 	const [actionUS, setActionUS] = useState();
 
-	const [exerciseToDeleteOrEdit, setExerciseToDeleteOrEdit] = useState('');
+	const [exerciseToViewUS, setExerciseToViewUS] =useState(''); 
+	const [actionToDoInexerciseDialogUS, setActionToDoInexerciseDialogUS] =useState();
+	const [openFormDialogUS, setOpenFormDialogUS] =useState(false);
+
+	const [esValido,setEsValido] = useState(false)
+	const [openUS, setOpenUS] = useState(null);
 
 	const navigate = useNavigate();
 
 	const { action } = props;
 
 	const theme = useTheme();
-	const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
 	useEffect(() => {
 		switch (actionUS) {
@@ -120,7 +130,20 @@ export default function RutinePage(props) {
 			default:
 				break;
 		}
+
+		setActionUS('viewRutine');
+
+		
 	}, []);
+
+	const handleCloseMenu = () => {
+		setOpenUS(null);
+	};
+
+	const handleOpenMenu = id => event => {
+		setOpenUS({ _id: id, target: event.currentTarget });
+	};
+
 
 	const handleChangeAcordion = roundOrder => (event, isExpanded) => {
 		if (roundOrder === 'addRound') {
@@ -128,13 +151,18 @@ export default function RutinePage(props) {
 
 			rounds.push({
 				order: rounds.length + 1,
-				roundName: 'Nuevo',
+				roundName: `${rounds.length + 1}`,
 				exercises: [],
 			});
 
 			setRutineUS(rutineUS => ({
 				...rutineUS,
 				rounds,
+			}));
+
+			setErrorsUS(errorsUS => ({
+				...errorsUS,
+				roundsRutine: false,
 			}));
 		}
 
@@ -149,13 +177,20 @@ export default function RutinePage(props) {
 		}));
 	};
 
-	const handleChangepacienteNameTextField = event => {
-		setPacienteNameUS(event.target.value);
+	const handleChangePacienteNameTextField = event => {
+		
+		setPacientUS(pacientUS => ({
+			...pacientUS,
+			pacientName: event.target.value,
+		}));
+
 		setErrorsUS(errorsUS => ({
 			...errorsUS,
 			pacientName: false,
 		}));
 	};
+
+	
 
 	const handleChangeRutineDayTextField = event => {
 		setRutineDateUS(event.target.value);
@@ -167,7 +202,7 @@ export default function RutinePage(props) {
 
 	const handleClickAddExceciseIcon = round => event => {
 		SetRoundDondeSeAgregaraElEjercicioUS(round);
-		setOpenSelectexerciseDialog(true);
+		setOpenSelectExerciseDialog(true);
 	};
 
 	const handleClickEditExceciseIcon = (roundOrder, excersiceId) => event => {
@@ -178,7 +213,7 @@ export default function RutinePage(props) {
 
 	const handleClickDeleteExceciseIcon = (roundOrder, excersiceId) => event => {
 		setRoundToEdit(roundOrder);
-		setExerciseToDeleteOrEdit(excersiceId);
+		setExerciseToViewUS(excersiceId);
 		setConfirmationAcionUS('deleteExercise');
 		setOpenConfirmationUS(true);
 	};
@@ -208,7 +243,6 @@ export default function RutinePage(props) {
 	};
 
 	const deleteExercise = () => {
-		// sacar el ejercicio del round
 
 		const { rounds } = rutineUS;
 
@@ -217,7 +251,7 @@ export default function RutinePage(props) {
 		);
 
 		const indexExercise = rounds[indexRound].exercises.findIndex(
-			exercise => exercise.exercise._id === exerciseToDeleteOrEdit
+			exercise => exercise._id === exerciseToViewUS
 		);
 
 		rounds[indexRound].exercises.splice(indexExercise, 1);
@@ -279,13 +313,14 @@ export default function RutinePage(props) {
 			setConfirmationAcionUS('');
 			setRoundToEdit('');
 		} else if (event.target.value === 'cancelar') {
-			setExerciseToDeleteOrEdit();
+			setExerciseToViewUS();
 			setOpenConfirmationUS(false);
 			setConfirmationAcionUS('');
 		}
 	};
 
-	const handleClickAddexerciseButton = () => {
+	const handleClickAddExerciseButton = () => {
+		
 		const rutina = rutineUS;
 		const round = rutina.rounds.find(
 			round => round.roundName === roundDondeSeAgregaraElEjercicioUS
@@ -293,31 +328,68 @@ export default function RutinePage(props) {
 
 		round.exercises = round.exercises.concat(exerciseToAddUS);
 
-		// ¿porque no me hace falt esto que sigue?
-		/* setRutineUS(rutineUS => ({
-			...rutineUS,
-			round,
-		})); */
-
 		setExerciseToAddUS([]);
-		SetRoundDondeSeAgregaraElEjercicioUS('');
-		setOpenSelectexerciseDialog(false);
+		SetRoundDondeSeAgregaraElEjercicioUS(''); 
+		setOpenSelectExerciseDialog(false);
 
-		/* setPruebaRutina(rutineUS) */
 	};
+
+	const handleClickAddPatientButton = ()=>{
+		setOpenSelectPatientDialog(true)
+
+	}
 
 	const handleCloseDialog = () => {
 		setExerciseToAddUS([]);
-		setOpenSelectexerciseDialog(false);
+		setOpenSelectExerciseDialog(false);
+
+		setPatientToAddUS([]);
+		setOpenSelectPatientDialog(false);
+
+		setExerciseToAddUS([]);
+		setOpenViewExerciseDialog(false);
 	};
 
 	const handleClickShowexerciseButton = () => {
-		console.log(exerciseToAddUS);
+		console.log('Ejercicios a agregar: ',exerciseToAddUS);
 	};
 
 	const handleClickShowRutineButton = () => {
 		console.log('rutineUS: ', rutineUS);
-		/* console.log("pruebaRutina: ",pruebaRutina) */
+	};
+
+	const handleClickAddpatientButton = () =>{
+		console.log("seleccionar paciente")
+
+	}
+
+	const handleClickViewExercise = (event, id,roundOrder) => {
+		const round = rutineUS.rounds.find(round=>round.order===roundOrder)
+		const detalleEjercicio = round.exercises.find(exe=> exe.exercise._id===id)
+	
+		setActionToDoInexerciseDialogUS('viewExercise');
+		setExerciseToViewUS(detalleEjercicio.exercise);
+		setOpenViewExerciseDialog(true);
+		setOpenUS(null);
+	};
+
+	const handleClickEditExercise = (event, id) => {
+		console.log("editar ejericico")
+		/* const excersiceToEdit = exerciseListUS.find(element => element._id === id);
+
+		setActionToDoInexerciseDialogUS('editExercise');
+		setExerciseToDeleteOrEditUS(excersiceToEdit);
+		setOpenFormDialogUS(true);
+		setOpenUS(null); */
+	};
+
+	const handleClickDelteExercise = (event, id,roundOrder) => {
+		console.log("eliminar ejericico")
+		setRoundToEdit(roundOrder);
+		setExerciseToViewUS(id);
+		setConfirmationAcionUS('deleteExercise');
+		setOpenConfirmationUS(true);
+		setOpenUS(null)
 	};
 
 	const handleClickSaveRutineButton = () => {
@@ -331,27 +403,26 @@ export default function RutinePage(props) {
 			rutineToSave.rounds.map(round => {
 				if (round.exercises.length > 0) {
 					round?.exercises.map(e => {
-						e.exercise = e.exercise._id;
+						e.exercise = e._id;
 					});
 				}
 			});
 
 			rutineToSave.name = rutineNameUS;
 			rutineToSave.day = rutineDateUS;
-			rutineToSave.patient = pacientUS._id;
+			rutineToSave.user = pacientUS._id;
 
-			console.log(rutineToSave);
+			console.log("Rutina a guardar: ",rutineToSave);
 
 			saveRutine(rutineToSave).then(response => {
-				console.log('response.stat:', response.status);
-
 				if (response.status === 200) {
 					console.log('SE GUARDO CON EXITO');
-					/* navigate('/Rutina', {
+					navigate('/dashboard', {
 						state: { action: 'newRutine' },
-					}); */
+					});
 				} else {
 					console.log('NO SE GUARDO CON EXITO');
+					console.log('response: ',response);
 				}
 			});
 		}
@@ -360,7 +431,7 @@ export default function RutinePage(props) {
 	const checkForm = () => {
 		let errors = true;
 
-		/* if (pacienteNameUS === undefined || pacienteNameUS === '') {
+/* 		if (pacientUS.name === undefined || pacientUS.name === '') {
 			setErrorsUS(errorsUS => ({
 				...errorsUS,
 				pacientName: true,
@@ -388,6 +459,7 @@ export default function RutinePage(props) {
 		}
 
 		if (rutineUS.rounds.length === 0) {
+			console.log("roundsRutine")
 			setErrorsUS(errorsUS => ({
 				...errorsUS,
 				roundsRutine: true,
@@ -395,6 +467,18 @@ export default function RutinePage(props) {
 
 			errors = false;
 		}
+
+		if (rutineUS.rounds.length === 0) {
+			console.log("roundsRutine")
+			setErrorsUS(errorsUS => ({
+				...errorsUS,
+				roundsRutine: true,
+			}));
+
+			errors = false;
+		}
+
+
 		return errors;
 	};
 
@@ -405,7 +489,7 @@ export default function RutinePage(props) {
 
 	const getAccordions = round => {
 		const RoundAcordions = (
-			<Accordion
+			<><Accordion
 				key={round.order}
 				expanded={accordionExpanded === round.order}
 				onChange={handleChangeAcordion(round.order)}>
@@ -443,26 +527,23 @@ export default function RutinePage(props) {
 													color='success'
 													onClick={() => {
 														handleOnClickAcceptRoundNameChange(round.order);
-													}}
-												/>
+													} } />
 											</InputAdornment>
 										),
-									}}
-								/>
+									}} />
 							</Box>
 						</>
 					)}
 				</AccordionSummary>
 				<AccordionDetails>
-					{actionUS !== 'showRutine' ? (
+					{actionUS !== 'viewRutine' ? (
 						<div style={{ display: 'flex', justifyContent: 'end' }}>
 							<DeleteIcon onClick={handleClickDeleteRoundIcon(round.order)} />
 							<EditIcon
 								onClick={handleOnClickEditRoundNameIcon(
 									round.order,
 									round.roundName
-								)}
-							/>
+								)} />
 						</div>
 					) : (
 						<div>
@@ -479,7 +560,7 @@ export default function RutinePage(props) {
 									<TableCell align='center'>Nombre Ejercicio</TableCell>
 									<TableCell align='center'>Tiempo / repeticiones </TableCell>
 									<TableCell align='center'>Elementos </TableCell>
-									{actionUS !== 'showRutine' ? (
+									{actionUS !== 'viewRutine' ? (
 										<TableCell align='center' />
 									) : (
 										<></>
@@ -490,65 +571,56 @@ export default function RutinePage(props) {
 						<TableBody>
 							{round.exercises !== undefined
 								? round.exercises.map(exercise => (
-										<>
-											<TableRow
-												key={exercise.exerciseName}
-												hover
-												sx={{
-													'&:last-child td, &:last-child th': { border: 0 },
-												}}>
-												<TableCell
-													component='th'
-													scope='row'
-													align='center'>
-													{exercise.exercise.name}
-												</TableCell>
-												<TableCell
-													component='th'
-													scope='row'
-													align='center'>
-													{exercise.timeOReps}
-												</TableCell>
-												<TableCell
-													component='th'
-													scope='row'
-													align='center'>
-													<Box
-														sx={{
-															display: 'flex',
-															flexWrap: 'wrap',
-															justifyContent: 'center',
-															gap: 0.5,
-														}}>
-														{exercise.exercise.equipments.map(equipment => (
-															<Chip
-																key={equipment._id}
-																label={equipment.exerciseEquipment}
-															/>
-														))}
-													</Box>
-												</TableCell>
-												{actionUS !== 'showRutine' ? (
-													<TableCell
-														component='th'
-														scope='row'
-														align='center'>
-														<DeleteIcon
-															fontSize='small'
-															onClick={handleClickDeleteExceciseIcon(
-																round.order,
-																exercise.exercise._id
-															)}
-														/>
-													</TableCell>
-												) : (
-													<></>
-												)}
-											</TableRow>
-										</>
-								  ))
+									<>
+										<TableRow
+											key={exercise.exercise._id}
+											hover
+											sx={{
+												'&:last-child td, &:last-child th': { border: 0 },
+											}}>
+											<TableCell
+												component='th'
+												scope='row'
+												align='center'>
+												{exercise.exercise.name}
+											</TableCell>
+											<TableCell
+												component='th'
+												scope='row'
+												align='center'>
+												{exercise.timeOReps}
+											</TableCell>
+											<TableCell
+												component='th'
+												scope='row'
+												align='center'>
+												<Box
+													sx={{
+														display: 'flex',
+														flexWrap: 'wrap',
+														justifyContent: 'center',
+														gap: 0.5,
+													}}>
+													{exercise.exercise.equipments.map(equipment => (
+														<Chip
+															key={equipment._id}
+															label={equipment.exerciseEquipment} />
+													))}
+												</Box>
+											</TableCell>
+											<TableCell align='right'>
+												<IconButton
+													size='large'
+													color='inherit'
+													onClick={handleOpenMenu(exercise.exercise._id)}>
+													<Iconify icon={'eva:more-vertical-fill'} />
+												</IconButton>
+											</TableCell>
+										</TableRow>
+									</>
+								))
 								: ''}
-							{actionUS !== 'showRutine' ? (
+							{actionUS !== 'viewRutine' ? (
 								<TableRow
 									key='agregarEjercicio'
 									hover
@@ -564,8 +636,7 @@ export default function RutinePage(props) {
 										Agregar Ejercicio
 										<AddCircleIcon
 											fontSize='small'
-											onClick={handleClickAddExceciseIcon(round.roundName)}
-										/>
+											onClick={handleClickAddExceciseIcon(round.roundName)} />
 									</TableCell>
 									<TableCell />
 									<TableCell />
@@ -577,6 +648,64 @@ export default function RutinePage(props) {
 					</Table>
 				</AccordionDetails>
 			</Accordion>
+			
+			<Popover
+				open={openUS !== null}
+				anchorEl={openUS === null ? openUS : openUS.target}
+				onClose={handleCloseMenu}
+				anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+				transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+				PaperProps={{
+					sx: {
+						p: 1,
+						width: 140,
+						'& .MuiMenuItem-root': {
+							px: 1,
+							typography: 'body2',
+							borderRadius: 0.75,
+						},
+					},
+				}}>
+					<MenuItem
+					onClick={event =>
+						handleClickViewExercise(
+							event,
+							openUS === null ? openUS : openUS._id,
+							round.order
+						)
+					}
+					>
+						<Iconify
+							icon={'eva:eye-fill'}
+							sx={{ mr: 2 }} />
+						Ver
+					</MenuItem>
+					<MenuItem
+						onClick={event => handleClickEditExercise(
+							event,
+							openUS === null ? openUS : openUS._id
+						)}
+					>
+						<Iconify
+							icon={'eva:edit-fill'}
+							sx={{ mr: 2 }} />
+						Modificar
+					</MenuItem>
+						<MenuItem
+							sx={{ color: 'error.main' }}
+							onClick={event => handleClickDelteExercise(
+								event,
+								openUS === null ? openUS : openUS._id,
+								round.order
+							)}
+						>
+							<Iconify
+								icon={'eva:trash-2-outline'}
+								sx={{ mr: 2 }} />
+							Borrar
+						</MenuItem>
+
+				</Popover></>
 		);
 		return RoundAcordions;
 	};
@@ -588,11 +717,11 @@ export default function RutinePage(props) {
 		switch (confirmationAcionUS) {
 			case 'deleteRound':
 				title = 'Eliminar Round';
-				message = '¿Seguro desea eliminar el Round?';
+				message = '¿Desea eliminar el Round?';
 				break;
 			case 'deleteExercise':
-				title = 'Eliminar Ejercicio';
-				message = '¿Seguro desea eliminar el Ejercicio?';
+				title = 'Quitar Ejercicio';
+				message = '¿Desea quitar el Ejercicio?';
 				break;
 			default:
 				break;
@@ -662,90 +791,99 @@ export default function RutinePage(props) {
 					</Stack>
 
 					<Card>
-						{actionUS === 'editRutine' ? (
-							<>
-								<LocalizationProvider dateAdapter={AdapterDayjs}>
-									<DatePicker
-										label='Fecha de la Rutina'
-										value={rutineDateUS}
-										views={['day', 'month', 'year']}
-										onChange={newValue => {
-											setValueDay(newValue);
-										}}
-										renderInput={params => (
-											<TextField
-												required
-												sx={{ m: 1 }}
-												{...params}
-												helperText={null}
-											/>
-										)}
+						<FormControl sx={{ m: 1 }}>
+							<TextField
+								id='pacientName'
+								label='Paciente'
+								variant='outlined'
+								inputProps={{ readOnly: true }}
+								/* error={!!errorsUS.pacientName} */
+								value={pacientUS.name}
+								onChange={handleChangePacienteNameTextField}
+							/>
+							{/* {errorsUS.pacientName ? (
+								<span style={{ color: 'red' }}>
+									El nombre del paciente es obligatorio
+								</span>
+							) : (
+								<></>
+							)} */}
+						</FormControl>
+						<Button
+							value='agregar'
+							variant='contained'
+							onClick={handleClickAddPatientButton}>
+							seleccionar Paciente
+						</Button>
+						<br />
+
+						<LocalizationProvider dateAdapter={AdapterDayjs}>
+							<DatePicker
+								label='Fecha de la Rutina'
+								value={rutineDateUS}
+								views={['day', 'month', 'year']}
+								onChange={newValue => {
+									setValueDay(newValue);
+								}}
+								renderInput={params => (
+									<TextField
+										required
+										sx={{ m: 1 }}
+										{...params}
+										helperText={null}
 									/>
-								</LocalizationProvider>
-								<br />
-							</>
-						) : (
-							<h2>Fecha: {rutineDateUS}</h2>
-						)}
-
-						{actionUS === 'editRutine' || actionUS === 'newRutine' ? (
-							<FormControl sx={{ m: 1 }}>
-								<TextField
-									id='rutineName'
-									label='Nombre Rutina'
-									variant='outlined'
-									required
-									error={!!errorsUS.excersiceName}
-									value={rutineNameUS}
-									onChange={handleChangeRutineNameTextField}
-								/>
-								{errorsUS.rutineName ? (
-									<span style={{ color: 'red' }}>
-										El nombre de la rutina es obligatorio
-									</span>
-								) : (
-									<span />
 								)}
-							</FormControl>
-						) : (
-							<h2>Nombre Rutina: {rutineNameUS}</h2>
-						)}
+							/>
+						</LocalizationProvider>
+						<br />
 
-						{/* <FormControl sx={{ m: 1 }}>
-					<TextField
-						id='pacientName'
-						label='Nombre Paciente'
-						variant='outlined'
-						required
-						error={!!errorsUS.pacientName}
-						value={pacienteNameUS}
-						onChange={handleChangepacienteNameTextField}
-					/>
-					{errorsUS.pacientName ? (
-						<span style={{ color: 'red' }}>
-							El nombre del paciente es obligatorio
-						</span>
-					) : (
-						<span></span>
-					)}
-				</FormControl> */}
+						<FormControl sx={{ m: 1 }}>
+							<TextField
+								id='rutineName'
+								label='Nombre Rutina'
+								variant='outlined'
+								required
+								error={!!errorsUS.rutineName}
+								value={rutineNameUS}
+								onChange={handleChangeRutineNameTextField}
+							/>
+							{errorsUS.rutineName ? (
+								<span style={{ color: 'red' }}>
+									El nombre de la rutina es obligatorio
+								</span>
+							) : (
+								<></>
+							)}
+						</FormControl>
+
 						<div>
 							{rutineUS.rounds.map(round => getAccordions(round))}
 
-							{actionUS !== 'showRutine' ? (
-								<Accordion
-									key='addRound'
-									expanded={false}
-									onChange={handleChangeAcordion('addRound')}>
-									<AccordionSummary
-										aria-controls='panel1bh-content'
-										id='panel1bh-header'>
-										<Typography sx={{ width: '33%', flexShrink: 0 }}>
-											Agregar Round
-											<AddCircleIcon fontSize='small' />
-										</Typography>
-									</AccordionSummary>
-								</Accordion>
+							{actionUS !== 'viewRutine' ? (
+								<>
+									<Accordion
+										sx={errorsUS.roundsRutine ? { color: 'error.main' } : ''}
+										key='addRound'
+										expanded={false}
+										onChange={handleChangeAcordion('addRound')}>
+										<AccordionSummary
+											aria-controls='panel1bh-content'
+											id='panel1bh-header'>
+											<Typography sx={{ width: '33%', flexShrink: 0 }}>
+												Agregar Round
+												<AddCircleIcon fontSize='small' />
+											</Typography>
+										</AccordionSummary>
+									</Accordion>
+
+									{errorsUS.roundsRutine ? (
+										<span style={{ color: 'red' }}>
+											Debe agregar Rounds a la rutina
+										</span>
+									) : (
+										<></>
+									)}
+								</>
 							) : (
 								<></>
 							)}
@@ -757,7 +895,7 @@ export default function RutinePage(props) {
 								Guardar Rutina
 							</Button>
 						</div>
-						<div>
+						{/* <div>
 							<br />
 							<Button
 								variant='contained'
@@ -769,22 +907,29 @@ export default function RutinePage(props) {
 								onClick={handleClickShowexerciseButton}>
 								Mostrar ejercicios a agregar
 							</Button>
-						</div>
+							<Button
+								variant='contained'
+								value='agregar'
+								onClick={mostrarDay}>
+								Mostrar día
+							</Button>
+						</div> */}
+
+	{/* /////////////////// dialogo seleccion de ejercicios /////////////////// */}
 						<div>
 							<Dialog
-								open={openSelectexerciseDialog}
+								open={openSelectExerciseDialog}
 								onClose={handleCloseDialog}
 								aria-labelledby='alert-dialog-title'
 								aria-describedby='alert-dialog-description'
+								fullWidth='xl'
 								maxWidth='xl'>
 								<DialogContent>
-									<ListExcersice
-										action={{
-											action: 'selectExercise',
-											exercisesToAdd: exerciseToAddUS,
-											setExerciseToAdd: setExerciseToAddUS,
-											setOpenDialog: setOpenSelectexerciseDialog,
-										}}
+									<ExerciseListPage
+										action={'selectExercise'}
+										exercisesToAdd={exerciseToAddUS}
+										setExerciseToAdd={setExerciseToAddUS}
+										esValido={setEsValido}
 									/>
 								</DialogContent>
 								<DialogActions>
@@ -795,19 +940,81 @@ export default function RutinePage(props) {
 									</Button>
 									<Button
 										value='agregar'
-										onClick={handleClickAddexerciseButton}>
+										variant='contained'
+										onClick={handleClickAddExerciseButton}>
 										Agregar ejercicios
 									</Button>
 								</DialogActions>
 							</Dialog>
 						</div>
-						<div>{getConfirmationDialog()}</div>
+						
+{/* /////////////////// dialogo seleccion de pacientes /////////////////// */}
+						<div>
+							<Dialog
+								open={openSelectPatientDialog}
+								onClose={handleCloseDialog}
+								aria-labelledby='alert-dialog-title'
+								aria-describedby='alert-dialog-description'
+								fullWidth='xl'
+								maxWidth='xl'>
+								<DialogContent>
+									<PatientPage
+										action={'selectpatient'}
+										/* 	exercisesToAdd={exerciseToAddUS}
+										setExerciseToAdd={setExerciseToAddUS}
+										esValido={setEsValido} */
+									/>
+								</DialogContent>
+								<DialogActions>
+									<Button
+										value='cancelar'
+										onClick={handleCloseDialog}>
+										Cancelar
+									</Button>
+									<Button
+										value='agregar'
+										variant='contained'
+										onClick={handleClickAddPatientButton}>
+										Agregar Paciente
+									</Button>
+								</DialogActions>
+							</Dialog>
+						</div>
 
-						<Button
-							value='agregar'
-							onClick={mostrarDay}>
-							Agregar ejercicios
-						</Button>
+{/* /////////////////// dialogo mostrar de ejercicio /////////////////// */}
+						<div>
+							<Dialog
+								open={openViewExerciseDialog}
+								onClose={handleCloseDialog}
+								aria-labelledby='alert-dialog-title'
+								aria-describedby='alert-dialog-description'
+								fullWidth='xl'
+								maxWidth='xl'>
+								<DialogContent>
+									<FormExercise
+										action={{
+											action: 'viewExercise',
+											exercise: exerciseToViewUS
+										}}
+									/>
+								</DialogContent>
+								<DialogActions>
+									<Button
+										value='cancelar'
+										onClick={handleCloseDialog}>
+										Cerrar
+									</Button>
+									{/* <Button
+										value='agregar'
+										variant='contained'
+										onClick={handleClickAddExerciseButton}>
+										Agregar ejercicios
+									</Button> */}
+								</DialogActions>
+							</Dialog>
+						</div>
+
+						<div>{getConfirmationDialog()}</div>
 					</Card>
 				</Container>
 			</>
