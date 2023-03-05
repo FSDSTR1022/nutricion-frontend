@@ -814,8 +814,8 @@ export default function ExerciseListPage(props) {
 					):(<></>)}
 					
 				</Popover>
-
-				{/* ///////////////////// Dialogo de confirmación  ///////////////////// */}
+				
+{/* ///////////////////// Dialogo de confirmación  ///////////////////// */}
 				<Dialog
 					open={openConfirmationUS}
 					onClose={handleClickDelteExercise}
