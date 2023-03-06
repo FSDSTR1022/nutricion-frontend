@@ -43,14 +43,14 @@ ExerciseListToolbar.propTypes = {
 	numSelected: PropTypes.number,
 	filterName: PropTypes.string,
 	onFilterName: PropTypes.func,
-	deleteOption: PropTypes.bool
+	deleteOption: PropTypes.bool,
 };
 
 export default function ExerciseListToolbar({
 	numSelected,
 	filterName,
 	onFilterName,
-	deleteOption
+	deleteOption,
 }) {
 	return (
 		<StyledRoot
@@ -83,15 +83,15 @@ export default function ExerciseListToolbar({
 			)}
 
 			{numSelected > 0 ? (
-				deleteOption?(
+				deleteOption ? (
 					<Tooltip title='Delete'>
-					<IconButton>
-						<Iconify icon='eva:trash-2-fill' />
-					</IconButton>
-				</Tooltip>
-				):(
+						<IconButton>
+							<Iconify icon='eva:trash-2-fill' />
+						</IconButton>
+					</Tooltip>
+				) : (
 					<></>
-				)				
+				)
 			) : (
 				<Tooltip title='Filter list'>
 					<IconButton>

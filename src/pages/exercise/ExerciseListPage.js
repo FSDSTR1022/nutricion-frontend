@@ -194,14 +194,13 @@ export default function ExerciseListPage(props) {
 	};
 
 	const handleSelectAllClick = event => {
-		console.log(event.target.checked)
+		console.log(event.target.checked);
 
 		if (event.target.checked) {
 			const newSelecteds = exerciseListUS.map(n => n._id);
-			setSelectedExerciseUS(newSelecteds);			
-			
-			if (action === 'selectExercise' && setExerciseToAdd !== undefined) {
+			setSelectedExerciseUS(newSelecteds);
 
+			if (action === 'selectExercise' && setExerciseToAdd !== undefined) {
 				const detalleEjerciciosAAgregar = newSelecteds.map(exer => ({
 					exercise: exerciseListUS.find(({ _id }) => _id === exer),
 				}));
@@ -222,16 +221,13 @@ export default function ExerciseListPage(props) {
 					setExerciseToAdd(exercisesToAdd.concat(exercisesToAddLimpio));
 				}
 			}
-		}
-		else{
+		} else {
 			setSelectedExerciseUS([]);
-			setExerciseToAdd([])
+			setExerciseToAdd([]);
 		}
 	};
 
 	const handleClickSelectExerciseCheckBox = (event, id) => {
-
-
 		const selectedIndex = selectedExerciseUS.indexOf(id);
 		let exerciseSelected = [];
 		if (selectedIndex === -1) {
@@ -251,30 +247,33 @@ export default function ExerciseListPage(props) {
 		setSelectedExerciseUS(exerciseSelected);
 
 		if (action === 'selectExercise' && setExerciseToAdd !== undefined) {
+			const detalleEjerciciosAAgregar = exerciseSelected.map(exer => ({
+				exercise: exerciseListUS.find(({ _id }) => _id === exer),
+			}));
 
-			const detalleEjerciciosAAgregar = 	exerciseSelected.map(exer =>({exercise: exerciseListUS.find(({_id})=>_id===exer)}))
+			if (exercisesToAdd.length === 0) {
+				setExerciseToAdd(detalleEjerciciosAAgregar);
+			} else {
+				if (event.target.checked) {
+					const exercisesToAddLimpio = detalleEjerciciosAAgregar.filter(
+						deaa => {
+							return !exercisesToAdd.some(
+								eta => eta.exercise._id === deaa.exercise._id
+							);
+						}
+					);
 
-			if(exercisesToAdd.length===0){
-				setExerciseToAdd(detalleEjerciciosAAgregar)
+					setExerciseToAdd(exercisesToAdd.concat(exercisesToAddLimpio));
+				} else {
+					const exercisesToAddLimpio = exercisesToAdd.filter(el => {
+						return detalleEjerciciosAAgregar.some(
+							deaa => el.exercise._id === deaa.exercise._id
+						);
+					});
+
+					setExerciseToAdd(exercisesToAddLimpio);
+				}
 			}
-			else{				
-				if(event.target.checked){ 
-					const exercisesToAddLimpio = detalleEjerciciosAAgregar.filter((deaa)=>{
-						return !exercisesToAdd.some(eta=>eta.exercise._id===deaa.exercise._id)
-					   })
-
-				   setExerciseToAdd(exercisesToAdd.concat(exercisesToAddLimpio))
-				}
-				else
-				{
-					const exercisesToAddLimpio = exercisesToAdd.filter((el)=>{
-						return detalleEjerciciosAAgregar.some(deaa=>el.exercise._id===deaa.exercise._id)
-					})
-					
-					setExerciseToAdd(exercisesToAddLimpio)
-				}
-			}	
-			
 		}
 	};
 
@@ -427,20 +426,18 @@ export default function ExerciseListPage(props) {
 	};
 
 	const handleChangeExerciseRepTimeTexField = exerciseId => event => {
-
 		if (exercisesToAdd !== undefined) {
-
-			const updateArray = exercisesToAdd.map(detalleEjercicio =>{
-				if(detalleEjercicio.exercise._id===exerciseId){
+			const updateArray = exercisesToAdd.map(detalleEjercicio => {
+				if (detalleEjercicio.exercise._id === exerciseId) {
 					return {
 						...detalleEjercicio,
-						timeOReps: event.target.value
-					}
+						timeOReps: event.target.value,
+					};
 				}
-				return detalleEjercicio
-			})
+				return detalleEjercicio;
+			});
 
-			setExerciseToAdd(updateArray)
+			setExerciseToAdd(updateArray);
 		}
 	};
 
@@ -454,8 +451,6 @@ export default function ExerciseListPage(props) {
 				return <></>;
 		}
 	};
-
-
 
 	if (!isLoadingExerciseUS && !isLoadingexerciseAtributes) {
 		return (
@@ -488,7 +483,7 @@ export default function ExerciseListPage(props) {
 							numSelected={selectedExerciseUS.length}
 							filterName={filterNameUS}
 							onFilterName={handleFilterByName}
-							deleteOption={actionUS!=="selectExercise"}
+							deleteOption={actionUS !== 'selectExercise'}
 						/>
 
 						<Scrollbar>
@@ -634,36 +629,38 @@ export default function ExerciseListPage(props) {
 															</TableCell>
 														) : (
 															<TableCell align='center'>
-																<FormControl
-																	sx={{ m: 1, minWidth: 50 }}
-																>
+																<FormControl sx={{ m: 1, minWidth: 50 }}>
 																	<TextField
 																		id='repsTime'
 																		required
 																		label='Repeticiones / Tiempo'
 																		variant='outlined'
-																		
 																		disabled={
-																			!exercisesToAdd.some(excerciseDetail => (
-																				excerciseDetail.exercise._id === _id
-																				))
+																			!exercisesToAdd.some(
+																				excerciseDetail =>
+																					excerciseDetail.exercise._id === _id
+																			)
 																		}
-
-																		error={!!exercisesToAdd.some(excerciseDetail => {
-																			if(excerciseDetail.exercise._id === _id)
-																			{
-																				if(excerciseDetail.timeOReps===""){
-																					return true
-																				}else {
-																					return false
+																		error={
+																			!!exercisesToAdd.some(excerciseDetail => {
+																				if (
+																					excerciseDetail.exercise._id === _id
+																				) {
+																					if (
+																						excerciseDetail.timeOReps === ''
+																					) {
+																						return true;
+																					} else {
+																						return false;
+																					}
 																				}
-																			}
-																			
-																		})}
-																		
-																		helperText="Ingresar un valor"
+																			})
+																		}
+																		helperText='Ingresar un valor'
 																		/* value={devolverTimeoReps(exercise._id)} */
-																		onChange={handleChangeExerciseRepTimeTexField(_id)}
+																		onChange={handleChangeExerciseRepTimeTexField(
+																			_id
+																		)}
 																	/>
 																</FormControl>
 															</TableCell>
@@ -761,33 +758,42 @@ export default function ExerciseListPage(props) {
 						/>
 						Ver
 					</MenuItem>
-					{actionUS==="listExercise"?(
-						<><MenuItem
-							onClick={event => handleClickEditExercise(
-								event,
-								openUS === null ? openUS : openUS._id
-							)}>
-							<Iconify
-								icon={'eva:edit-fill'}
-								sx={{ mr: 2 }} />
-							Modificar
-						</MenuItem>
-						<MenuItem
-							sx={{ color: 'error.main' }}
-							onClick={event => handleClickDelteExercise(
-								event,
-								openUS === null ? openUS : openUS._id
-							)}>
+					{actionUS === 'listExercise' ? (
+						<>
+							<MenuItem
+								onClick={event =>
+									handleClickEditExercise(
+										event,
+										openUS === null ? openUS : openUS._id
+									)
+								}>
+								<Iconify
+									icon={'eva:edit-fill'}
+									sx={{ mr: 2 }}
+								/>
+								Modificar
+							</MenuItem>
+							<MenuItem
+								sx={{ color: 'error.main' }}
+								onClick={event =>
+									handleClickDelteExercise(
+										event,
+										openUS === null ? openUS : openUS._id
+									)
+								}>
 								<Iconify
 									icon={'eva:trash-2-outline'}
-									sx={{ mr: 2 }} />
+									sx={{ mr: 2 }}
+								/>
 								Borrar
-							</MenuItem></>
-					):(<></>)}
-					
+							</MenuItem>
+						</>
+					) : (
+						<></>
+					)}
 				</Popover>
-				
-{/* ///////////////////// Dialogo de confirmación  ///////////////////// */}
+
+				{/* ///////////////////// Dialogo de confirmación  ///////////////////// */}
 				<Dialog
 					open={openConfirmationUS}
 					onClose={handleClickDelteExercise}
@@ -816,7 +822,7 @@ export default function ExerciseListPage(props) {
 					</DialogActions>
 				</Dialog>
 
-{/* ///////////////////// Dialogo nuevo ejercicio  ///////////////////// */}
+				{/* ///////////////////// Dialogo nuevo ejercicio  ///////////////////// */}
 				<Dialog
 					open={openFormDialogUS}
 					onClose={handleCloseFormExerciseDialog}
@@ -835,7 +841,7 @@ export default function ExerciseListPage(props) {
 					</DialogActions>
 				</Dialog>
 
-{/* ///////////////////// Mensaje de resultado  ///////////////////// */}
+				{/* ///////////////////// Mensaje de resultado  ///////////////////// */}
 
 				<Snackbar
 					open={openAlertUS}

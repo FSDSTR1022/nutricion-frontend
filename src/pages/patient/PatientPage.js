@@ -29,16 +29,19 @@ import {
 	DialogContentText,
 	DialogActions,
 	Snackbar,
-	Alert
+	Alert,
 } from '@mui/material';
 import Label from '../../components/label';
 // components
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
 // sections
-import { UserListHead, UserListToolbar } from '../../sections/@dashboard/exercise';
+import {
+	UserListHead,
+	UserListToolbar,
+} from '../../sections/@dashboard/exercise';
 
-import { getAllUsers,updateUser } from '../../services/userService';
+import { getAllUsers, updateUser } from '../../services/userService';
 
 // ----------------------------------------------------------------------
 
@@ -97,7 +100,7 @@ export default function PatientPage() {
 
 	const [isLoadingPatientsUS, setIsLoadingPatientsUS] = useState(true);
 	const [patientsListUS, setPatientListUS] = useState([]);
-	const [openConfirmationUS, setOpenConfirmationUS] =useState(false);
+	const [openConfirmationUS, setOpenConfirmationUS] = useState(false);
 	const [patientToDeleteOrEditUS, setPatientToDeleteOrEditUS] = useState('');
 
 	const [openAlertUS, setOpenAlertUS] = useState(false);
@@ -182,24 +185,23 @@ export default function PatientPage() {
 
 	const handleClickAceptDelteExercise = async event => {
 		if (event.target.value === 'aceptar') {
-			
-			const patient = patientToDeleteOrEditUS
-			patient.isActive=false
-			
+			const patient = patientToDeleteOrEditUS;
+			patient.isActive = false;
+
 			const responseSave = await updateUser(patient);
 			if (responseSave.status === 200) {
-				console.log("se dio de baja")
-				console.log("responseSave: ",responseSave)
+				console.log('se dio de baja');
+				console.log('responseSave: ', responseSave);
 				setMessageAlertUS('Se dio de baja al paciente');
 				setSeverityAlertUS('success');
 			} else {
-				console.log("NO se dio de baja")
-				console.log("responseSave: ",responseSave)
+				console.log('NO se dio de baja');
+				console.log('responseSave: ', responseSave);
 				setMessageAlertUS('No se pudo dar de baja al paciente');
 				setSeverityAlertUS('error');
 			}
-			setMessageAlertUS("Se dio de baja el paciente");
-			setOpenAlertUS(true)
+			setMessageAlertUS('Se dio de baja el paciente');
+			setOpenAlertUS(true);
 			setOpenConfirmationUS(false);
 		} else if (event.target.value === 'cancelar') {
 			setOpenConfirmationUS(false);
@@ -208,8 +210,6 @@ export default function PatientPage() {
 		setOpenUS(null);
 		setPatientToDeleteOrEditUS('');
 	};
-
-	
 
 	const emptyRows =
 		pageUS > 0
@@ -225,8 +225,7 @@ export default function PatientPage() {
 	const isNotFound = !filteredPatients.length && !!filterNameUS;
 
 	const handleClickDeltePatient = (event, id) => {
-
-		console.log(`Delte paciente: ${id}`)
+		console.log(`Delte paciente: ${id}`);
 		const patientToDelete = patientsListUS.find(
 			exercise => exercise._id === id
 		);
@@ -237,19 +236,18 @@ export default function PatientPage() {
 	};
 
 	const handleClickViewPatient = (event, id) => {
+		console.log(`Ver paciente: ${id}`);
 
-		console.log(`Ver paciente: ${id}`)
-		
 		/* const excersiceToView = exerciseListUS.find(element => element._id === id);
 
 		setActionToDoInexerciseDialogUS('viewExercise');
 		setExerciseToDeleteOrEditUS(excersiceToView);
 		setOpenFormDialogUS(true);
 		setOpenUS(null); */
-	}; 
+	};
 
 	const handleClickEditPatient = (event, id) => {
-		console.log(`Ver paciente: ${id}`)
+		console.log(`Ver paciente: ${id}`);
 		/* const excersiceToEdit = exerciseListUS.find(element => element._id === id);
 
 		setActionToDoInexerciseDialogUS('editExercise');
@@ -265,7 +263,6 @@ export default function PatientPage() {
 		setOpenAlertUS(false);
 	};
 
-	
 	if (!isLoadingPatientsUS) {
 		return (
 			<>
@@ -317,7 +314,15 @@ export default function PatientPage() {
 												pageUS * rowsPerPage + rowsPerPage
 											)
 											.map(row => {
-												const { _id, name, lastName, phone, dni, email,isActive } = row;
+												const {
+													_id,
+													name,
+													lastName,
+													phone,
+													dni,
+													email,
+													isActive,
+												} = row;
 												const selectedPatient = selectedUS.indexOf(name) !== -1;
 
 												return (
@@ -448,7 +453,7 @@ export default function PatientPage() {
 							},
 						},
 					}}>
-						<MenuItem
+					<MenuItem
 						onClick={event =>
 							handleClickViewPatient(
 								event,
@@ -462,10 +467,12 @@ export default function PatientPage() {
 						Ver
 					</MenuItem>
 					<MenuItem
-					onClick={event => handleClickEditPatient(
-						event,
-						openUS === null ? openUS : openUS._id
-					)}>
+						onClick={event =>
+							handleClickEditPatient(
+								event,
+								openUS === null ? openUS : openUS._id
+							)
+						}>
 						<Iconify
 							icon={'eva:edit-fill'}
 							sx={{ mr: 2 }}
@@ -473,12 +480,14 @@ export default function PatientPage() {
 						Modificar
 					</MenuItem>
 
-					<MenuItem 
-					sx={{ color: 'error.main' }}
-					onClick={event => handleClickDeltePatient(
-						event,
-						openUS === null ? openUS : openUS._id
-					)}>
+					<MenuItem
+						sx={{ color: 'error.main' }}
+						onClick={event =>
+							handleClickDeltePatient(
+								event,
+								openUS === null ? openUS : openUS._id
+							)
+						}>
 						<Iconify
 							icon={'eva:trash-2-outline'}
 							sx={{ mr: 2 }}
@@ -487,7 +496,7 @@ export default function PatientPage() {
 					</MenuItem>
 				</Popover>
 
-{/* ///////////////////// Dialogo de confirmación  ///////////////////// */}
+				{/* ///////////////////// Dialogo de confirmación  ///////////////////// */}
 				<Dialog
 					open={openConfirmationUS}
 					onClose={handleClickDelteExercise}
@@ -516,7 +525,7 @@ export default function PatientPage() {
 					</DialogActions>
 				</Dialog>
 
-{/* ///////////////////// Mensaje de resultado  ///////////////////// */}
+				{/* ///////////////////// Mensaje de resultado  ///////////////////// */}
 
 				<Snackbar
 					open={openAlertUS}
