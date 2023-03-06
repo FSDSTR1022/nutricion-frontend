@@ -36,7 +36,7 @@ export default function LoginForm() {
 			if (localStorage.getItem('user')) {
 				localStorage.removeItem('user');
 			}
-			localStorage.setItem('user', data.user);
+			localStorage.setItem('user', JSON.stringify(data.user));
 
 			// redirigir a la url del dashboard
 			navigate('/dashboard', { replace: true });

@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 // @mui
 import { Stack, IconButton, InputAdornment, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-// components
+// icons
 import Iconify from '../../../components/iconify';
-//
+// components
 import { registerUser, loginUser } from '../../../services/userService';
 
 // ----------------------------------------------------------------------
@@ -144,7 +144,7 @@ export default function RegisterForm() {
 				if (localStorage.getItem('user')) {
 					localStorage.removeItem('user');
 				}
-				localStorage.setItem('user', data.user);
+				localStorage.setItem('user', JSON.stringify(data.user));
 
 				// redirigir a la url del dashboard
 				navigate('/dashboard', { replace: true });
