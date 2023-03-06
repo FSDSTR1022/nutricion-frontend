@@ -49,11 +49,16 @@ const Calendarh = () => {
 	const [dateNewRutina, setDateNewRutina] = useState(new Date());
 	const [nextRutinas, setNextRutinas] = useState([]);
 
-	const state = useParams();
+	const [userRutinesList, setUserRutinesList] = useState([]);
+
+	const [patient, setPatient] = useState({});
+
+	const { id } = useParams();
 
 	useEffect(() => {
 		getMeassures();
-		console.log(JSON.stringify(state));
+		getPatients();
+		console.log(JSON.stringify(id));
 	}, []);
 
 	const getMeassures = () => {
@@ -61,7 +66,9 @@ const Calendarh = () => {
 			.then(res => res.json())
 			.then(data => {
 				setRutinasList(data);
-				const nextR = data.filter(rut => Date.parse(rut.day) >= today);
+				const userRutines = data.filter(rut => rut.user._id === id);
+				setUserRutinesList(userRutines);
+				const nextR = userRutines.filter(rut => Date.parse(rut.day) >= today);
 				const nextRs = nextR.sort(
 					(a, b) => Date.parse(a.day) - Date.parse(b.day)
 				);
@@ -71,6 +78,16 @@ const Calendarh = () => {
 
 			.catch(err => console.log('error', err));
 		handleNextRutines();
+	};
+
+	const getPatients = () => {
+		fetch('http://localhost:3000/users/all')
+			.then(res => res.json())
+			.then(data => {
+				const pat = data.filter(p => p._id === id).pop();
+				setPatient(pat);
+			})
+			.catch(err => console.log('error', err));
 	};
 
 	const today = Date.now() - 86400000;
@@ -142,50 +159,56 @@ const Calendarh = () => {
 					xs={4}>
 					<Stack spacing={4}>
 						<img
-							src={patientExample.imgUrl}
-							alt={patientExample.name}
+							src={patient.imgUrl}
+							alt={patient.name}
 						/>
 						<Typography
 							variant='h2'
 							textAlign='center'>
-							{patientExample.name}
+							{patient.name}
 						</Typography>
 						<Typography
 							variant='h4'
 							sx={{ justifyContent: 'space' }}>
-							{`Last Name: ${patientExample.lastName}`}
+							{`Last Name: ${patient.lastName}`}
 						</Typography>
-						<Typography variant='h4'>{`DNI: ${patientExample.dni}`}</Typography>
+						<Typography variant='h4'>{`DNI: ${patient.dni}`}</Typography>
 						<Typography variant='h4'>
-							{`Paciente desde: ${patientExample.createdAt}`}
+							{`Paciente desde: ${patient.createdAt}`}
 						</Typography>
 						<Typography
 							variant='h3'
 							textAlign='center'>
 							{`Próxima Rutina`}
 						</Typography>
-						<Typography
-							variant='h4'
-							textAlign='left'>
-							{`Nombre: ${nextRutinas[0]?.name}`}
-						</Typography>
-						<Typography
-							variant='h4'
-							textAlign='left'>
-							{`Fecha:  ${nextRutinas[0]?.day}`}
-						</Typography>
-						<Typography
-							variant='h4'
-							textAlign='left'>
-							{`Rounds: ${nextRutinas[0]?.rounds.length}`}
-						</Typography>
-						<Typography
-							variant='h4'
-							textAlign='left'>
-							{`Estimated time = ${
-								nextRutinas[0]?.rounds.length * 12 + 8
-							} minutes`}
-						</Typography>
+						{nextRutinas.length ? (
+							<>
+								<Typography
+									variant='h4'
+									textAlign='left'>
+									{`Nombre: ${nextRutinas[0]?.name}`}
+								</Typography>
+								<Typography
+									variant='h4'
+									textAlign='left'>
+									{`Fecha:  ${nextRutinas[0]?.day}`}
+								</Typography>
+								<Typography
+									variant='h4'
+									textAlign='left'>
+									{`Rounds: ${nextRutinas[0]?.rounds.length}`}
+								</Typography>
+								<Typography
+									variant='h4'
+									textAlign='left'>
+									{`Estimated time = ${
+										nextRutinas[0]?.rounds.length * 12 + 8
+									} minutes`}
+								</Typography>
+							</>
+						) : (
+							<Typography>No hay rutinas previstas</Typography>
+						)}
 					</Stack>
 				</Grid>
 				<Grid

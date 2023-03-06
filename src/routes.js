@@ -32,7 +32,7 @@ export default function Router() {
 				{ path: 'exercises', element: <ListExercise /> },
 				{ path: 'newexercise', element: <FormExercise /> },
 				{ path: 'pacients', element: <PatientPage /> },
-				{ path: 'pacients/calendar', element: <Calendarh /> },
+				{ path: 'pacients/patient/:id', element: <Calendarh /> },
 				{ path: 'newpacient', element: <FormPatient /> },
 				{ path: 'newroutine', element: <RutinePage /> },
 			],

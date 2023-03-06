@@ -117,10 +117,9 @@ export default function PatientPage() {
 
 	// función ir a calendario de paciente
 
-	const handleClickViewPatient = () => {
-		navigate('/dashboard/pacients/calendar', {
-			state: { messge: 'fucking A' },
-		});
+	const handleClickViewPatient = id => {
+		console.log('id', id);
+		navigate(`/dashboard/pacients/patient/${id}`);
 	};
 
 	const handleRequestSort = (event, property) => {
@@ -241,7 +240,15 @@ export default function PatientPage() {
 												page * rowsPerPage + rowsPerPage
 											)
 											.map(row => {
-												const { _id, name, lastName, phone, dni, email } = row;
+												const {
+													_id,
+													name,
+													lastName,
+													phone,
+													dni,
+													email,
+													imgUrl,
+												} = row;
 												const selectedUser = selected.indexOf(name) !== -1;
 
 												return (
@@ -269,7 +276,7 @@ export default function PatientPage() {
 																spacing={2}>
 																<Avatar
 																	alt={name}
-																	src='/assets/images/avatars/avatar_1.jpg'
+																	src={imgUrl}
 																/>
 																<Typography
 																	variant='subtitle2'
@@ -293,6 +300,59 @@ export default function PatientPage() {
 																onClick={handleOpenMenu}>
 																<Iconify icon={'eva:more-vertical-fill'} />
 															</IconButton>
+														</TableCell>
+														<TableCell>
+															<Popover
+																open={Boolean(open)}
+																anchorEl={open}
+																onClose={handleCloseMenu}
+																anchorOrigin={{
+																	vertical: 'top',
+																	horizontal: 'left',
+																}}
+																transformOrigin={{
+																	vertical: 'top',
+																	horizontal: 'right',
+																}}
+																PaperProps={{
+																	sx: {
+																		p: 1,
+																		width: 140,
+																		'& .MuiMenuItem-root': {
+																			px: 1,
+																			typography: 'body2',
+																			borderRadius: 0.75,
+																		},
+																	},
+																}}>
+																<MenuItem
+																	onClick={() =>
+																		handleClickViewPatient(
+																			'64024755a6db697eb1b40d77'
+																		)
+																	}>
+																	<Iconify
+																		icon={'eva:eye-fill'}
+																		sx={{ mr: 2 }}
+																	/>
+																	Ver
+																</MenuItem>
+																<MenuItem>
+																	<Iconify
+																		icon={'eva:edit-fill'}
+																		sx={{ mr: 2 }}
+																	/>
+																	Modificar
+																</MenuItem>
+
+																<MenuItem sx={{ color: 'error.main' }}>
+																	<Iconify
+																		icon={'eva:trash-2-outline'}
+																		sx={{ mr: 2 }}
+																	/>
+																	Borrar
+																</MenuItem>
+															</Popover>
 														</TableCell>
 													</TableRow>
 												);
@@ -347,47 +407,6 @@ export default function PatientPage() {
 						/>
 					</Card>
 				</Container>
-
-				<Popover
-					open={Boolean(open)}
-					anchorEl={open}
-					onClose={handleCloseMenu}
-					anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-					transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-					PaperProps={{
-						sx: {
-							p: 1,
-							width: 140,
-							'& .MuiMenuItem-root': {
-								px: 1,
-								typography: 'body2',
-								borderRadius: 0.75,
-							},
-						},
-					}}>
-					<MenuItem onClick={() => handleClickViewPatient()}>
-						<Iconify
-							icon={'eva:eye-fill'}
-							sx={{ mr: 2 }}
-						/>
-						Ver
-					</MenuItem>
-					<MenuItem>
-						<Iconify
-							icon={'eva:edit-fill'}
-							sx={{ mr: 2 }}
-						/>
-						Modificar
-					</MenuItem>
-
-					<MenuItem sx={{ color: 'error.main' }}>
-						<Iconify
-							icon={'eva:trash-2-outline'}
-							sx={{ mr: 2 }}
-						/>
-						Borrar
-					</MenuItem>
-				</Popover>
 			</>
 		);
 	} else {
