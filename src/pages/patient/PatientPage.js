@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 // @mui
 import {
 	Card,
@@ -106,6 +107,8 @@ export default function PatientPage() {
 	const [openAlertUS, setOpenAlertUS] = useState(false);
 	const [messageAlertUS, setMessageAlertUS] = useState('');
 	const [severityAlertUS, setSeverityAlertUS] = useState('success');
+
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const getAllusers = async () => {
@@ -236,6 +239,7 @@ export default function PatientPage() {
 	};
 
 	const handleClickViewPatient = (event, id) => {
+		navigate(`/dashboard/pacients/${id}`);
 		console.log(`Ver paciente: ${id}`);
 
 		/* const excersiceToView = exerciseListUS.find(element => element._id === id);
