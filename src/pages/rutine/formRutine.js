@@ -42,7 +42,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CheckIcon from '@mui/icons-material/Check';
-import ListExcersice from '../excercise/listExercise';
+import ListExcersice from '../exercise/listExercise';
 import {
 	saveRutine,
 	getRutines,
@@ -61,11 +61,15 @@ const FormRutine = props => {
 	const [roundToEdit, setRoundToEdit] = useState('');
 	const [roundNameToEdit, setRoundNameToEdit] = useState('');
 
-	const [openSelectexerciseDialog, setOpenSelectexerciseDialog] =useState(false);
+	const [openSelectexerciseDialog, setOpenSelectexerciseDialog] =
+		useState(false);
 	const [errorTextFild, setErrorTextFild] = useState(false);
 
 	const [exerciseToAddUS, setexerciseToAddUS] = useState([]);
-	const [roundDondeSeAgregaraElEjercicioUS,SetRoundDondeSeAgregaraElEjercicioUS,] = useState('');
+	const [
+		roundDondeSeAgregaraElEjercicioUS,
+		SetRoundDondeSeAgregaraElEjercicioUS,
+	] = useState('');
 
 	const [rutineNameUS, setRutineNameUS] = useState('Fuerza');
 	const [pacientUS, setPacienteNameUS] = useState({
@@ -90,24 +94,24 @@ const FormRutine = props => {
 
 	const { action } = props;
 
+	setActionUS('editRutine');
 
-		setActionUS('newRutine');
+	setActionUS('newRutine');
 
-		switch (action) {
-			case 'newRutine':
-				break;
-			case 'showRutine':
-				break;
-			case 'editRutine':
-				break;
-			default:
-				break;
-		}
-	
+	switch (action) {
+		case 'newRutine':
+			break;
+		case 'showRutine':
+			break;
+		case 'editRutine':
+			break;
+		default:
+			break;
+	}
 
 	const handleChangeAcordion = roundOrder => (event, isExpanded) => {
 		if (roundOrder === 'addRound') {
-			const {rounds} = rutineUS;
+			const { rounds } = rutineUS;
 
 			rounds.push({
 				order: rounds.length + 1,
@@ -172,7 +176,7 @@ const FormRutine = props => {
 	};
 
 	const deleteRound = () => {
-		const {rounds} = rutineUS;
+		const { rounds } = rutineUS;
 
 		const index = rounds.findIndex(element => element.order === roundToEdit);
 
@@ -193,11 +197,15 @@ const FormRutine = props => {
 	const deleteExercise = () => {
 		// sacar el ejercicio del round
 
-		const {rounds} = rutineUS;
+		const { rounds } = rutineUS;
 
-		const indexRound = rounds.findIndex(element => element.order === roundToEdit);
+		const indexRound = rounds.findIndex(
+			element => element.order === roundToEdit
+		);
 
-		const indexExercise = rounds[indexRound].exercises.findIndex(exercise => exercise.exercise._id === exerciseToDeleteOrEdit);
+		const indexExercise = rounds[indexRound].exercises.findIndex(
+			exercise => exercise.exercise._id === exerciseToDeleteOrEdit
+		);
 
 		rounds[indexRound].exercises.splice(indexExercise, 1);
 
@@ -213,7 +221,7 @@ const FormRutine = props => {
 
 	const handleKeyDonwRoundNameTextFiled = roundOrder => event => {
 		if (event.key === 'Enter') {
-			const {rounds} = rutineUS;
+			const { rounds } = rutineUS;
 			rounds.map(round => {
 				if (round.order === roundOrder) {
 					round.roundName = roundNameToEdit;
@@ -235,7 +243,7 @@ const FormRutine = props => {
 	};
 
 	const handleOnClickAcceptRoundNameChange = roundOrder => {
-		const {rounds} = rutineUS;
+		const { rounds } = rutineUS;
 		rounds.map(round => {
 			if (round.order === roundOrder) {
 				round.roundName = roundNameToEdit;
@@ -266,7 +274,9 @@ const FormRutine = props => {
 
 	const handleClickAddexerciseButton = () => {
 		const rutina = rutineUS;
-		const round = rutina.rounds.find(round => round.roundName === roundDondeSeAgregaraElEjercicioUS);
+		const round = rutina.rounds.find(
+			round => round.roundName === roundDondeSeAgregaraElEjercicioUS
+		);
 
 		round.exercises = round.exercises.concat(exerciseToAddUS);
 
@@ -384,7 +394,7 @@ const FormRutine = props => {
 			case 'editRutine':
 				return <h1>Modificar Rutina de Ejercicios</h1>;
 			default:
-					return <></>
+				return <></>;
 		}
 	};
 
@@ -398,16 +408,14 @@ const FormRutine = props => {
 			<Accordion
 				key={round.order}
 				expanded={accordionExpanded === round.order}
-				onChange={handleChangeAcordion(round.order)}
-			>
+				onChange={handleChangeAcordion(round.order)}>
 				<AccordionSummary
 					expandIcon={<ExpandMoreIcon />}
 					aria-controls='panel1bh-content'
-					id='panel1bh-header'
-				>
+					id='panel1bh-header'>
 					{roundToEdit !== round.order ? (
 						<Typography sx={{ width: '33%', flexShrink: 0 }}>
-							{`Round ${  round.roundName}`}
+							{`Round ${round.roundName}`}
 						</Typography>
 					) : (
 						<>
@@ -415,8 +423,7 @@ const FormRutine = props => {
 								sx={{ '& > :not(style)': { m: 1, width: '25ch' } }}
 								noValidate
 								autoComplete='off'
-								margin='dense'
-							>
+								margin='dense'>
 								<TextField
 									id='standard-basic'
 									label='Nombre Round'
@@ -458,10 +465,14 @@ const FormRutine = props => {
 							/>
 						</div>
 					) : (
-						<div><></></div>
+						<div>
+							<></>
+						</div>
 					)}
 
-					<Table sx={{ minWidth: 650 }} aria-label='simple table'>
+					<Table
+						sx={{ minWidth: 650 }}
+						aria-label='simple table'>
 						{round.exercises.length > 0 ? (
 							<TableHead>
 								<TableRow>
@@ -486,23 +497,30 @@ const FormRutine = props => {
 													hover={true}
 													sx={{
 														'&:last-child td, &:last-child th': { border: 0 },
-													}}
-												>
-													<TableCell component='th' scope='row' align='center'>
+													}}>
+													<TableCell
+														component='th'
+														scope='row'
+														align='center'>
 														{exercise.exercise.name}
 													</TableCell>
-													<TableCell component='th' scope='row' align='center'>
+													<TableCell
+														component='th'
+														scope='row'
+														align='center'>
 														{exercise.timeOReps}
 													</TableCell>
-													<TableCell component='th' scope='row' align='center'>
+													<TableCell
+														component='th'
+														scope='row'
+														align='center'>
 														<Box
 															sx={{
 																display: 'flex',
 																flexWrap: 'wrap',
 																justifyContent: 'center',
 																gap: 0.5,
-															}}
-														>
+															}}>
 															{exercise.exercise.equipments.map(equipment => (
 																<Chip
 																	key={equipment._id}
@@ -515,8 +533,7 @@ const FormRutine = props => {
 														<TableCell
 															component='th'
 															scope='row'
-															align='center'
-														>
+															align='center'>
 															<DeleteIcon
 																fontSize='small'
 																onClick={handleClickDeleteExceciseIcon(
@@ -542,7 +559,10 @@ const FormRutine = props => {
 									}} /* sx={{ '&:last-child td, &:last-child th': { border: 0 } }} */
 								>
 									<TableCell />
-									<TableCell component='th' scope='row' align='center'>
+									<TableCell
+										component='th'
+										scope='row'
+										align='center'>
 										Agregar Ejercicio
 										<AddCircleIcon
 											fontSize='small'
@@ -564,7 +584,8 @@ const FormRutine = props => {
 	};
 
 	const getConfirmationDialog = () => {
-		let title; let message;
+		let title;
+		let message;
 
 		switch (confirmationAcionUS) {
 			case 'deleteRound':
@@ -585,8 +606,7 @@ const FormRutine = props => {
 					open={openConfirmationUS}
 					/* onClose={handleClickDelteexercise} */
 					aria-labelledby='alert-dialog-title'
-					aria-describedby='alert-dialog-description'
-				>
+					aria-describedby='alert-dialog-description'>
 					<DialogTitle id='alert-dialog-title'>{title}</DialogTitle>
 					<DialogContent>
 						<DialogContentText id='alert-dialog-description'>
@@ -594,10 +614,14 @@ const FormRutine = props => {
 						</DialogContentText>
 					</DialogContent>
 					<DialogActions>
-						<Button value='aceptar' onClick={handleOnClickDialogButons}>
+						<Button
+							value='aceptar'
+							onClick={handleOnClickDialogButons}>
 							Aceptar
 						</Button>
-						<Button value='cancelar' onClick={handleOnClickDialogButons}>
+						<Button
+							value='cancelar'
+							onClick={handleOnClickDialogButons}>
 							Cancelar
 						</Button>
 					</DialogActions>
@@ -632,7 +656,7 @@ const FormRutine = props => {
 								)}
 							/>
 						</LocalizationProvider>
-						<br/>
+						<br />
 					</>
 				) : (
 					<h2>Fecha: {rutineDateUS}</h2>
@@ -690,12 +714,10 @@ const FormRutine = props => {
 					<Accordion
 						key='addRound'
 						expanded={false}
-						onChange={handleChangeAcordion('addRound')}
-					>
+						onChange={handleChangeAcordion('addRound')}>
 						<AccordionSummary
 							aria-controls='panel1bh-content'
-							id='panel1bh-header'
-						>
+							id='panel1bh-header'>
 							<Typography sx={{ width: '33%', flexShrink: 0 }}>
 								Agregar Round
 								<AddCircleIcon fontSize='small' />
@@ -707,16 +729,22 @@ const FormRutine = props => {
 				)}
 			</div>
 			<div>
-				<Button variant='contained' onClick={handleClickSaveRutineButton}>
+				<Button
+					variant='contained'
+					onClick={handleClickSaveRutineButton}>
 					Guardar Rutina
 				</Button>
 			</div>
 			<div>
 				<br />
-				<Button variant='contained' onClick={handleClickShowRutineButton}>
+				<Button
+					variant='contained'
+					onClick={handleClickShowRutineButton}>
 					Mostrar Rutina
 				</Button>
-				<Button variant='contained' onClick={handleClickShowexerciseButton}>
+				<Button
+					variant='contained'
+					onClick={handleClickShowexerciseButton}>
 					Mostrar ejercicios a agregar
 				</Button>
 			</div>
@@ -727,21 +755,24 @@ const FormRutine = props => {
 					aria-labelledby='alert-dialog-title'
 					aria-describedby='alert-dialog-description'
 					/* fullWidth="xl" */
-					maxWidth='xl'
-				>
+					maxWidth='xl'>
 					<DialogContent>
 						<ListExcersice
 							action={'selectexercise'}
 							exercisesToAdd={exerciseToAddUS}
 							setexerciseToAdd={setexerciseToAddUS}
 							setOpenDialog={setOpenSelectexerciseDialog}
-						 />
+						/>
 					</DialogContent>
 					<DialogActions>
-						<Button value='cancelar' onClick={handleCloseDialog}>
+						<Button
+							value='cancelar'
+							onClick={handleCloseDialog}>
 							Cancelar
 						</Button>
-						<Button value='agregar' onClick={handleClickAddexerciseButton}>
+						<Button
+							value='agregar'
+							onClick={handleClickAddexerciseButton}>
 							Agregar ejercicios
 						</Button>
 					</DialogActions>
@@ -749,7 +780,9 @@ const FormRutine = props => {
 			</div>
 			<div>{getConfirmationDialog()}</div>
 
-			<Button value='agregar' onClick={mostrarDay}>
+			<Button
+				value='agregar'
+				onClick={mostrarDay}>
 				Agregar ejercicios
 			</Button>
 		</>

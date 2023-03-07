@@ -20,7 +20,7 @@ import {
 	Paper,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useTheme, styled  } from '@mui/material/styles';
+import { useTheme, styled } from '@mui/material/styles';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { ConstructionOutlined } from '@mui/icons-material';
 import {
@@ -45,7 +45,7 @@ const FormExercise = props => {
 
 	const [errorsUS, setErrorsUS] = useState({});
 
-	const [actionUS, setActionUS] = useState("newExercise");
+	const [actionUS, setActionUS] = useState('newExercise');
 	const [excerciseToEditODeleteUS, setExcerciseToEditODeleteUS] = useState();
 
 	const { action, exercisesToAdd, setexerciseToAdd } = props;
@@ -53,6 +53,12 @@ const FormExercise = props => {
 	const { state } = useLocation(); // hook para la navegacion
 
 	const navigate = useNavigate();
+
+	const defaultUrlImg =
+		'https://res.cloudinary.com/dtnuuoiih/image/upload/v1678038327/exercises/default_upload_image_m6j6gc.png';
+
+	const defaultUrlVid =
+		'https://res.cloudinary.com/dtnuuoiih/image/upload/v1678039917/exercises/default_upload_video_ejzncj.jpg';
 
 	const theme = useTheme();
 	const ITEM_HEIGHT = 48;
@@ -67,7 +73,6 @@ const FormExercise = props => {
 	};
 
 	useEffect(() => {
-
 		if (action === undefined) {
 			setActionUS('newexercise');
 		} else {
@@ -88,7 +93,7 @@ const FormExercise = props => {
 
 				if (state.excercise !== undefined) {
 					setExcerciseToEditODeleteUS(state.excercise);
-		
+
 					setExerciseNameUS(state.excercise.name);
 					setExerciseTypeUS(state.excercise.exerciseType._id);
 					setExerciseDifficultUS(state.excercise.difficulty._id);
@@ -116,7 +121,7 @@ const FormExercise = props => {
 			default:
 				break;
 		}
-	},);
+	});
 
 	const handleChangeExerciseNameInput = event => {
 		setExerciseNameUS(event.target.value);
@@ -182,7 +187,6 @@ const FormExercise = props => {
 		exerciseToSave.video =
 			'https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC5cFhphukFT-h24CWqwycbNcvVutbJeGlueYS4zwVmBzJVyiaz-QHbRCufuJJKe8_5SEVROgxGAKk9YlzyGlxBFX-Uyl0CIxObBSXxvow';
 
-		
 		switch (actionUS) {
 			case 'newExercise':
 				saveExercise(exerciseToSave);
@@ -194,8 +198,8 @@ const FormExercise = props => {
 				navigate('/Ejercicios');
 				break;
 			default:
-					break
-		}		
+				break;
+		}
 	};
 
 	const checkForm = () => {
@@ -222,7 +226,6 @@ const FormExercise = props => {
 	}));
 
 	const getTitle = () => {
-	
 		switch (actionUS) {
 			case 'newexercise':
 				return <h1>Nuevo Ejercicio</h1>;
@@ -231,7 +234,7 @@ const FormExercise = props => {
 			default:
 				return <></>;
 		}
-	}
+	};
 
 	if (!isLoading) {
 		return (
@@ -254,9 +257,10 @@ const FormExercise = props => {
 						{errorsUS.ExcersiceName ? (
 							<span style={{ color: 'red' }}>Este campo es obligatorio</span>
 						) : (
-							<span><></></span>
+							<span>
+								<></>
+							</span>
 						)}
-						
 					</FormControl>
 
 					{/* Selectot Tipo Ejercicio */}
@@ -357,8 +361,6 @@ const FormExercise = props => {
 						</Select>
 					</FormControl>
 
-					
-
 					{/* Selector musculos Ejercicio */}
 					<FormControl
 						required
@@ -406,8 +408,6 @@ const FormExercise = props => {
 							))}
 						</Select>
 					</FormControl>
-
-					
 
 					<FormControl
 						required
@@ -457,8 +457,6 @@ const FormExercise = props => {
 						</Select>
 					</FormControl>
 
-
-
 					<FormControl
 						fullWidth
 						sx={{ m: 1 }}>
@@ -472,7 +470,6 @@ const FormExercise = props => {
 							onChange={handleChangeExplanationInput}
 						/>
 					</FormControl>
-
 
 					<FormControl
 						fullWidth
@@ -493,7 +490,6 @@ const FormExercise = props => {
 					<br />
 					<br />
 
-
 					<Box sx={{ flexGrow: 1 }}>
 						<Grid
 							container
@@ -506,50 +502,255 @@ const FormExercise = props => {
 										alt={'Hats'}
 										loading='lazy'
 									/>
-									<br />
-									<Button
-										id='imagenButton'
-										variant='contained'
-										component='label'>
-										Cargar Imagen
-										<input
-											hidden
-											accept='image/*'
-											multiple
-											type='file'
-										/>
-									</Button>
-								</Item>
-							</Grid>
-							<Grid>
+								}
+								renderValue={selected => (
+									<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+										{selected.map(value => (
+											<Chip
+												key={value}
+												label={exerciseAtributsUS.bodyParts.map(body => {
+													if (body._id === value) return body.bodyPart;
+												})}
+											/>
+										))}
+									</Box>
+								)}
+								MenuProps={MenuProps}>
+								{exerciseAtributsUS.bodyParts.map(part => (
+									<MenuItem
+										key={part._id}
+										value={part._id}
+										style={getStylesItemSelector(
+											part._id,
+											exerciseBodyPartsUS,
+											theme
+										)}>
+										{part.bodyPart}
+									</MenuItem>
+								))}
+							</Select>
+							{errorsUS.excersiceBodyParts ? (
+								<span style={{ color: 'red' }}>
+									Las partes del cuerpo ejercicio son obligatorias
+								</span>
+							) : (
+								<></>
+							)}
+						</FormControl>
+
+						{/*  //////////////// Selector musculos Ejercicio //////////////// */}
+						<FormControl
+							required
+							fullWidth>
+							<InputLabel
+								sx={{ m: 1 }}
+								id='imputLabelMusculosEjercicio'>
+								Musculos Involucrados
+							</InputLabel>
+							<Select
+								sx={{ m: 1 }}
+								labelId='imputLabelMusculosEjercicio'
+								id='selectorMusculosEjercicio'
+								multiple
+								value={exerciseMuclesUS}
+								onChange={handleChangeMuscleSelector}
+								input={
+									<OutlinedInput
+										id='OutlinedInputMusculos'
+										label='Musculos Involucrados'
+									/>
+								}
+								renderValue={selected => (
+									<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+										{selected.map(value => (
+											<Chip
+												key={value}
+												label={exerciseAtributsUS.exerciseMucles.map(muscle => {
+													if (muscle._id === value) return muscle.muscle;
+												})}
+											/>
+										))}
+									</Box>
+								)}
+								MenuProps={MenuProps}>
+								{exerciseAtributsUS.exerciseMucles.map(muscle => (
+									<MenuItem
+										key={muscle._id}
+										value={muscle._id}
+										style={getStylesItemSelector(
+											muscle._id,
+											exerciseMuclesUS,
+											theme
+										)}>
+										{muscle.muscle}
+									</MenuItem>
+								))}
+							</Select>
+							{errorsUS.excersiceMuscles ? (
+								<span style={{ color: 'red' }}>
+									Los musculos son obligatorios
+								</span>
+							) : (
+								<></>
+							)}
+						</FormControl>
+
+						{/*  //////////////// Selector Equipamiento //////////////// */}
+						<FormControl
+							required
+							fullWidth>
+							<InputLabel
+								sx={{ m: 1 }}
+								id='demo-multiple-chip-label2'>
+								Equipamiento
+							</InputLabel>
+							<Select
+								sx={{ m: 1 }}
+								labelId='demo-multiple-chip-label2'
+								id='demo-multiple-chip2'
+								multiple
+								value={exerciseEquipmentsUS}
+								onChange={handleChangeEquipamiento}
+								input={
+									<OutlinedInput
+										id='select-multiple-chip2'
+										label='Equipamiento'
+									/>
+								}
+								renderValue={selected => (
+									<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+										{selected.map(value => (
+											<Chip
+												key={value}
+												label={exerciseAtributsUS.exerciseEquipments.map(
+													equipment => {
+														if (equipment._id === value)
+															return equipment.exerciseEquipment;
+													}
+												)}
+											/>
+										))}
+									</Box>
+								)}
+								MenuProps={MenuProps}>
+								{exerciseAtributsUS.exerciseEquipments.map(equipment => (
+									<MenuItem
+										key={equipment._id}
+										value={equipment._id}
+										style={getStylesItemSelector(
+											equipment._id,
+											exerciseEquipmentsUS,
+											theme
+										)}>
+										{equipment.exerciseEquipment}
+									</MenuItem>
+								))}
+							</Select>
+							{errorsUS.excersiceEquipment ? (
+								<span style={{ color: 'red' }}>
+									El equipamiento del ejercicio es obligatorio
+								</span>
+							) : (
+								<></>
+							)}
+						</FormControl>
+
+						{/*  //////////////// explicación //////////////// */}
+						<FormControl
+							required
+							fullWidth>
+							<Typography sx={{ m: 1 }}>
+								Detalle la explicación para realizar el ejercicio:
+							</Typography>
+
+							<TextField
+								sx={{ m: 1 }}
+								id='explicaciónEjercicio'
+								label='Explicación Ejercicio'
+								multiline
+								rows={5}
+								value={exerciseExplanationUS}
+								onChange={handleChangeExplanationInput}
+							/>
+						</FormControl>
+
+						{/*  //////////////// precauciones //////////////// */}
+						<FormControl fullWidth>
+							<Typography sx={{ m: 1 }}>
+								Especifique las precauciones a tener en cuenta al momento de
+								realizar el ejercicio:
+							</Typography>
+
+							<TextField
+								sx={{ m: 1 }}
+								id='explicaciónEjercicio'
+								label='Precauciones Ejercicio'
+								multiline
+								rows={5}
+								value={exercisePrecautionsUS}
+								onChange={handleChangePrecautionsInput}
+							/>
+						</FormControl>
+						<br />
+						<br />
+
+						<Box sx={{ flexGrow: 1, ml: 3 }}>
+							<Grid
+								container
+								spacing={1}>
 								<Grid>
 									<Item>
 										<img
-											src={`https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=164&h=164&fit=crop&auto=format`}
-											srcSet={`https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-											alt={'Hats'}
+											style={{ width: 100, height: 100 }}
+											src={cloudImgUrl || defaultUrlImg}
+											alt={imagenEjercicio?.original_filename}
 											loading='lazy'
 										/>
 										<br />
 										<Button
-											id='videoButton'
+											id='imagenButton'
 											variant='contained'
 											component='label'>
-											Cargar Video
+											Cargar Imagen
 											<input
 												hidden
 												accept='image/*'
 												multiple
 												type='file'
+												onChange={e => upLoadImage(e.target.files[0])}
 											/>
 										</Button>
 									</Item>
 								</Grid>
+								<Grid>
+									<Grid>
+										<Item>
+											<img
+												style={{ width: 100, height: 100 }}
+												src={cloudVidUrl || defaultUrlVid}
+												alt={videoEjercicio?.original_filename}
+												loading='lazy'
+											/>
+											<br />
+											<Button
+												id='videoButton'
+												variant='contained'
+												component='label'>
+												Cargar Video
+												<input
+													hidden
+													accept='image/*'
+													multiple
+													type='file'
+													onChange={e => upLoadVideo(e.target.files[0])}
+												/>
+											</Button>
+										</Item>
+									</Grid>
+								</Grid>
 							</Grid>
 						</Grid>
 					</Box>
-
-				
 
 					<Button
 						variant='contained'
@@ -561,8 +762,7 @@ const FormExercise = props => {
 				</form>
 			</div>
 		);
-	} 
-	else {
+	} else {
 		return <h1>CARGANDO</h1>;
 	}
 };

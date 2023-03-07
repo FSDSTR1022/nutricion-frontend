@@ -64,7 +64,7 @@ const navConfig = [
 	{
 		title: 'Nueva Rutina',
 		path: '/dashboard/newroutine',
-		icon: icon('ic_user'),
+		icon: icon('ic_analytics'),
 	},
 	{
 		title: 'Descripción Paciente',

@@ -3,11 +3,13 @@ import { Helmet } from 'react-helmet-async';
 import { styled } from '@mui/material/styles';
 import { Link, Container, Typography } from '@mui/material';
 // hooks
+import { useNavigate } from 'react-router-dom';
 import useResponsive from '../hooks/useResponsive';
 // components
 import Logo from '../components/logo';
 // sections
-import { LoginForm } from '../sections/auth/login';
+import { RegisterForm } from '../sections/auth/register';
+// navigate
 
 // ----------------------------------------------------------------------
 
@@ -30,7 +32,7 @@ const StyledSection = styled('div')(({ theme }) => ({
 const StyledContent = styled('div')(({ theme }) => ({
 	maxWidth: 480,
 	margin: 'auto',
-	minHeight: '100vh',
+	maxHeight: '100vh',
 	display: 'flex',
 	justifyContent: 'center',
 	flexDirection: 'column',
@@ -39,13 +41,17 @@ const StyledContent = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function LoginPage() {
+export default function RegisterPage() {
 	const mdUp = useResponsive('up', 'md');
+
+	const navigate = useNavigate();
+
+	const goToLogin = () => navigate('/login', { replace: true });
 
 	return (
 		<>
 			<Helmet>
-				<title> Login | Minimal UI </title>
+				<title> Register | Minimal UI </title>
 			</Helmet>
 
 			<StyledRoot>
@@ -76,17 +82,21 @@ export default function LoginPage() {
 						<Typography
 							variant='h4'
 							gutterBottom>
-							Inicia sesión
+							Regístrate en nuestra App
 						</Typography>
 
 						<Typography
 							variant='body2'
-							sx={{ mb: 5 }}>
-							¿No tienes una cuenta? {''}
-							<Link variant='subtitle2'>Regístrate aquí</Link>
+							sx={{ mb: 2 }}>
+							¿Ya tienes una cuenta? {''}
+							<Link
+								variant='subtitle2'
+								onClick={goToLogin}>
+								Inicia sesión aquí
+							</Link>
 						</Typography>
 
-						<LoginForm />
+						<RegisterForm />
 					</StyledContent>
 				</Container>
 			</StyledRoot>

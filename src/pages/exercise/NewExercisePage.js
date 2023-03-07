@@ -1,4 +1,3 @@
-/* eslint-disable arrow-body-style */
 /* eslint-disable no-case-declarations */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable array-callback-return */
@@ -49,9 +48,7 @@ export default function NewExercisePage(props) {
 	const [exerciseExplanationUS, setExerciseExplanationUS] = useState('');
 	const [exercisePrecautionsUS, setExercisePrecautionsUS] = useState('');
 	const [imagenEjercicio, setImagenEjercicio] = useState('');
-	const [cloudImgUrl, setCloudImgUrl] = useState('');
 	const [videoEjercicio, setVideoEjercicio] = useState('');
-	const [cloudVidUrl, setCloudVidUrl] = useState('');
 	const [errorsUS, setErrorsUS] = useState({});
 
 	const [actionUS, setActionUS] = useState();
@@ -60,12 +57,6 @@ export default function NewExercisePage(props) {
 	const { action } = props;
 
 	const navigate = useNavigate();
-
-	const defaultUrlImg =
-		'https://res.cloudinary.com/dtnuuoiih/image/upload/v1678038327/exercises/default_upload_image_m6j6gc.png';
-
-	const defaultUrlVid =
-		'https://res.cloudinary.com/dtnuuoiih/image/upload/v1678039917/exercises/default_upload_video_ejzncj.jpg';
 
 	const theme = useTheme();
 	const ITEM_HEIGHT = 48;
@@ -180,6 +171,10 @@ export default function NewExercisePage(props) {
 		setExercisePrecautionsUS(event.target.value);
 	};
 
+	const prueba = () => {
+		console.log(actionUS);
+	};
+
 	const handleClickSaveButton = async () => {
 		if (checkForm()) {
 			const exerciseToSave = {};
@@ -192,8 +187,10 @@ export default function NewExercisePage(props) {
 			exerciseToSave.equipments = exerciseEquipmentsUS;
 			exerciseToSave.explanation = exerciseExplanationUS;
 			exerciseToSave.precautions = exercisePrecautionsUS;
-			exerciseToSave.photo = cloudImgUrl;
-			exerciseToSave.video = cloudVidUrl;
+			exerciseToSave.photo =
+				'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6';
+			exerciseToSave.video =
+				'https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC5cFhphukFT-h24CWqwycbNcvVutbJeGlueYS4zwVmBzJVyiaz-QHbRCufuJJKe8_5SEVROgxGAKk9YlzyGlxBFX-Uyl0CIxObBSXxvow';
 
 			switch (actionUS.action) {
 				case 'newExercise':
@@ -325,49 +322,6 @@ export default function NewExercisePage(props) {
 		}
 	};
 
-	// subir imagen /////////////////////////
-
-	const upLoadImage = image => {
-		setImagenEjercicio(image);
-		const data = new FormData();
-		data.append('file', image);
-		data.append('upload_preset', 'x12akkid');
-		data.append('cloud_name', 'dtnuuoiih');
-		data.append('folder', 'exercises/image');
-		fetch('https://api.cloudinary.com/v1_1/dtnuuoiih/image/upload/', {
-			method: 'post',
-			body: data,
-		})
-			.then(res => res.json())
-			.then(data => {
-				console.log('url devuelta = ', data);
-				setCloudImgUrl(data.url);
-				return data.url;
-			})
-			.catch(err => console.log('error', err));
-	};
-	// subir video /////////////////////////
-
-	const upLoadVideo = video => {
-		setVideoEjercicio(video);
-		const data = new FormData();
-		data.append('file', video);
-		data.append('upload_preset', 'x12akkid');
-		data.append('cloud_name', 'dtnuuoiih');
-		data.append('folder', 'exercises/gifs');
-		fetch('https://api.cloudinary.com/v1_1/dtnuuoiih/image/upload/', {
-			method: 'post',
-			body: data,
-		})
-			.then(res => res.json())
-			.then(data => {
-				console.log('url devuelta = ', data);
-				setCloudVidUrl(data.url);
-				return data.url;
-			})
-			.catch(err => console.log('error', err));
-	};
-
 	if (!isLoadingexerciseAtributes) {
 		return (
 			<>
@@ -389,19 +343,21 @@ export default function NewExercisePage(props) {
 					</Stack>
 
 					<Card>
-						{/*  //////////////// Campo nombre ejercicio //////////////// */}
+						{/*  //////////////////////////////// Campo nombre ejercicio //////////////// */}
 						<FormControl
-							required
+							required={actionUS.action !== 'viewExercise'}
 							fullWidth>
 							<TextField
 								sx={{ m: 1 }}
 								id='standard-basic'
 								label='Nombre Ejercicio'
 								variant='outlined'
-								required
 								errro={errorsUS.ExcersiceName}
 								value={exerciseNameUS}
 								onChange={handleChangeExerciseNameInput}
+								inputProps={{
+									readOnly: actionUS.action === 'viewExercise',
+								}}
 							/>
 							{errorsUS.excersiceName ? (
 								<span style={{ color: 'red' }}>
@@ -412,10 +368,10 @@ export default function NewExercisePage(props) {
 							)}
 						</FormControl>
 
-						{/*  //////////////// Selectot Tipo Ejercicio //////////////// */}
+						{/*  //////////////////////////////// Selectot Tipo Ejercicio //////////////// */}
 
 						<FormControl
-							required
+							required={actionUS.action !== 'viewExercise'}
 							fullWidth>
 							<InputLabel
 								sx={{ m: 1 }}
@@ -428,7 +384,10 @@ export default function NewExercisePage(props) {
 								id='tipoEjercicioSelect'
 								value={exerciseTypeUS}
 								label='Tipo de Ejercicio'
-								onChange={handleChangeExerciseType}>
+								onChange={handleChangeExerciseType}
+								inputProps={{
+									readOnly: actionUS.action === 'viewExercise',
+								}}>
 								{exerciseAtributsUS.exerciseType.map((te, id) => (
 									<MenuItem
 										value={te._id}
@@ -446,9 +405,9 @@ export default function NewExercisePage(props) {
 							)}
 						</FormControl>
 
-						{/*  //////////////// Selector Dificultad Ejercicio //////////////// */}
+						{/*  //////////////////////////////// Selector Dificultad Ejercicio //////////////// */}
 						<FormControl
-							required
+							required={actionUS.action !== 'viewExercise'}
 							fullWidth>
 							<InputLabel
 								sx={{ m: 1 }}
@@ -461,7 +420,10 @@ export default function NewExercisePage(props) {
 								id='dificultadEjercicioSelect'
 								value={exerciseDifficultUS}
 								label='Dificultad Ejercicio'
-								onChange={handleChangeExerciseDificultSelector}>
+								onChange={handleChangeExerciseDificultSelector}
+								inputProps={{
+									readOnly: actionUS.action === 'viewExercise',
+								}}>
 								{exerciseAtributsUS.exerciseDifficult.map((de, id) => (
 									<MenuItem
 										value={de._id}
@@ -481,7 +443,7 @@ export default function NewExercisePage(props) {
 
 						{/*  //////////////// Selector partes cuerpo //////////////// */}
 						<FormControl
-							required
+							required={actionUS.action !== 'viewExercise'}
 							fullWidth>
 							<InputLabel
 								sx={{ m: 1 }}
@@ -496,6 +458,9 @@ export default function NewExercisePage(props) {
 								multiple
 								value={exerciseBodyPartsUS}
 								onChange={handleChangeBodyPartSelector}
+								inputProps={{
+									readOnly: actionUS.action === 'viewExercise',
+								}}
 								input={
 									<OutlinedInput
 										id='select-multiple-chip'
@@ -539,7 +504,7 @@ export default function NewExercisePage(props) {
 
 						{/*  //////////////// Selector musculos Ejercicio //////////////// */}
 						<FormControl
-							required
+							required={actionUS.action !== 'viewExercise'}
 							fullWidth>
 							<InputLabel
 								sx={{ m: 1 }}
@@ -553,6 +518,9 @@ export default function NewExercisePage(props) {
 								multiple
 								value={exerciseMuclesUS}
 								onChange={handleChangeMuscleSelector}
+								inputProps={{
+									readOnly: actionUS.action === 'viewExercise',
+								}}
 								input={
 									<OutlinedInput
 										id='OutlinedInputMusculos'
@@ -596,7 +564,7 @@ export default function NewExercisePage(props) {
 
 						{/*  //////////////// Selector Equipamiento //////////////// */}
 						<FormControl
-							required
+							required={actionUS.action !== 'viewExercise'}
 							fullWidth>
 							<InputLabel
 								sx={{ m: 1 }}
@@ -610,6 +578,9 @@ export default function NewExercisePage(props) {
 								multiple
 								value={exerciseEquipmentsUS}
 								onChange={handleChangeEquipamiento}
+								inputProps={{
+									readOnly: actionUS.action === 'viewExercise',
+								}}
 								input={
 									<OutlinedInput
 										id='select-multiple-chip2'
@@ -656,7 +627,7 @@ export default function NewExercisePage(props) {
 
 						{/*  //////////////// explicación //////////////// */}
 						<FormControl
-							required
+							required={actionUS.action !== 'viewExercise'}
 							fullWidth>
 							<Typography sx={{ m: 1 }}>
 								Detalle la explicación para realizar el ejercicio:
@@ -664,6 +635,9 @@ export default function NewExercisePage(props) {
 
 							<TextField
 								sx={{ m: 1 }}
+								inputProps={{
+									readOnly: actionUS.action === 'viewExercise',
+								}}
 								id='explicaciónEjercicio'
 								label='Explicación Ejercicio'
 								multiline
@@ -688,6 +662,9 @@ export default function NewExercisePage(props) {
 								rows={5}
 								value={exercisePrecautionsUS}
 								onChange={handleChangePrecautionsInput}
+								inputProps={{
+									readOnly: actionUS.action === 'viewExercise',
+								}}
 							/>
 						</FormControl>
 						<br />
@@ -700,63 +677,74 @@ export default function NewExercisePage(props) {
 								<Grid>
 									<Item>
 										<img
-											style={{ width: 100, height: 100 }}
-											src={cloudImgUrl || defaultUrlImg}
-											alt={imagenEjercicio?.original_filename}
+											src={`https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=164&h=164&fit=crop&auto=format`}
+											srcSet={`https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+											alt={'Hats'}
 											loading='lazy'
 										/>
 										<br />
-										<Button
-											id='imagenButton'
-											variant='contained'
-											component='label'>
-											Cargar Imagen
-											<input
-												hidden
-												accept='image/*'
-												multiple
-												type='file'
-												onChange={e => upLoadImage(e.target.files[0])}
-											/>
-										</Button>
+										{actionUS.action !== 'viewExercise' ? (
+											<Button
+												id='imagenButton'
+												variant='contained'
+												component='label'>
+												Cargar Imagen
+												<input
+													hidden
+													accept='image/*'
+													multiple
+													type='file'
+												/>
+											</Button>
+										) : (
+											<></>
+										)}
 									</Item>
 								</Grid>
 								<Grid>
 									<Grid>
 										<Item>
 											<img
-												style={{ width: 100, height: 100 }}
-												src={cloudVidUrl || defaultUrlVid}
-												alt={videoEjercicio?.original_filename}
+												src={`https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=164&h=164&fit=crop&auto=format`}
+												srcSet={`https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+												alt={'Hats'}
 												loading='lazy'
 											/>
 											<br />
-											<Button
-												id='videoButton'
-												variant='contained'
-												component='label'>
-												Cargar Video
-												<input
-													hidden
-													accept='image/*'
-													multiple
-													type='file'
-													onChange={e => upLoadVideo(e.target.files[0])}
-												/>
-											</Button>
+											{actionUS.action !== 'viewExercise' ? (
+												<Button
+													id='videoButton'
+													variant='contained'
+													component='label'>
+													Cargar Video
+													<input
+														hidden
+														accept='image/*'
+														multiple
+														type='file'
+													/>
+												</Button>
+											) : (
+												<></>
+											)}
 										</Item>
 									</Grid>
 								</Grid>
 							</Grid>
 						</Box>
-						<Button
-							sx={{ m: 2 }}
-							variant='contained'
-							onClick={() => {
-								handleClickSaveButton();
-							}}>
-							Guardar Ejercicio
-						</Button>
+
+						{actionUS.action !== 'viewExercise' ? (
+							<Button
+								sx={{ m: 2 }}
+								variant='contained'
+								onClick={() => {
+									handleClickSaveButton();
+								}}>
+								Guardar Ejercicio
+							</Button>
+						) : (
+							<></>
+						)}
 					</Card>
 				</Container>
 			</>
