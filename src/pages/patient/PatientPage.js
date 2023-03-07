@@ -239,7 +239,7 @@ export default function PatientPage() {
 	};
 
 	const handleClickViewPatient = (event, id) => {
-		navigate(`dashboard/pacients/${id}`);
+		navigate(`/dashboard/pacients/${id}`);
 		console.log(`Ver paciente: ${id}`);
 
 		/* const excersiceToView = exerciseListUS.find(element => element._id === id);
