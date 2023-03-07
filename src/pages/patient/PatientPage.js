@@ -193,6 +193,8 @@ export default function PatientPage() {
 		setOpenUS(null);
 	};
 
+	//  kdsfjsdafk
+
 	const handleClickAceptDelteExercise = async event => {
 		if (event.target.value === 'aceptar') {
 			const patient = patientToDeleteOrEditUS;
