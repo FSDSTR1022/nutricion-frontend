@@ -325,6 +325,7 @@ export default function PatientPage() {
 													phone,
 													dni,
 													email,
+													imgUrl,
 													isActive,
 												} = row;
 												const selectedPatient = selectedUS.indexOf(name) !== -1;
@@ -353,7 +354,7 @@ export default function PatientPage() {
 																spacing={2}>
 																<Avatar
 																	alt={name}
-																	src='/assets/images/avatars/avatar_1.jpg'
+																	src={imgUrl}
 																/>
 																<Typography
 																	variant='subtitle2'
