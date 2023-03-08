@@ -29,9 +29,6 @@ import {
 
  import RutinePage from '../rutine/RutinePage'
 
-import PopRutina from './PopRutina';
-import NewRutina from './NewRutina';
-
 const rutineUrl = 'http://localhost:3000/rutines?id=';
 
 
