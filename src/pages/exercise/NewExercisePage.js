@@ -48,7 +48,9 @@ export default function NewExercisePage(props) {
 	const [exerciseExplanationUS, setExerciseExplanationUS] = useState('');
 	const [exercisePrecautionsUS, setExercisePrecautionsUS] = useState('');
 	const [imagenEjercicio, setImagenEjercicio] = useState('');
+	const [cloudUrlImg, setCloudUrlImg] = useState('');
 	const [videoEjercicio, setVideoEjercicio] = useState('');
+	const [cloudUrlVid, setCloudUrlVid] = useState('');
 	const [errorsUS, setErrorsUS] = useState({});
 
 	const [actionUS, setActionUS] = useState();
@@ -57,6 +59,66 @@ export default function NewExercisePage(props) {
 	const { action } = props;
 
 	const navigate = useNavigate();
+
+	// subir img y gif de ejercicio(hector)
+
+	const imgUp =
+		'https://res.cloudinary.com/dtnuuoiih/image/upload/v1678283721/exercises/default_upload_is4odc.png';
+	const vidUp =
+		'https://res.cloudinary.com/dtnuuoiih/image/upload/v1678039917/exercises/default_upload_video_ejzncj.jpg';
+
+	const urlCloudinary =
+		'https://api.cloudinary.com/v1_1/dtnuuoiih/image/upload/'; // aquí deberí ir >process.env.URL_CLOUDINARY_IMG
+
+	// imagen
+	const upLoadImage = image => {
+		setImagenEjercicio(image);
+
+		const data = new FormData();
+		data.append('file', image);
+		data.append('upload_preset', 'x12akkid');
+		data.append('cloud_name', 'dtnuuoiih');
+		data.append('folder', 'exercises/images');
+		fetch(urlCloudinary, {
+			method: 'post',
+			body: data,
+		})
+			.then(res => res.json())
+			.then(data => {
+				console.log('datos devueltos = ', data);
+				setCloudUrlImg(data.url);
+			})
+
+			.catch(err => console.log('error', err));
+	};
+
+	// video
+	const upLoadVideo = image => {
+		setImagenEjercicio(image);
+
+		const data = new FormData();
+		data.append('file', image);
+		data.append('upload_preset', 'x12akkid');
+		data.append('cloud_name', 'dtnuuoiih');
+		data.append('folder', 'exercises/gifts');
+		fetch(urlCloudinary, {
+			method: 'post',
+			body: data,
+		})
+			.then(res => res.json())
+			.then(data => {
+				console.log('datos devueltos = ', data);
+				setCloudUrlVid(data.url);
+			})
+			.catch(err => console.log('error', err));
+	};
+
+	const resetFileUrl = () => {
+		setImagenEjercicio('');
+		setVideoEjercicio('');
+		setCloudUrlImg('');
+		setCloudUrlVid('');
+	};
 
 	const theme = useTheme();
 	const ITEM_HEIGHT = 48;
@@ -187,10 +249,8 @@ export default function NewExercisePage(props) {
 			exerciseToSave.equipments = exerciseEquipmentsUS;
 			exerciseToSave.explanation = exerciseExplanationUS;
 			exerciseToSave.precautions = exercisePrecautionsUS;
-			exerciseToSave.photo =
-				'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6';
-			exerciseToSave.video =
-				'https://lh5.googleusercontent.com/LM0t4lybG4VsUyKDbDizCDZEA6y2ZeRBIqRw4RMFM8-ggC5cFhphukFT-h24CWqwycbNcvVutbJeGlueYS4zwVmBzJVyiaz-QHbRCufuJJKe8_5SEVROgxGAKk9YlzyGlxBFX-Uyl0CIxObBSXxvow';
+			exerciseToSave.photo = cloudUrlImg;
+			exerciseToSave.video = cloudUrlVid;
 
 			switch (actionUS.action) {
 				case 'newExercise':
@@ -201,6 +261,7 @@ export default function NewExercisePage(props) {
 							actionUS.setMessageAlert('Se guardó correctamente el ejercicio');
 							actionUS.openAlert(true);
 							actionUS.severityAler('success');
+							resetFileUrl();
 						} else if (
 							actionUS.openFrom === 'home' ||
 							actionUS.openFrom === 'formExercise'
@@ -677,8 +738,8 @@ export default function NewExercisePage(props) {
 								<Grid>
 									<Item>
 										<img
-											src={`https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=164&h=164&fit=crop&auto=format`}
-											srcSet={`https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+											style={{ width: 120, height: 120 }}
+											src={!cloudUrlImg ? imgUp : cloudUrlImg}
 											alt={'Hats'}
 											loading='lazy'
 										/>
@@ -691,6 +752,7 @@ export default function NewExercisePage(props) {
 												Cargar Imagen
 												<input
 													hidden
+													onChange={file => upLoadImage(file.target.files[0])}
 													accept='image/*'
 													multiple
 													type='file'
@@ -705,8 +767,8 @@ export default function NewExercisePage(props) {
 									<Grid>
 										<Item>
 											<img
-												src={`https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=164&h=164&fit=crop&auto=format`}
-												srcSet={`https://images.unsplash.com/photo-1533827432537-70133748f5c8?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+												style={{ width: 120, height: 120 }}
+												src={!cloudUrlVid ? vidUp : cloudUrlVid}
 												alt={'Hats'}
 												loading='lazy'
 											/>
@@ -719,6 +781,7 @@ export default function NewExercisePage(props) {
 													Cargar Video
 													<input
 														hidden
+														onChange={file => upLoadVideo(file.target.files[0])}
 														accept='image/*'
 														multiple
 														type='file'
