@@ -1,4 +1,4 @@
-const URLRutina = `${process.env.REACT_APP_BACK_URL}/rutinas`;
+const URLRutina = `${process.env.REACT_APP_BACK_URL}/rutines`;
 
 const saveRutine = async data => {
 	const routine = JSON.stringify(data);

@@ -81,8 +81,8 @@ export default function RutinePage(props) {
 	const [patientToAddUS, setPatientToAddUS] = useState([]);
 	const [openSelectPatientDialog, setOpenSelectPatientDialog] = useState('');
 
-	const [rutineNameUS, setRutineNameUS] = useState('Fuerza');
-	const [pacientUS, setPacientUS] = useState({
+	const [rutineNameUS, setRutineNameUS] = useState('');
+	const [patientUS, setPatientUS] = useState({
 		_id: '64024755a6db697eb1b40d77',
 	});
 	const [rutineDateUS, setRutineDateUS] = useState('2023-02-03');
@@ -90,16 +90,13 @@ export default function RutinePage(props) {
 
 	const [errorsUS, setErrorsUS] = useState({});
 
-	/* para las confirmaciones de eliminación */
 	const [openConfirmationUS, setOpenConfirmationUS] = useState(false);
-	/* para mostrar el dialogo de confirmación */
 	const [confirmationAcionUS, setConfirmationAcionUS] = useState('');
 
 	const [actionUS, setActionUS] = useState();
 
 	const [exerciseToViewUS, setExerciseToViewUS] = useState('');
-	const [actionToDoInexerciseDialogUS, setActionToDoInexerciseDialogUS] =
-		useState();
+	const [actionToDoInexerciseDialogUS, setActionToDoInexerciseDialogUS] = useState();
 	const [openFormDialogUS, setOpenFormDialogUS] = useState(false);
 
 	const [esValido, setEsValido] = useState(false);
@@ -107,20 +104,29 @@ export default function RutinePage(props) {
 
 	const navigate = useNavigate();
 
-	const { action } = props;
+	const { action,patien,date,routine,setOpenDialog } = props;
 
-	const theme = useTheme();
+/* 	const theme = useTheme(); */
 
 	useEffect(() => {
-		switch (actionUS) {
+		console.log(props)
+
+		switch (action) {
 			case undefined:
 			case 'newRutine':
 				setActionUS('newRutine');
+				setPatientUS(patien)
+				setRutineDateUS(date)
+
 				setIsLoading(false);
+
+
+
 				break;
 			case 'viewRutine':
 				setActionUS('viewRutine');
 				setIsLoading(false);
+
 				break;
 			case 'editRutine':
 				setActionUS('editRutine');
@@ -174,7 +180,7 @@ export default function RutinePage(props) {
 	};
 
 	const handleChangePacienteNameTextField = event => {
-		setPacientUS(pacientUS => ({
+		setPatientUS(pacientUS => ({
 			...pacientUS,
 			pacientName: event.target.value,
 		}));
@@ -400,16 +406,21 @@ export default function RutinePage(props) {
 
 			rutineToSave.name = rutineNameUS;
 			rutineToSave.day = rutineDateUS;
-			rutineToSave.user = pacientUS._id;
+			rutineToSave.user = patientUS._id;
 
 			console.log('Rutina a guardar: ', rutineToSave);
 
 			saveRutine(rutineToSave).then(response => {
 				if (response.status === 200) {
 					console.log('SE GUARDO CON EXITO');
-					navigate('/dashboard', {
+					if(actionUS === "newRutine"){
+						setOpenDialog(false)
+						
+						/* navigate(`//dashboard/pacients/${patientUS._id}`, {
 						state: { action: 'newRutine' },
-					});
+						}); */
+					}
+					
 				} else {
 					console.log('NO SE GUARDO CON EXITO');
 					console.log('response: ', response);
@@ -458,7 +469,7 @@ export default function RutinePage(props) {
 			errors = false;
 		}
 
-		if (rutineUS.rounds.length === 0) {
+		/* if (rutineUS.rounds.length === 0) {
 			console.log('roundsRutine');
 			setErrorsUS(errorsUS => ({
 				...errorsUS,
@@ -466,7 +477,7 @@ export default function RutinePage(props) {
 			}));
 
 			errors = false;
-		}
+		} */
 
 		return errors;
 	};
@@ -797,7 +808,7 @@ export default function RutinePage(props) {
 								variant='outlined'
 								inputProps={{ readOnly: true }}
 								/* error={!!errorsUS.pacientName} */
-								value={pacientUS.name}
+								value={patientUS.name}
 								onChange={handleChangePacienteNameTextField}
 							/>
 							{/* {errorsUS.pacientName ? (
@@ -808,12 +819,12 @@ export default function RutinePage(props) {
 								<></>
 							)} */}
 						</FormControl>
-						<Button
+						{/* <Button
 							value='agregar'
 							variant='contained'
 							onClick={handleClickAddPatientButton}>
 							seleccionar Paciente
-						</Button>
+						</Button> */}
 						<br />
 
 						<LocalizationProvider dateAdapter={AdapterDayjs}>
