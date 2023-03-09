@@ -34,24 +34,53 @@ const rutineUrl = 'http://localhost:3000/rutines?id=';
 
 
 const PatientCalendarPage = () => {
-	const [rutinasListUS, setRutinasListUS] = useState([]);
+	/* todas las rutinas de la BD */
+	const[rutinasListUS, setRutinasListUS] = useState([]); 
+	/* las rutinas de un paciente */
+	const [userRutinesListUS, setUserRutinesListUS] = useState([]);
+
 	const [rutineUS, setRutineUS] = useState({});
 	const [openEventUS, setOpenEventUS] = useState(false);
 	const [openRutineDialogUS, setOpenRutineDialogUS] = useState(false);
 	const [actionUS, setActionUS] = useState('');
 	const [dateSelectedUS, setDateSelectedUS] = useState(new Date());
 	const [nextRutinasUS, setNextRutinasUS] = useState([]);
-	const [userRutinesListUS, setUserRutinesListUS] = useState([]);
+	
 	const [patientUS, setPatientUS] = useState({});
 	const [accionEnDialogo,setAccionEnDialogo] = useState('newRutine')
+	const [eventsCalendar,setEventsCalendar] = useState()
 	
 
 	const { id } = useParams();
 
 	useEffect(() => {
 		getMeassures();
-		getPatients();
-	},[]);
+			getPatients();
+
+		const events = [];
+		rutinasListUS.map(ob =>
+			events.push({
+				id: ob._id,
+				title: ob.name,
+				start: ob.day,
+				allDay: true,
+				editable: true,
+			})
+		);
+
+		console.log('rutinasListUS: ', userRutinesListUS);
+
+		console.log('events: ', events);
+
+		setEventsCalendar(events);
+		
+
+		
+	}, []);
+
+	
+
+	
 
 	const getMeassures = () => {
 		fetch('http://localhost:3000/rutines/')
@@ -66,6 +95,8 @@ const PatientCalendarPage = () => {
 				);
 
 				setNextRutinasUS(nextRs);
+
+				return userRutines
 			})
 
 			.catch(err => console.log('error', err));
@@ -82,18 +113,6 @@ const PatientCalendarPage = () => {
 			.catch(err => console.log('error', err));
 	};
 
-	const today = Date.now() - 86400000;
-
-	const events = [];
-	rutinasListUS.map(ob =>
-		events.push({
-			id: ob._id,
-			title: ob.name,
-			start: ob.day,
-			allDay: true,
-			editable: true,
-		})
-	);
 
 	const handleEventClick = (id,day,e) => {
 		console.log("Click en Rutina")
@@ -131,6 +150,8 @@ const PatientCalendarPage = () => {
 	const handleNewRutinaClose = () => {
 		setOpenRutineDialogUS(false);
 	};
+
+	const today = Date.now() - 86400000;
 
 	const handleNextRutines = async () => {
 		const nextR = await rutinasListUS.filter(rut => Date.parse(rut.day) >= today);
@@ -303,7 +324,7 @@ const PatientCalendarPage = () => {
 					height={'85vh'}
 					initialView='dayGridMonth'
 					editable='true'
-					events={events}
+					events={eventsCalendar}
 					eventClick={info => handleEventClick(info.event.id,info.event.startStr)}
 					dateClick={info => handleDateClick(info.dateStr)}
 					eventDrop={info => putDropEvent(info.event.id, info.event.start)} />
