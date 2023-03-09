@@ -16,6 +16,7 @@ import FormPatient from './pages/patient/formPatient';
 import PatientPage from './pages/patient/PatientPage';
 import RutinePage from './pages/rutine/RutinePage';
 import Calendarh from './pages/patient/Calendarh';
+import Index from './pages/landing/Home'
 
 // ----------------------------------------------------------------------
 
@@ -41,6 +42,10 @@ export default function Router() {
 		{
 			path: 'login',
 			element: <LoginPage />,
+		},
+		{
+			path: 'landing',
+			element: <Index />,
 		},
 		{
 			path: 'register',

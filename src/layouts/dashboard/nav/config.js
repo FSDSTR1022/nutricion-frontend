@@ -66,6 +66,11 @@ const navConfig = [
 		path: '/dashboard/newroutine',
 		icon: icon('ic_analytics'),
 	},
+	{
+		title: 'Landing',
+		path: '/landing',
+		icon: icon('ic_analytics'),
+	},
 ];
 
 export default navConfig;
