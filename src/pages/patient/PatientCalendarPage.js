@@ -66,8 +66,6 @@ const PatientCalendarPage = () => {
 	const { id } = useParams();
 
 	useEffect(() => {
-		console.log("hola")
-		
 		getAllusers();		
 		getRoutines();
 		
@@ -123,10 +121,6 @@ const PatientCalendarPage = () => {
 
 
 	const handleEventClick = (id,day,e) => {
-		console.log("Click en Rutina")
-		console.log("id: ",id)
-		console.log("day: ",day)
-		console.log("event: ",e)
 
 		setAccionEnDialogo('editRutine')
 		setOpenRutineDialogUS(true)
@@ -359,7 +353,8 @@ const PatientCalendarPage = () => {
 					onClose={handleCloseFormExerciseDialog}
 					aria-labelledby='alert-dialog-title'
 					aria-describedby='alert-dialog-description'
-					fullWidth="xl"
+					/* fullWidth="xl" */
+					fullWidth
 					maxWidth='l'>
 					<DialogContent>
 						<RutinePage 
@@ -395,22 +390,7 @@ const PatientCalendarPage = () => {
 						{messageAlertUS}
 					</Alert>
 				</Snackbar>
-
-
-
-		{/* <PopRutina
-			handleEventClose={handleEventClose}
-			action={action}
-			openEvent={openEvent}
-			rutina={rutina} />
-		<NewRutina
-			handleNewRutinaClose={handleNewRutinaClose}
-			action={action}
-			openNewRutina={openNewRutina}
-			dateNewRutina={dateNewRutina} /> */}
 	</>
-	)
-
-	
+	)	
 }	
 export default PatientCalendarPage;
