@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-lone-blocks */
 import React, { useEffect, useState } from 'react';
@@ -28,14 +29,17 @@ import {
  import Grid from '@mui/material/Unstable_Grid2';
 
  import RutinePage from '../rutine/RutinePage'
+ import {getRutines} from '../../services/routineService'
+ import { getAllUsers } from '../../services/userService';
 
-const rutineUrl = 'http://localhost:3000/rutines?id=';
+
 
 
 
 const PatientCalendarPage = () => {
 	/* todas las rutinas de la BD */
 	const[rutinasListUS, setRutinasListUS] = useState([]); 
+	
 	/* las rutinas de un paciente */
 	const [userRutinesListUS, setUserRutinesListUS] = useState([]);
 
@@ -49,59 +53,56 @@ const PatientCalendarPage = () => {
 	const [patientUS, setPatientUS] = useState({});
 	const [accionEnDialogo,setAccionEnDialogo] = useState('newRutine')
 	const [eventsCalendar,setEventsCalendar] = useState()
+	const [render, setRender] = useState(false)
 	
 
 	const { id } = useParams();
 
 	useEffect(() => {
-		getMeassures();
-			getPatients();
-
-		const events = [];
-		rutinasListUS.map(ob =>
-			events.push({
-				id: ob._id,
-				title: ob.name,
-				start: ob.day,
-				allDay: true,
-				editable: true,
-			})
-		);
-
-		console.log('rutinasListUS: ', userRutinesListUS);
-
-		console.log('events: ', events);
-
-		setEventsCalendar(events);
+		console.log("hola")
 		
-
+		getAllusers();		
+		getRoutines();
 		
 	}, []);
 
-	
+	const getRoutines = async () => {
+		const response = await getRutines();
+		if (response.status === 200) {
 
-	
-
-	const getMeassures = () => {
-		fetch('http://localhost:3000/rutines/')
-			.then(res => res.json())
-			.then(data => {
-				setRutinasListUS(data);
-				const userRutines = data.filter(rut => rut.user._id === id);
+				setRutinasListUS(response.data);
+				
+				const userRutines = response.data.filter(rut => rut.user._id === id);
 				setUserRutinesListUS(userRutines);
+
+				const events = [];
+					userRutines.map(ob =>
+						events.push({
+							id: ob._id,
+							title: ob.name,
+							start: ob.day,
+							allDay: true,
+							editable: true,
+						})
+					);
+				setEventsCalendar(events)
+				
 				const nextR = userRutines.filter(rut => Date.parse(rut.day) >= today);
 				const nextRs = nextR.sort(
 					(a, b) => Date.parse(a.day) - Date.parse(b.day)
 				);
-
 				setNextRutinasUS(nextRs);
-
-				return userRutines
-			})
-
-			.catch(err => console.log('error', err));
-		handleNextRutines();
+		}
 	};
+
+	const getAllusers = async () => {
+		const response = await getAllUsers();
+		if (response.status === 200) {
+			const pat = response.data.filter(p => p._id === id).pop();
+			setPatientUS(pat);
+		}
+	};
+
 
 	const getPatients = () => {
 		fetch('http://localhost:3000/users/all')
@@ -131,10 +132,7 @@ const PatientCalendarPage = () => {
 		setOpenEventUS(true); */
 	};
 
-/* 	const handleEventClose = () => {
-		setOpenEventUS(false);
-		setRutinaUS({});
-	}; */
+
 
 	const handleDateClick = date => {
 		console.log("date: ",date)
@@ -159,6 +157,9 @@ const PatientCalendarPage = () => {
 	};
 
 	function putDropEvent(id, date) {
+
+		const rutineUrl = 'http://localhost:3000/rutines?id=';
+
 		return fetch(`${rutineUrl}${id}`, {
 			method: 'PUT',
 			mode: 'cors',
@@ -168,8 +169,12 @@ const PatientCalendarPage = () => {
 			body: JSON.stringify({ day: date }),
 		})
 			.then(res => res.json())
-			.then(getMeassures())
-
+			.then(				
+				getRoutines()
+			)
+			.then(				
+				render? setRender(false) : setRender(true)
+			)
 			.catch(error => console.log('Error:', error));
 	}
 
@@ -198,6 +203,8 @@ const PatientCalendarPage = () => {
 
 	const mostrar = evento => {
 		console.log("Paciente US: ", patientUS)
+		console.log("UserRutinesListUS: ", userRutinesListUS)
+		console.log("nextRutinasUS: ", nextRutinasUS)
 	};
 	  
 

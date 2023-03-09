@@ -19,9 +19,9 @@ const saveRutine = async data => {
 const getRutines = async () => {
 	try {
 		const response = await fetch(URLRutina);
-		const jsonData = { data: response.json(), status: response.status };
-		console.log(jsonData);
-		return jsonData;
+		const parseResult = await response.json();
+		const data = { data: parseResult, status: response.status };
+		return data;
 	} catch (e) {
 		console.log(e);
 		return e;
