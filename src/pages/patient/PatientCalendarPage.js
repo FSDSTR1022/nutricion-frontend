@@ -24,13 +24,16 @@ import {
 	DialogContent,
 	Dialog,
 	DialogActions,
-	Button
+	Button,
+	Snackbar,
+	Alert
  } from '@mui/material';
  import Grid from '@mui/material/Unstable_Grid2';
 
  import RutinePage from '../rutine/RutinePage'
  import {getRutines} from '../../services/routineService'
  import { getAllUsers } from '../../services/userService';
+ 
 
 
 
@@ -54,6 +57,10 @@ const PatientCalendarPage = () => {
 	const [accionEnDialogo,setAccionEnDialogo] = useState('newRutine')
 	const [eventsCalendar,setEventsCalendar] = useState()
 	const [render, setRender] = useState(false)
+
+	const [openAlertUS, setOpenAlertUS] = useState(false);
+	const [messageAlertUS, setMessageAlertUS] = useState('');
+	const [severityAlertUS, setSeverityAlertUS] = useState('success');
 	
 
 	const { id } = useParams();
@@ -64,7 +71,7 @@ const PatientCalendarPage = () => {
 		getAllusers();		
 		getRoutines();
 		
-	}, []);
+	}, [openAlertUS,render]);
 
 	const getRoutines = async () => {
 		const response = await getRutines();
@@ -202,9 +209,17 @@ const PatientCalendarPage = () => {
 	
 
 	const mostrar = evento => {
-		console.log("Paciente US: ", patientUS)
+		/* console.log("Paciente US: ", patientUS)
 		console.log("UserRutinesListUS: ", userRutinesListUS)
-		console.log("nextRutinasUS: ", nextRutinasUS)
+		console.log("nextRutinasUS: ", nextRutinasUS) */
+		console.log("nextRutinasUS: ", render)
+	};
+
+	const handleCloseMessage = (event, reason) => {
+		if (reason === 'clickaway') {
+			setOpenAlertUS(false);
+		}
+		setOpenAlertUS(false);
 	};
 	  
 
@@ -352,7 +367,10 @@ const PatientCalendarPage = () => {
 							patien={patientUS}
 							date={dateSelectedUS}
 							routine={rutineUS}
-							setOpenDialog={setOpenRutineDialogUS}							
+							setOpenDialog={setOpenRutineDialogUS}
+							setMessageAlertUS={setMessageAlertUS}
+							setOpenAlertUS={setOpenAlertUS}
+							setSeverityAlertUS={setSeverityAlertUS}
 						/>
 					</DialogContent>
 					<DialogActions>
@@ -364,6 +382,19 @@ const PatientCalendarPage = () => {
 						</Button>
 					</DialogActions>
 				</Dialog>
+
+				<Snackbar
+					open={openAlertUS}
+					autoHideDuration={6000}
+					onClose={handleCloseMessage}>
+					<Alert
+						variant='filled'
+						onClose={handleCloseMessage}
+						severity={severityAlertUS}
+						sx={{ width: '100%' }}>
+						{messageAlertUS}
+					</Alert>
+				</Snackbar>
 
 
 

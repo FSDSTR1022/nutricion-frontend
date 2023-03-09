@@ -104,7 +104,7 @@ export default function RutinePage(props) {
 
 	const navigate = useNavigate();
 
-	const { action,patien,date,routine,setOpenDialog } = props;
+	const { action,patien,date,routine,setOpenDialog,setMessageAlertUS,setOpenAlertUS,setSeverityAlertUS } = props;
 
 /* 	const theme = useTheme(); */
 
@@ -394,7 +394,7 @@ export default function RutinePage(props) {
 
 			const rutineToSave = {};
 
-			rutineToSave.rounds = rutineUS.rounds;
+			/* rutineToSave.rounds = rutineUS.rounds;
 
 			rutineToSave.rounds.map(round => {
 				if (round.exercises.length > 0) {
@@ -402,7 +402,19 @@ export default function RutinePage(props) {
 						e.exercise = e._id;
 					});
 				}
+			}); */
+
+			const roundModificados = rutineUS.rounds;
+
+			roundModificados.map(round => {
+				if (round.exercises.length > 0) {
+					round?.exercises.map(e => {
+						e.exercise = e._id;
+					});
+				}
 			});
+
+			rutineToSave.rounds = roundModificados
 
 			rutineToSave.name = rutineNameUS;
 			rutineToSave.day = rutineDateUS;
@@ -415,10 +427,13 @@ export default function RutinePage(props) {
 					console.log('SE GUARDO CON EXITO');
 					if(actionUS === "newRutine"){
 						setOpenDialog(false)
+						setIsLoading(true)
+						setMessageAlertUS(`Se creo la rutina para el dia ${date}`)
+						setOpenAlertUS(true)
+						setSeverityAlertUS('success')
 						
-						/* navigate(`//dashboard/pacients/${patientUS._id}`, {
-						state: { action: 'newRutine' },
-						}); */
+						navigate(`/dashboard/pacients/${patientUS._id}`);
+						/* navigate('/dashboard/pacients/64024755a6db697eb1b40d77'); */
 					}
 					
 				} else {
