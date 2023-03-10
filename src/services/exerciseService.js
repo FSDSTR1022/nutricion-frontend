@@ -69,7 +69,7 @@ const deleteExercise = async data => {
 	return data2;
 };
 
-module.exports = {
+export {
 	getExerciseAtribut,
 	saveExercise,
 	getExercise,
