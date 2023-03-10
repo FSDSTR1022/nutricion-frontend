@@ -48,7 +48,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import Iconify from '../../components/iconify';
-import { saveRutine } from '../../services/routineService';
+import { saveRutine,getRutineById } from '../../services/routineService';
 
 import PatientPage from '../patient/PatientPage';
 import FormExercise from '../exercise/NewExercisePage';
@@ -81,8 +81,8 @@ export default function RutinePage(props) {
 	const [patientToAddUS, setPatientToAddUS] = useState([]);
 	const [openSelectPatientDialog, setOpenSelectPatientDialog] = useState('');
 
-	const [rutineNameUS, setRutineNameUS] = useState('Fuerza');
-	const [pacientUS, setPacientUS] = useState({
+	const [rutineNameUS, setRutineNameUS] = useState('');
+	const [patientUS, setPatientUS] = useState({
 		_id: '64024755a6db697eb1b40d77',
 	});
 	const [rutineDateUS, setRutineDateUS] = useState('2023-02-03');
@@ -90,16 +90,13 @@ export default function RutinePage(props) {
 
 	const [errorsUS, setErrorsUS] = useState({});
 
-	/* para las confirmaciones de eliminación */
 	const [openConfirmationUS, setOpenConfirmationUS] = useState(false);
-	/* para mostrar el dialogo de confirmación */
 	const [confirmationAcionUS, setConfirmationAcionUS] = useState('');
 
 	const [actionUS, setActionUS] = useState();
 
 	const [exerciseToViewUS, setExerciseToViewUS] = useState('');
-	const [actionToDoInexerciseDialogUS, setActionToDoInexerciseDialogUS] =
-		useState();
+	const [actionToDoInexerciseDialogUS, setActionToDoInexerciseDialogUS] = useState();
 	const [openFormDialogUS, setOpenFormDialogUS] = useState(false);
 
 	const [esValido, setEsValido] = useState(false);
@@ -107,23 +104,45 @@ export default function RutinePage(props) {
 
 	const navigate = useNavigate();
 
-	const { action } = props;
+	const { action,patien,date,routineId,setOpenDialog,setMessageAlertUS,setOpenAlertUS,setSeverityAlertUS } = props;
 
-	const theme = useTheme();
+/* 	const theme = useTheme(); */
 
 	useEffect(() => {
-		switch (actionUS) {
+		console.log("PROPS:",props)
+
+		switch (action) {
 			case undefined:
 			case 'newRutine':
-				setActionUS('newRutine');
+				setActionUS(action);
+				setPatientUS(patien)
+				setRutineDateUS(date)
 				setIsLoading(false);
+
 				break;
 			case 'viewRutine':
 				setActionUS('viewRutine');
+				setPatientUS(patien)
+				setRutineDateUS(date)	
 				setIsLoading(false);
+
 				break;
 			case 'editRutine':
 				setActionUS('editRutine');
+				setPatientUS(patien)
+				setRutineDateUS(date)
+
+				// eslint-disable-next-line no-case-declarations
+				const getExe = async () => {
+					const response = await getRutineById(routineId);
+					if (response.status === 200) {
+						setRutineUS(response.data[0])
+						console.log(response.data[0]);
+						
+					}
+				};
+				getExe()
+
 				setIsLoading(false);
 				break;
 			default:
@@ -174,7 +193,7 @@ export default function RutinePage(props) {
 	};
 
 	const handleChangePacienteNameTextField = event => {
-		setPacientUS(pacientUS => ({
+		setPatientUS(pacientUS => ({
 			...pacientUS,
 			pacientName: event.target.value,
 		}));
@@ -388,7 +407,7 @@ export default function RutinePage(props) {
 
 			const rutineToSave = {};
 
-			rutineToSave.rounds = rutineUS.rounds;
+			/* rutineToSave.rounds = rutineUS.rounds;
 
 			rutineToSave.rounds.map(round => {
 				if (round.exercises.length > 0) {
@@ -396,20 +415,40 @@ export default function RutinePage(props) {
 						e.exercise = e._id;
 					});
 				}
+			}); */
+
+			const roundModificados = rutineUS.rounds;
+
+			roundModificados.map(round => {
+				if (round.exercises.length > 0) {
+					round?.exercises.map(e => {
+						e.exercise = e._id;
+					});
+				}
 			});
+
+			rutineToSave.rounds = roundModificados
 
 			rutineToSave.name = rutineNameUS;
 			rutineToSave.day = rutineDateUS;
-			rutineToSave.user = pacientUS._id;
+			rutineToSave.user = patientUS._id;
 
 			console.log('Rutina a guardar: ', rutineToSave);
 
 			saveRutine(rutineToSave).then(response => {
 				if (response.status === 200) {
 					console.log('SE GUARDO CON EXITO');
-					navigate('/dashboard', {
-						state: { action: 'newRutine' },
-					});
+					if(actionUS === "newRutine"){
+						setOpenDialog(false)
+						setIsLoading(true)
+						setMessageAlertUS(`Se creo la rutina para el dia ${date}`)
+						setOpenAlertUS(true)
+						setSeverityAlertUS('success')
+						
+						navigate(`/dashboard/pacients/${patientUS._id}`);
+						/* navigate('/dashboard/pacients/64024755a6db697eb1b40d77'); */
+					}
+					
 				} else {
 					console.log('NO SE GUARDO CON EXITO');
 					console.log('response: ', response);
@@ -458,7 +497,7 @@ export default function RutinePage(props) {
 			errors = false;
 		}
 
-		if (rutineUS.rounds.length === 0) {
+		/* if (rutineUS.rounds.length === 0) {
 			console.log('roundsRutine');
 			setErrorsUS(errorsUS => ({
 				...errorsUS,
@@ -466,7 +505,7 @@ export default function RutinePage(props) {
 			}));
 
 			errors = false;
-		}
+		} */
 
 		return errors;
 	};
@@ -797,7 +836,7 @@ export default function RutinePage(props) {
 								variant='outlined'
 								inputProps={{ readOnly: true }}
 								/* error={!!errorsUS.pacientName} */
-								value={pacientUS.name}
+								value={patientUS.name}
 								onChange={handleChangePacienteNameTextField}
 							/>
 							{/* {errorsUS.pacientName ? (
@@ -808,12 +847,12 @@ export default function RutinePage(props) {
 								<></>
 							)} */}
 						</FormControl>
-						<Button
+						{/* <Button
 							value='agregar'
 							variant='contained'
 							onClick={handleClickAddPatientButton}>
 							seleccionar Paciente
-						</Button>
+						</Button> */}
 						<br />
 
 						<LocalizationProvider dateAdapter={AdapterDayjs}>

@@ -1,4 +1,4 @@
-const URLRutina = `${process.env.REACT_APP_BACK_URL}/rutinas`;
+const URLRutina = `${process.env.REACT_APP_BACK_URL}/rutines`;
 
 const saveRutine = async data => {
 	const routine = JSON.stringify(data);
@@ -19,9 +19,21 @@ const saveRutine = async data => {
 const getRutines = async () => {
 	try {
 		const response = await fetch(URLRutina);
-		const jsonData = { data: response.json(), status: response.status };
-		console.log(jsonData);
-		return jsonData;
+		const parseResult = await response.json();
+		const data = { data: parseResult, status: response.status };
+		return data;
+	} catch (e) {
+		console.log(e);
+		return e;
+	}
+};
+
+const getRutineById = async (rutineId) => {
+	try {
+		const response = await fetch(`${URLRutina}?_id=${rutineId}`);
+		const parseResult = await response.json();
+		const data = { data: parseResult, status: response.status };
+		return data;
 	} catch (e) {
 		console.log(e);
 		return e;
@@ -66,4 +78,4 @@ const deleteRutine = async data => {
 	}
 };
 
-export { saveRutine, getRutines, updateRutine, deleteRutine };
+module.exports = { saveRutine, getRutines, updateRutine, deleteRutine,getRutineById};
