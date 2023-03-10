@@ -4,6 +4,6 @@
 		"module": "commonjs",
 		"baseUrl": "."
 	},
-	"include": ["src/**/*"],
+	"include": ["src/**/*", "Papelera/Calendarh.js", "src/pages/patient/formPatient.jsx", "Papelera/NewRutina.js"],
 	"exclude": ["node_modules"]
 }

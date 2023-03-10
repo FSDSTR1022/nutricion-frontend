@@ -13,7 +13,7 @@ import { Stack, Typography } from '@mui/material';
 // import Button from '@mui/material/Button';
 // import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import PopRutina from './PopRutina';
+
 import NewRutina from './NewRutina';
 
 // import moment from "moment";
@@ -232,7 +232,7 @@ const Calendarh = () => {
 				</Grid>
 			</Grid>
 
-			<PopRutina
+		{/* 	<PopRutina
 				handleEventClose={handleEventClose}
 				action={action}
 				openEvent={openEvent}
@@ -243,7 +243,7 @@ const Calendarh = () => {
 				action={action}
 				openNewRutina={openNewRutina}
 				dateNewRutina={dateNewRutina}
-			/>
+			/> */}
 		</>
 	);
 };

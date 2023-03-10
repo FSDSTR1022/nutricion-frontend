@@ -123,17 +123,15 @@ const PatientCalendarPage = () => {
 	const handleEventClick = (id,day,e) => {
 
 		setAccionEnDialogo('editRutine')
-		setOpenRutineDialogUS(true)
 		setDateSelectedUS(day)
 		setRutineUS(id)
+		setOpenRutineDialogUS(true)
 
 	/* 	const rutina = rutinasListUS.filter(e => e._id === id).pop();
 		setRutinaUS(rutina);
 		setActionUS('editRutine');
 		setOpenEventUS(true); */
 	};
-
-
 
 	const handleDateClick = date => {
 		console.log("date: ",date)

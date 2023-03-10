@@ -114,17 +114,19 @@ export default function RutinePage(props) {
 		switch (action) {
 			case undefined:
 			case 'newRutine':
-				setActionUS('newRutine');
+				setActionUS(action);
 				setPatientUS(patien)
 				setRutineDateUS(date)
-
 				setIsLoading(false);
-
-
 
 				break;
 			case 'viewRutine':
 				setActionUS('viewRutine');
+				setPatientUS(patien)
+				setRutineDateUS(date)
+				
+
+
 				setIsLoading(false);
 
 				break;
