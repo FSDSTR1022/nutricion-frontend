@@ -48,7 +48,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import Iconify from '../../components/iconify';
-import { saveRutine } from '../../services/routineService';
+import { saveRutine,getRutineById } from '../../services/routineService';
 
 import PatientPage from '../patient/PatientPage';
 import FormExercise from '../exercise/NewExercisePage';
@@ -104,12 +104,12 @@ export default function RutinePage(props) {
 
 	const navigate = useNavigate();
 
-	const { action,patien,date,routine,setOpenDialog,setMessageAlertUS,setOpenAlertUS,setSeverityAlertUS } = props;
+	const { action,patien,date,routineId,setOpenDialog,setMessageAlertUS,setOpenAlertUS,setSeverityAlertUS } = props;
 
 /* 	const theme = useTheme(); */
 
 	useEffect(() => {
-		console.log(props)
+		console.log("PROPS:",props)
 
 		switch (action) {
 			case undefined:
@@ -123,15 +123,26 @@ export default function RutinePage(props) {
 			case 'viewRutine':
 				setActionUS('viewRutine');
 				setPatientUS(patien)
-				setRutineDateUS(date)
-				
-
-
+				setRutineDateUS(date)	
 				setIsLoading(false);
 
 				break;
 			case 'editRutine':
 				setActionUS('editRutine');
+				setPatientUS(patien)
+				setRutineDateUS(date)
+
+				// eslint-disable-next-line no-case-declarations
+				const getExe = async () => {
+					const response = await getRutineById(routineId);
+					if (response.status === 200) {
+						setRutineUS(response.data[0])
+						console.log(response.data[0]);
+						
+					}
+				};
+				getExe()
+
 				setIsLoading(false);
 				break;
 			default:
