@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { styled } from '@mui/material/styles';
 import { Link, Container, Typography } from '@mui/material';
 // hooks
+import { useNavigate } from 'react-router-dom';
 import useResponsive from '../hooks/useResponsive';
 // components
 import Logo from '../components/logo';
@@ -41,6 +42,10 @@ const StyledContent = styled('div')(({ theme }) => ({
 
 export default function LoginPage() {
 	const mdUp = useResponsive('up', 'md');
+
+	const navigate = useNavigate();
+
+	const goToRegister = () => navigate('/register', { replace: true });
 
 	return (
 		<>
@@ -83,7 +88,11 @@ export default function LoginPage() {
 							variant='body2'
 							sx={{ mb: 5 }}>
 							¿No tienes una cuenta? {''}
-							<Link variant='subtitle2'>Regístrate aquí</Link>
+							<Link
+								variant='subtitle2'
+								onClick={goToRegister}>
+								Regístrate aquí
+							</Link>
 						</Typography>
 
 						<LoginForm />
