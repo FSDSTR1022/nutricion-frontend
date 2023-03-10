@@ -81,7 +81,7 @@ function ProductHowItWorks() {
                   sx={image}
                 />
                 <Typography variant="h5" align="center">
-                  Realiza las actividades indicadas por el profesional. Indica como te fue con cada una de ellas.
+                  Indica las actividades que realizaste y como te fue con cada una de ellas.
                 </Typography>
               </Box>
             </Grid>
@@ -95,7 +95,7 @@ function ProductHowItWorks() {
                   sx={image}
                 />
                 <Typography variant="h5" align="center">
-                  Realiza un seguimiento y control de tus evolucion y estado de salud con el profesional de la salud.
+                  Realiza un control seguimiento de tu evolución y estado de salud con el profesional de la salud
                 </Typography>
               </Box>
             </Grid>
