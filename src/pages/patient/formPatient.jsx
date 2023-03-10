@@ -1,17 +1,13 @@
 import { useState } from 'react';
 // @mui
-import {
-	TextField,
-	FormControl,
-	Button,
-} from '@mui/material';
+import { TextField, FormControl, Button } from '@mui/material';
 // components
 import { registerUser } from '../../services/userService';
 
 const FormExercise = () => {
 	// conseguir datos del usuario
 	const user = JSON.parse(localStorage.getItem('user'));
-	
+
 	// Información formulario
 	const [firstName, setFirstName] = useState('');
 	const [lastName, setLastName] = useState('');
@@ -106,11 +102,13 @@ const FormExercise = () => {
 		userInfo.userType = 'patient';
 		userInfo.imgUrl = imgUrl;
 
-		// Agregamos el id del profesional que lo crea 
+		// Agregamos el id del profesional que lo crea
 		userInfo.professional = user.id;
 
 		// Agregamos contraseña aleatoría.
-		userInfo.password = Math.random().toString(36).slice(2) + Math.random().toString(36).toUpperCase().slice(2);
+		userInfo.password =
+			Math.random().toString(36).slice(2) +
+			Math.random().toString(36).toUpperCase().slice(2);
 
 		console.log('userInfo', userInfo);
 

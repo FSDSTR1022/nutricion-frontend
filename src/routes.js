@@ -16,7 +16,7 @@ import FormPatient from './pages/patient/formPatient';
 import PatientPage from './pages/patient/PatientPage';
 import RutinePage from './pages/rutine/RutinePage';
 import PatientCalendarPage from './pages/patient/PatientCalendarPage';
-import Index from './pages/landing/Home'
+import Index from './pages/landing/Home';
 
 // ----------------------------------------------------------------------
 

@@ -48,7 +48,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import Iconify from '../../components/iconify';
-import { saveRutine,getRutineById } from '../../services/routineService';
+import { saveRutine, getRutineById } from '../../services/routineService';
 
 import PatientPage from '../patient/PatientPage';
 import FormExercise from '../exercise/NewExercisePage';
@@ -96,7 +96,8 @@ export default function RutinePage(props) {
 	const [actionUS, setActionUS] = useState();
 
 	const [exerciseToViewUS, setExerciseToViewUS] = useState('');
-	const [actionToDoInexerciseDialogUS, setActionToDoInexerciseDialogUS] = useState();
+	const [actionToDoInexerciseDialogUS, setActionToDoInexerciseDialogUS] =
+		useState();
 	const [openFormDialogUS, setOpenFormDialogUS] = useState(false);
 
 	const [esValido, setEsValido] = useState(false);
@@ -104,44 +105,52 @@ export default function RutinePage(props) {
 
 	const navigate = useNavigate();
 
-	const { action,patien,date,routineId,setOpenDialog,setMessageAlertUS,setOpenAlertUS,setSeverityAlertUS } = props;
+	const {
+		action,
+		patien,
+		date,
+		routineId,
+		setOpenDialog,
+		setMessageAlertUS,
+		setOpenAlertUS,
+		setSeverityAlertUS,
+	} = props;
 
-/* 	const theme = useTheme(); */
+	/* 	const theme = useTheme(); */
 
 	useEffect(() => {
-		console.log("PROPS:",props)
+		console.log('PROPS:', props);
 
 		switch (action) {
 			case undefined:
 			case 'newRutine':
 				setActionUS(action);
-				setPatientUS(patien)
-				setRutineDateUS(date)
+				setPatientUS(patien);
+				setRutineDateUS(date);
 				setIsLoading(false);
 
 				break;
 			case 'viewRutine':
 				setActionUS('viewRutine');
-				setPatientUS(patien)
-				setRutineDateUS(date)	
+				setPatientUS(patien);
+				setRutineDateUS(date);
 				setIsLoading(false);
 
 				break;
 			case 'editRutine':
 				setActionUS('editRutine');
-				setPatientUS(patien)
-				setRutineDateUS(date)
+				setPatientUS(patien);
+				setRutineDateUS(date);
 
 				// eslint-disable-next-line no-case-declarations
 				const getExe = async () => {
 					const response = await getRutineById(routineId);
 					if (response.status === 200) {
-						setRutineUS(response.data[0])
+						setRutineUS(response.data[0]);
 						console.log(response.data[0]);
-						
 					}
 				};
-				getExe()
+				getExe();
 
 				setIsLoading(false);
 				break;
@@ -427,7 +436,7 @@ export default function RutinePage(props) {
 				}
 			});
 
-			rutineToSave.rounds = roundModificados
+			rutineToSave.rounds = roundModificados;
 
 			rutineToSave.name = rutineNameUS;
 			rutineToSave.day = rutineDateUS;
@@ -438,17 +447,16 @@ export default function RutinePage(props) {
 			saveRutine(rutineToSave).then(response => {
 				if (response.status === 200) {
 					console.log('SE GUARDO CON EXITO');
-					if(actionUS === "newRutine"){
-						setOpenDialog(false)
-						setIsLoading(true)
-						setMessageAlertUS(`Se creo la rutina para el dia ${date}`)
-						setOpenAlertUS(true)
-						setSeverityAlertUS('success')
-						
+					if (actionUS === 'newRutine') {
+						setOpenDialog(false);
+						setIsLoading(true);
+						setMessageAlertUS(`Se creo la rutina para el dia ${date}`);
+						setOpenAlertUS(true);
+						setSeverityAlertUS('success');
+
 						navigate(`/dashboard/pacients/${patientUS._id}`);
 						/* navigate('/dashboard/pacients/64024755a6db697eb1b40d77'); */
 					}
-					
 				} else {
 					console.log('NO SE GUARDO CON EXITO');
 					console.log('response: ', response);
