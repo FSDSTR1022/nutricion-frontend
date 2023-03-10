@@ -64,4 +64,4 @@ const deletePatient = async data => {
 	}
 };
 
-module.exports = { savePatient, getPatients, updatePatient, deletePatient };
+export { savePatient, getPatients, updatePatient, deletePatient };

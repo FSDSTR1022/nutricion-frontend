@@ -77,7 +77,7 @@ const getUserByProfesional = async data => {
 	}
 };
 
-module.exports = {
+export {
 	getAllUsers,
 	registerUser,
 	updateUser,
