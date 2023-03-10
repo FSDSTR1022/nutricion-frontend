@@ -28,7 +28,7 @@ const getRutines = async () => {
 	}
 };
 
-const getRutineById = async (rutineId) => {
+const getRutineById = async rutineId => {
 	try {
 		const response = await fetch(`${URLRutina}?_id=${rutineId}`);
 		const parseResult = await response.json();
@@ -78,4 +78,10 @@ const deleteRutine = async data => {
 	}
 };
 
-module.exports = { saveRutine, getRutines, updateRutine, deleteRutine,getRutineById};
+module.exports = {
+	saveRutine,
+	getRutines,
+	updateRutine,
+	deleteRutine,
+	getRutineById,
+};

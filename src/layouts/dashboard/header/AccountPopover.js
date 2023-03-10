@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 // @mui
 import { alpha } from '@mui/material/styles';
 import {
@@ -13,21 +13,19 @@ import {
 } from '@mui/material';
 // mocks_
 import account from '../../../_mock/account';
+// llamadas al back
+import { getUserById } from '../../../services/userService';
 
 // ----------------------------------------------------------------------
 
 const MENU_OPTIONS = [
 	{
-		label: 'Home',
+		label: 'Inicio',
 		icon: 'eva:home-fill',
 	},
 	{
-		label: 'Profile',
+		label: 'Perfil',
 		icon: 'eva:person-fill',
-	},
-	{
-		label: 'Settings',
-		icon: 'eva:settings-2-fill',
 	},
 ];
 
@@ -35,6 +33,15 @@ const MENU_OPTIONS = [
 
 export default function AccountPopover() {
 	const [open, setOpen] = useState(null);
+	const [user, setUser] = useState({});
+
+	useEffect(() => {
+		async function searchUser() {
+			const localUser = JSON.parse(localStorage.getItem('user'));
+			setUser(await getUserById(localUser.id));
+		}
+		searchUser();
+	}, []);
 
 	const handleOpen = event => {
 		setOpen(event.currentTarget);
@@ -63,7 +70,7 @@ export default function AccountPopover() {
 					}),
 				}}>
 				<Avatar
-					src={account.photoURL}
+					src={user.imgUrl ? user.imgUrl : account.photoURL}
 					alt='photoURL'
 				/>
 			</IconButton>
@@ -90,13 +97,13 @@ export default function AccountPopover() {
 					<Typography
 						variant='subtitle2'
 						noWrap>
-						{account.displayName}
+						{user.name}
 					</Typography>
 					<Typography
 						variant='body2'
 						sx={{ color: 'text.secondary' }}
 						noWrap>
-						{account.email}
+						{user.email}
 					</Typography>
 				</Box>
 
@@ -117,7 +124,7 @@ export default function AccountPopover() {
 				<MenuItem
 					onClick={handleClose}
 					sx={{ m: 1 }}>
-					Logout
+					Cerrar sesión
 				</MenuItem>
 			</Popover>
 		</>
