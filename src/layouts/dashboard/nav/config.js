@@ -71,6 +71,11 @@ const navConfig = [
 		path: '/landing',
 		icon: icon('ic_analytics'),
 	},
+	{
+		title: 'Profile',
+		path: '/dashboard/profile',
+		icon: icon('ic_analytics'),
+	},
 ];
 
 export default navConfig;

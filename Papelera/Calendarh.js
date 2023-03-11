@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -13,8 +15,8 @@ import { Stack, Typography } from '@mui/material';
 // import Button from '@mui/material/Button';
 // import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import PopRutina from './PopRutina';
-import NewRutina from './NewRutina';
+
+// eslint-disable-next-line import/no-unresolved
 
 // import moment from "moment";
 
@@ -214,7 +216,7 @@ const Calendarh = () => {
 				</Grid>
 			</Grid>
 
-			<PopRutina
+			{/* 	<PopRutina
 				handleEventClose={handleEventClose}
 				action={action}
 				openEvent={openEvent}
@@ -225,7 +227,7 @@ const Calendarh = () => {
 				action={action}
 				openNewRutina={openNewRutina}
 				dateNewRutina={dateNewRutina}
-			/>
+			/> */}
 		</>
 	);
 };
