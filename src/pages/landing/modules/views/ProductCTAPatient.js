@@ -3,23 +3,12 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Typography from '../components/Typography';
-import TextField from '../components/TextField';
-import Snackbar from '../components/Snackbar';
 import Button from '../components/Button';
 import img11 from '../image/image-11.png';
 
 function ProductCTAPatient() {
-	const [open, setOpen] = React.useState(false);
 
-	const handleSubmit = event => {
-		event.preventDefault();
-		setOpen(true);
-	};
-
-	const handleClose = () => {
-		setOpen(false);
-	};
-
+	
 	return (
 		<Container
 			component='section'
@@ -96,12 +85,7 @@ function ProductCTAPatient() {
 						}}
 					/>
 				</Grid>
-			</Grid>
-			<Snackbar
-				open={open}
-				closeFunc={handleClose}
-				message='We will send you our best offers, once a week.'
-			/>
+			</Grid>			
 		</Container>
 	);
 }

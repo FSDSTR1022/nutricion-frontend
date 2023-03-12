@@ -23,11 +23,6 @@ const number = {
 	fontWeight: 'medium',
 };
 
-const image = {
-	height: 55,
-	my: 4,
-};
-
 
 
 function ProductHowItWorks() {
