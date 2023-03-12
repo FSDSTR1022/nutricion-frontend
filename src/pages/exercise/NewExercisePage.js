@@ -26,8 +26,10 @@ import {
 	Select,
 	InputLabel,
 	OutlinedInput,
+	CircularProgress
 } from '@mui/material';
 import { useTheme, styled } from '@mui/material/styles';
+import Iconify from '../../components/iconify';
 import {
 	saveExercise,
 	updateExercise,
@@ -813,6 +815,36 @@ export default function NewExercisePage(props) {
 			</>
 		);
 	} else {
-		return <h1>CARGANDO</h1>;
+		return (
+			<><Helmet>
+				<title> Nuevo Ejercicio </title>
+			</Helmet><Container>
+					<Stack
+						direction='row'
+						alignItems='center'
+						justifyContent='space-between'
+						mb={5}>
+						<Typography
+							variant='h4'
+							gutterBottom>
+							Nuevo Ejercicio
+						</Typography>
+					</Stack>
+
+					<Card>
+						<Box
+							sx={{
+								with: '100vw',
+								height: '50vh',
+								display: 'flex',
+								justifyContent: 'center',
+								alignItems: 'center',
+							}}>
+							<CircularProgress />
+						</Box>
+					</Card>
+				</Container></>
+
+		)
 	}
 }

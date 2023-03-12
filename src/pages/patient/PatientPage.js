@@ -31,6 +31,8 @@ import {
 	DialogActions,
 	Snackbar,
 	Alert,
+	CircularProgress,
+	Box
 } from '@mui/material';
 import Label from '../../components/label';
 // components
@@ -547,6 +549,40 @@ export default function PatientPage() {
 			</>
 		);
 	} else {
-		return <h1>CARGANDO</h1>;
+		return (
+			<><Helmet>
+				<title> Pacientes </title>
+			</Helmet><Container>
+					<Stack
+						direction='row'
+						alignItems='center'
+						justifyContent='space-between'
+						mb={5}>
+						<Typography
+							variant='h4'
+							gutterBottom>
+							Pacientes
+						</Typography>
+						<Button
+							variant='contained'
+							startIcon={<Iconify icon='eva:plus-fill' />}>
+							Nuevo Paciente
+						</Button>
+					</Stack>
+
+					<Card>
+						<Box
+							sx={{
+								with: '100vw',
+								height: '50vh',
+								display: 'flex',
+								justifyContent: 'center',
+								alignItems: 'center',
+							}}>
+							<CircularProgress />
+						</Box>
+					</Card>
+				</Container></>
+				);
 	}
 }
