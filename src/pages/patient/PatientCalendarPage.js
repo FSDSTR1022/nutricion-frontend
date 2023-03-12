@@ -61,11 +61,33 @@ const PatientCalendarPage = () => {
 	const [openAlertUS, setOpenAlertUS] = useState(false);
 	const [messageAlertUS, setMessageAlertUS] = useState('');
 	const [severityAlertUS, setSeverityAlertUS] = useState('success');
+	const [idUserUS,setIdUserUS] = useState('')
 	
 
 	const { id } = useParams();
 
+	let idUsuario =''
+
+	const user = localStorage.getItem('user');
+	const userJSON = JSON.parse(user)
+	console.log("USER CALENDARIO: ",userJSON)
+
+
+
+	
 	useEffect(() => {
+
+		if(id!==undefined){
+			idUsuario=id
+			setIdUserUS(id)
+		}
+		else{
+			idUsuario=userJSON.id
+			setIdUserUS(userJSON.id)
+		}
+	
+		console.log("id: ",id)
+		console.log("userJSON._id: ",userJSON.id)
 		getAllusers();		
 		getRoutines();
 		
@@ -77,7 +99,8 @@ const PatientCalendarPage = () => {
 
 				setRutinasListUS(response.data);
 				
-				const userRutines = response.data.filter(rut => rut.user._id === id);
+				const userRutines = response.data.filter(rut => rut.user._id === idUsuario);
+				console.log("userRutines ",userRutines)
 				setUserRutinesListUS(userRutines);
 
 				const events = [];
@@ -103,7 +126,8 @@ const PatientCalendarPage = () => {
 	const getAllusers = async () => {
 		const response = await getAllUsers();
 		if (response.status === 200) {
-			const pat = response.data.filter(p => p._id === id).pop();
+			const pat = response.data.filter(p => p._id === idUsuario).pop();
+			console.log("Pacientes:",pat)
 			setPatientUS(pat);
 		}
 	};

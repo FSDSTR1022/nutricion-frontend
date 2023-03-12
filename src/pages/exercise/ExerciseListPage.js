@@ -47,6 +47,7 @@ import {
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 // components
+import { Navigate } from 'react-router-dom';
 import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
 // sections
@@ -128,11 +129,22 @@ export default function ExerciseListPage(props) {
 
 	const { action, exercisesToAdd, setExerciseToAdd } = props;
 
+	const redireccionar = ()=>{
+		Navigate("/404")
+	}
+
 	useEffect(() => {
 
-		const user = localStorage.getItem('user');
+		/* const user = localStorage.getItem('user');
 		const userJSON = JSON.parse(user)
-		console.log(userJSON)
+		console.log("USER:",userJSON)
+
+				
+		if(user!== null && userJSON.type === "patient"){
+			console.log("Entro")
+			redireccionar()
+		} */
+		
 
 
 		if (action === undefined) {

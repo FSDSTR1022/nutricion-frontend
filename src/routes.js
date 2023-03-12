@@ -71,6 +71,10 @@ export default function Router() {
 				/>
 			),
 		},
+		{
+			path: 'rutinecalendar',
+			element: <PatientCalendarPage />,
+		}
 	]);
 
 	return routes;
