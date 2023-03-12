@@ -10,18 +10,18 @@ import AppAppBar from './modules/views/AppAppBar';
 import withRoot from './modules/withRoot';
 
 function Index() {
-  return (
-    <>
-      <AppAppBar />
-      <ProductHero />
-      <ProductValues />
-      <ProductCategories />
-      <ProductHowItWorks />
-      <ProductCTA />
-      <ProductSmokingHero />
-      <AppFooter />
-    </>
-  );
+	return (
+		<>
+			<AppAppBar />
+			<ProductHero />
+			<ProductValues />
+			<ProductCategories />
+			<ProductHowItWorks />
+			<ProductCTA />
+			<ProductSmokingHero />
+			<AppFooter />
+		</>
+	);
 }
 
 export default withRoot(Index);

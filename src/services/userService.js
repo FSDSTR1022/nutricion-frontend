@@ -6,6 +6,24 @@ const getAllUsers = async () => {
 	return data;
 };
 
+const getUserById = async id => {
+	const requestOptions = {
+		method: 'GET',
+		headers: { 'Content-Type': 'application/json' },
+	};
+
+	try {
+		const response = await fetch(
+			`${process.env.REACT_APP_BACK_URL}/users/user/${id}`,
+			requestOptions
+		);
+
+		return await response.json();
+	} catch (error) {
+		return error;
+	}
+};
+
 const registerUser = async data => {
 	const patient = JSON.stringify(data);
 	const requestOptions = {
@@ -83,4 +101,5 @@ export {
 	updateUser,
 	getUserByProfesional,
 	loginUser,
+	getUserById,
 };

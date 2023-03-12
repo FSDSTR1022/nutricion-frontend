@@ -828,7 +828,7 @@ export default function ExerciseListPage(props) {
 					</DialogActions>
 				</Dialog>
 
-{/* ///////////////////// Dialogo nuevo ejercicio  ///////////////////// */}
+				{/* ///////////////////// Dialogo nuevo ejercicio  ///////////////////// */}
 				<Dialog
 					open={openFormDialogUS}
 					onClose={handleCloseFormExerciseDialog}
