@@ -128,6 +128,12 @@ export default function ExerciseListPage(props) {
 	const { action, exercisesToAdd, setExerciseToAdd } = props;
 
 	useEffect(() => {
+
+		const user = localStorage.getItem('user');
+		const userJSON = JSON.parse(user)
+		console.log(userJSON)
+
+
 		if (action === undefined) {
 			setActionUS('listExercise');
 		} else {
