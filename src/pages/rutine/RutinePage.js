@@ -4,8 +4,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import { Helmet } from 'react-helmet-async';
-import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 // @mui
