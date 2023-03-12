@@ -12,9 +12,9 @@ function ProductSmokingHero() {
 				display: 'flex',
 				flexDirection: 'column',
 				alignItems: 'center',
-				my: 9,
+				my: 3,
 			}}>
-			<Button
+			{/* <Button
 				sx={{
 					border: '4px solid currentColor',
 					borderRadius: 0,
@@ -38,7 +38,7 @@ function ProductSmokingHero() {
 				src='/static/themes/onepirate/producBuoy.svg'
 				alt='buoy'
 				sx={{ width: 60 }}
-			/>
+			/> */}
 		</Container>
 	);
 }
