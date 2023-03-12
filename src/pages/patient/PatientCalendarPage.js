@@ -122,15 +122,10 @@ const PatientCalendarPage = () => {
 
 	const handleEventClick = (id,day,e) => {
 
-		setAccionEnDialogo('editRutine')
+		setAccionEnDialogo('viewRutine')
 		setDateSelectedUS(day)
 		setRutineUS(id)
 		setOpenRutineDialogUS(true)
-
-	/* 	const rutina = rutinasListUS.filter(e => e._id === id).pop();
-		setRutinaUS(rutina);
-		setActionUS('editRutine');
-		setOpenEventUS(true); */
 	};
 
 	const handleDateClick = date => {
@@ -138,10 +133,6 @@ const PatientCalendarPage = () => {
 		setAccionEnDialogo('newRutine')
 		setOpenRutineDialogUS(true)
 		setDateSelectedUS(date)
-		
-		/* setDateNewRutinaUS(date);
-		setActionUS('newRutine');
-		setOpenRutinaDialogUS(true); */
 	};
 
 	const handleNewRutinaClose = () => {
@@ -199,14 +190,6 @@ const PatientCalendarPage = () => {
 	};
 
 	
-
-	const mostrar = evento => {
-		/* console.log("Paciente US: ", patientUS)
-		console.log("UserRutinesListUS: ", userRutinesListUS)
-		console.log("nextRutinasUS: ", nextRutinasUS) */
-		console.log("nextRutinasUS: ", render)
-	};
-
 	const handleCloseMessage = (event, reason) => {
 		if (reason === 'clickaway') {
 			setOpenAlertUS(false);
@@ -219,13 +202,6 @@ const PatientCalendarPage = () => {
 		<Helmet>
 			<title> Paciente </title>
 		</Helmet>
-
-						<Button
-							value='cancelar'
-							onClick={mostrar}>
-							{' '}
-							mostrar{' '}
-						</Button>
 
 		<Container>
 			<Stack
@@ -371,7 +347,7 @@ const PatientCalendarPage = () => {
 							value='cancelar'
 							onClick={handleClickCancelButton}>
 							{' '}
-							Cancelar{' '}
+							Volver{' '}
 						</Button>
 					</DialogActions>
 				</Dialog>
