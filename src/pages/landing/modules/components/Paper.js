@@ -13,6 +13,7 @@ const PaperRoot = styled(MuiPaper, {
 }));
 
 function Paper(props) {
+	// eslint-disable-next-line no-unused-vars
 	const { background, classes, className, padding = false, ...other } = props;
 
 	return (

@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default */
 import { Navigate, useRoutes } from 'react-router-dom';
 // layouts
 import DashboardLayout from './layouts/dashboard';

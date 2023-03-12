@@ -49,10 +49,8 @@ const updateRutine = async data => {
 		body: routine,
 	};
 
-	const URLEjercicio2 = `${process.env.REACT_APP_BACK_URL}/Rutina?id=${data._id}`;
-
 	try {
-		const response = await fetch(URLEjercicio2, requestOptions);
+		const response = await fetch(`${URLRutina}?id=${data._id}`, requestOptions);
 		return { data: response.json(), status: response.status };
 	} catch (error) {
 		return error;
@@ -68,10 +66,8 @@ const deleteRutine = async data => {
 		body: routine,
 	};
 
-	const URLEjercicio2 = `${process.env.REACT_APP_BACK_URL}/Rutina?id=${data._id}`;
-
 	try {
-		const response = await fetch(URLEjercicio2, requestOptions);
+		const response = await fetch(`${URLRutina}?id=${data._id}`, requestOptions);
 		return { data: response.json(), status: response.status };
 	} catch (error) {
 		return error;
