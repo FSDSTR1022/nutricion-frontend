@@ -40,7 +40,6 @@ export default function UserProfile() {
 	useEffect(() => {
 		async function searchUser() {
 			const localUser = JSON.parse(localStorage.getItem('user'));
-			console.log('localUser', localUser);
 			if (!localUser || !localUser.id) {
 				navigate('/login', { replace: true });
 				return;
@@ -81,9 +80,42 @@ export default function UserProfile() {
 			}
 		}
 
+		// En el caso de que solo se envie la ID no se hace nanda.
+		if (!Object.keys(userInfo).length > 1) {
+			return;
+		}
+
 		updateUser(userInfo).then(() => {
 			window.location.replace('');
 		});
+	};
+
+	// imagen
+	const urlCloudinary =
+		'https://api.cloudinary.com/v1_1/dtnuuoiih/image/upload/'; // aquí deberí ir >process.env.URL_CLOUDINARY_IMG
+
+	const upLoadImage = image => {
+		const data = new FormData();
+
+		data.append('file', image);
+		data.append('upload_preset', 'x12akkid');
+		data.append('cloud_name', 'dtnuuoiih');
+		data.append('folder', 'exercises/images');
+
+		fetch(urlCloudinary, {
+			method: 'post',
+			body: data,
+		})
+			.then(res => res.json())
+			.then(data => {
+				if (data.error) {
+					return;
+				}
+
+				setImgUrl(data.url);
+			})
+
+			.catch(err => console.log('error', err));
 	};
 
 	// Asignar valores a las variables y hacer validación
@@ -116,7 +148,7 @@ export default function UserProfile() {
 				}
 				setRepeatPasswordError(false);
 				break;
-			case 'repeatPassword':
+			default:
 				setRepeatPassword(value);
 				if (password === value) {
 					setRepeatPasswordError(false);
@@ -124,8 +156,6 @@ export default function UserProfile() {
 				}
 				setRepeatPasswordError(true);
 				break;
-			default:
-				setImgUrl(value);
 		}
 	};
 
@@ -232,16 +262,38 @@ export default function UserProfile() {
 								),
 							}}
 						/>
-						<Box>
+						<Box
+							sx={{
+								display: 'flex',
+								flexDirection: 'column',
+								alignItems: 'center',
+								marginTop: '15px',
+							}}>
 							<span>Actualice aquí su imagen de perfil</span>
+							<img
+								style={{
+									marginTop: 10,
+									width: 220,
+									height: 220,
+									objectFit: 'cover',
+								}}
+								src={imgUrl !== '' ? imgUrl : user.imgUrl}
+								alt={'IMGEN USUARIO'}
+								loading='lazy'
+							/>
+							<br />
 							<Button
+								style={{ width: 220 }}
+								id='imagenButton'
 								variant='contained'
-								sx={{ mx: 4 }}
 								component='label'>
 								Selecciona una imagen
 								<input
-									type='file'
 									hidden
+									onChange={file => upLoadImage(file.target.files[0])}
+									accept='image/*'
+									multiple
+									type='file'
 								/>
 							</Button>
 						</Box>

@@ -517,7 +517,7 @@ export default function RutinePage(props) {
 					}
 				});
 			} else if (actionUS === 'editRutine') {
-				rutineToSave._id=rutineUS._id
+				rutineToSave._id = rutineUS._id;
 				updateRutine(rutineToSave).then(response => {
 					if (response.status === 200) {
 						console.log('SE Edito CON EXITO');

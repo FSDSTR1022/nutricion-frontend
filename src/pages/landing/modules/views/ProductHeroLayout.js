@@ -55,7 +55,6 @@ function ProductHeroLayout(props) {
 					}}
 				/>
 				<Background sx={sxBackground} />
-				
 			</Container>
 		</ProductHeroLayoutRoot>
 	);

@@ -129,11 +129,9 @@ export default function ExerciseListPage(props) {
 	const { action, exercisesToAdd, setExerciseToAdd } = props;
 
 	useEffect(() => {
-
 		const user = localStorage.getItem('user');
-		const userJSON = JSON.parse(user)
-		console.log(userJSON)
-
+		const userJSON = JSON.parse(user);
+		console.log(userJSON);
 
 		if (action === undefined) {
 			setActionUS('listExercise');
@@ -871,37 +869,38 @@ export default function ExerciseListPage(props) {
 					<title> Ejercicios </title>
 				</Helmet>
 				<Container>
-						<Stack
-							direction='row'
-							alignItems='center'
-							justifyContent='space-between'
-							mb={5}>
-							<Typography
-								variant='h4'
-								gutterBottom>
-								Ejercicios
-							</Typography>
-							<Button
-								variant='contained'
-								startIcon={<Iconify icon='eva:plus-fill' />}
-								onClick={handleClickNewExweciseButton}>
-								Nuevo Ejercicio
-							</Button>
-						</Stack>
+					<Stack
+						direction='row'
+						alignItems='center'
+						justifyContent='space-between'
+						mb={5}>
+						<Typography
+							variant='h4'
+							gutterBottom>
+							Ejercicios
+						</Typography>
+						<Button
+							variant='contained'
+							startIcon={<Iconify icon='eva:plus-fill' />}
+							onClick={handleClickNewExweciseButton}>
+							Nuevo Ejercicio
+						</Button>
+					</Stack>
 
-						<Card>
-							<Box
-								sx={{
-									with: '100vw',
-									height: '50vh',
-									display: 'flex',
-									justifyContent: 'center',
-									alignItems: 'center',
-								}}>
-								<CircularProgress />
-							</Box>
-						</Card>
+					<Card>
+						<Box
+							sx={{
+								with: '100vw',
+								height: '50vh',
+								display: 'flex',
+								justifyContent: 'center',
+								alignItems: 'center',
+							}}>
+							<CircularProgress />
+						</Box>
+					</Card>
 				</Container>
-			</>);
+			</>
+		);
 	}
 }
