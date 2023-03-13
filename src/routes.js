@@ -39,6 +39,7 @@ export default function Router() {
 				{ path: 'newpacient', element: <FormPatient /> },
 				{ path: 'newroutine', element: <RutinePage /> },
 				{ path: 'pacients/:id', element: <PatientCalendarPage /> },
+				{ path: 'rutinecalendar', element: <PatientCalendarPage /> },
 				{ path: 'profile', element: <UserProfile /> },
 			],
 		},
@@ -70,7 +71,7 @@ export default function Router() {
 					replace
 				/>
 			),
-		},
+		}
 	]);
 
 	return routes;

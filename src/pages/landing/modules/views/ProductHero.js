@@ -21,7 +21,7 @@ export default function ProductHero() {
 					variant='h2'
 					marked='center'
 					sx={{ mb: 1, mt: { xs: 4, sm: 10 } }}>
-					Mejora tu salud de manera facil
+					Mejora tu salud de manera fácil
 				</Typography>
 				<Typography
 					color='inherit'

@@ -106,12 +106,14 @@ export default function RutinePage(props) {
 	const [esValido, setEsValido] = useState(false);
 	const [openPopoverExerciseUS, setOpenPopoverExerciseUS] = useState(null);
 	const [openPopoverRutineUS, setOpenPopoverRutineUS] = useState(null);
+	const [localUserUS, setLocalUserUS] = useState({});
 
 	const navigate = useNavigate();
 
 	const {
 		action,
 		patien,
+		localUser,
 		date,
 		routineId,
 		setOpenDialog,
@@ -124,6 +126,7 @@ export default function RutinePage(props) {
 
 	useEffect(() => {
 		console.log('PROPS:', props);
+		setLocalUserUS(localUser)
 
 		switch (action) {
 			case undefined:
@@ -160,8 +163,6 @@ export default function RutinePage(props) {
 				const getExe = async () => {
 					const response = await getRutineById(routineId);
 					if (response.status === 200) {
-						/* console.log("Rutina: ",response.data[0])						
-						console.log("Paciente: ",response.data[0].user)	 */
 						setRutineUS(response.data[0]);
 						setPatientUS(response.data[0].user);
 						setRutineNameUS(response.data[0].name);
@@ -994,7 +995,8 @@ export default function RutinePage(props) {
 					</Stack>
 
 					<Card>
-						<Card>
+						{localUserUS.type==="profesional"?(
+							<Card>
 							<Typography
 								variant='h6'
 								textAlign='left'
@@ -1012,13 +1014,6 @@ export default function RutinePage(props) {
 									value={patientUS.name}
 									onChange={handleChangePacienteNameTextField}
 								/>
-								{/* {errorsUS.pacientName ? (
-									<span style={{ color: 'red' }}>
-										El nombre del paciente es obligatorio
-									</span>
-								) : (
-									<></>
-								)} */}
 							</FormControl>
 							<FormControl sx={{ m: 1 }}>
 								<TextField
@@ -1031,36 +1026,45 @@ export default function RutinePage(props) {
 									onChange={handleChangePacienteNameTextField}
 								/>
 							</FormControl>
-						</Card>
+							</Card>
+						)
+						:(<></>)}
+
+						
+						
 						<Card>
+						{localUserUS.type==="profesional"?(
 							<Grid
-								container
-								spacing={4}>
-								<Grid
-									item
-									xs={11}>
-									<Typography
-										variant='h6'
-										textAlign='left'
-										sx={{ m: 1 }}>
-										Rutina
-									</Typography>
-								</Grid>
-								<Grid
-									item
-									xs={1}>
-									{actionUS !== 'newRutine' ? (
-										<IconButton
-											size='large'
-											color='inherit'
-											onClick={handleOpenMenuRutine()}>
-											<Iconify icon={'eva:more-vertical-fill'} />
-										</IconButton>
-									) : (
-										<></>
-									)}
-								</Grid>
+							container
+							spacing={4}>
+							<Grid
+								item
+								xs={11}>
+								<Typography
+									variant='h6'
+									textAlign='left'
+									sx={{ m: 1 }}>
+									Rutina
+								</Typography>
 							</Grid>
+							<Grid
+								item
+								xs={1}>
+								{actionUS !== 'newRutine' ? (
+									<IconButton
+										size='large'
+										color='inherit'
+										onClick={handleOpenMenuRutine()}>
+										<Iconify icon={'eva:more-vertical-fill'} />
+									</IconButton>
+								) : (
+									<></>
+								)}
+							</Grid>
+						</Grid>
+							)
+							:(<></>)}
+							
 							<FormControl sx={{ m: 1 }}>
 								<TextField
 									id='rutineName'
