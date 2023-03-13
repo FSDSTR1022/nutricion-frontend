@@ -74,7 +74,7 @@ const updateUser = async data => {
 
 	try {
 		const response = await fetch(
-			`${process.env.REACT_APP_BACK_URL}/users/${data._id}`,
+			`${process.env.REACT_APP_BACK_URL}/users/${data.id}`,
 			requestOptions
 		);
 		return { data: response.json(), status: response.status };
