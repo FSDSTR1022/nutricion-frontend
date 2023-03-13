@@ -26,7 +26,7 @@ import {
 	Select,
 	InputLabel,
 	OutlinedInput,
-	CircularProgress
+	CircularProgress,
 } from '@mui/material';
 import { useTheme, styled } from '@mui/material/styles';
 import Iconify from '../../components/iconify';
@@ -87,7 +87,10 @@ export default function NewExercisePage(props) {
 		})
 			.then(res => res.json())
 			.then(data => {
-				console.log('datos devueltos = ', data);
+				if (data.error) {
+					return;
+				}
+
 				setCloudUrlImg(data.url);
 			})
 
@@ -109,7 +112,10 @@ export default function NewExercisePage(props) {
 		})
 			.then(res => res.json())
 			.then(data => {
-				console.log('datos devueltos = ', data);
+				if (data.error) {
+					return;
+				}
+
 				setCloudUrlVid(data.url);
 			})
 			.catch(err => console.log('error', err));
@@ -740,7 +746,7 @@ export default function NewExercisePage(props) {
 								<Grid>
 									<Item>
 										<img
-											style={{ width: 120, height: 120 }}
+											style={{ width: 120, height: 120, objectFit: 'cover' }}
 											src={
 												!excerciseToEditODeleteUS.photo
 													? !cloudUrlImg
@@ -775,7 +781,7 @@ export default function NewExercisePage(props) {
 									<Grid>
 										<Item>
 											<img
-												style={{ width: 120, height: 120 }}
+												style={{ width: 120, height: 120, objectFit: 'cover' }}
 												src={
 													!excerciseToEditODeleteUS.video
 														? !cloudUrlVid
@@ -828,9 +834,11 @@ export default function NewExercisePage(props) {
 		);
 	} else {
 		return (
-			<><Helmet>
-				<title> Nuevo Ejercicio </title>
-			</Helmet><Container>
+			<>
+				<Helmet>
+					<title> Nuevo Ejercicio </title>
+				</Helmet>
+				<Container>
 					<Stack
 						direction='row'
 						alignItems='center'
@@ -855,8 +863,8 @@ export default function NewExercisePage(props) {
 							<CircularProgress />
 						</Box>
 					</Card>
-				</Container></>
-
-		)
+				</Container>
+			</>
+		);
 	}
 }

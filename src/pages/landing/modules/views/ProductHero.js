@@ -41,14 +41,12 @@ export default function ProductHero() {
 						backgroundColor: 'common.black',
 						opacity: 0.5,
 						zIndex: -1,
-					}}
-				 >
+					}}>
 					<img
-					src={imag12}
-					alt="imagen"
-				/>
-				 </Box>
-				
+						src={imag12}
+						alt='imagen'
+					/>
+				</Box>
 			</Container>
 		</>
 	);

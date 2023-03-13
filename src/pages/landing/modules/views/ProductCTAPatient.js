@@ -7,8 +7,6 @@ import Button from '../components/Button';
 import img11 from '../image/image-11.png';
 
 function ProductCTAPatient() {
-
-	
 	return (
 		<Container
 			component='section'
@@ -27,21 +25,22 @@ function ProductCTAPatient() {
 							py: 8,
 							px: 3,
 						}}>
-						<Box
-							sx={{ maxWidth: 400 }}>
+						<Box sx={{ maxWidth: 400 }}>
+							<Typography variant='h6'>Pacientes</Typography>
 							<Typography
-								variant='h6'
+							/* variant='h5' */
 							>
-								Pacientes
-							</Typography>	
-							<Typography
-								/* variant='h5' */
-								>
-								- Reciba los planes deportivos de los profesionales.<br />
-								- Vea el detalle de los ejercicios incluidos en cada rutina.<br />
-								- Indique los ejercios y las rutinas realizadas y las sensasiones en cada una de ellas.<br />
-								- Reciba del profesional la evolución de su estado físico y mejora del estado de salud.<br /><br />
-
+								- Reciba los planes deportivos de los profesionales.
+								<br />
+								- Vea el detalle de los ejercicios incluidos en cada rutina.
+								<br />
+								- Indique los ejercios y las rutinas realizadas y las
+								sensasiones en cada una de ellas.
+								<br />
+								- Reciba del profesional la evolución de su estado físico y
+								mejora del estado de salud.
+								<br />
+								<br />
 							</Typography>
 							<Button
 								/* type='submit'
@@ -85,7 +84,7 @@ function ProductCTAPatient() {
 						}}
 					/>
 				</Grid>
-			</Grid>			
+			</Grid>
 		</Container>
 	);
 }

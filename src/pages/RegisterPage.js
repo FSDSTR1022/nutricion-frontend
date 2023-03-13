@@ -24,7 +24,8 @@ const StyledSection = styled('div')(({ theme }) => ({
 	maxWidth: 480,
 	display: 'flex',
 	flexDirection: 'column',
-	justifyContent: 'center',
+	justifyContent: 'top',
+	paddingTop: '140px',
 	boxShadow: theme.customShadows.card,
 	backgroundColor: theme.palette.background.default,
 }));
@@ -32,7 +33,6 @@ const StyledSection = styled('div')(({ theme }) => ({
 const StyledContent = styled('div')(({ theme }) => ({
 	maxWidth: 480,
 	margin: 'auto',
-	maxHeight: '100vh',
 	display: 'flex',
 	justifyContent: 'center',
 	flexDirection: 'column',
