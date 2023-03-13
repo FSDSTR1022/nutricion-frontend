@@ -320,57 +320,6 @@ const PatientCalendarPage = () => {
 					</Box>
 
 					<FullCalendar
-						plugins={[dayGridPlugin, interaction, timeGridPlugin, listPlugin]}
-						headerToolbar={{
-							start: 'today',
-							center: 'title',
-							end: 'prev,next',
-						}}
-						height={'85vh'}
-						initialView='dayGridMonth'
-						editable='true'
-						events={eventsCalendar}
-						eventClick={info =>
-							handleEventClick(info.event.id, info.event.startStr)
-						}
-						dateClick={info => handleDateClick(info.dateStr)}
-						eventDrop={info => putDropEvent(info.event.id, info.event.start)}
-					/>
-				</Card>
-			</Container>
-
-			{/* ///////////////////// Dialogo mostrar rutina  ///////////////////// */}
-			<Dialog
-				open={openRutineDialogUS}
-				onClose={handleCloseFormExerciseDialog}
-				aria-labelledby='alert-dialog-title'
-				aria-describedby='alert-dialog-description'
-				/* fullWidth="xl" */
-				fullWidth
-				maxWidth='l'>
-				<DialogContent>
-					<RutinePage
-						action={accionEnDialogo}
-						patien={patientUS}
-						date={dateSelectedUS}
-						routineId={rutineUS}
-						setOpenDialog={setOpenRutineDialogUS}
-						setMessageAlertUS={setMessageAlertUS}
-						setOpenAlertUS={setOpenAlertUS}
-						setSeverityAlertUS={setSeverityAlertUS}
-					/>
-				</DialogContent>
-				<DialogActions>
-					<Button
-						value='cancelar'
-						onClick={handleClickCancelButton}>
-						{' '}
-						Volver{' '}
-					</Button>
-				</DialogActions>
-			</Dialog>
-
-				<FullCalendar
 					plugins={[dayGridPlugin, interaction, timeGridPlugin, listPlugin]}
 					headerToolbar={{
 						start: 'today',
@@ -384,15 +333,16 @@ const PatientCalendarPage = () => {
 					eventClick={info => handleEventClick(info.event.id,info.event.startStr)}
 					dateClick={info => handleDateClick(info.dateStr)}
 					eventDrop={info => putDropEvent(info.event.id, info.event.start)} />
+				</Card>
+			</Container>
 
-{/* ///////////////////// Dialogo mostrar rutina  ///////////////////// */}
+{/*  ///////////////////// Dialogo mostrar rutina  /////////////////////  */}
 		<Dialog
 					open={openRutineDialogUS}
 					onClose={handleCloseFormExerciseDialog}
 					aria-labelledby='alert-dialog-title'
 					aria-describedby='alert-dialog-description'
-					/* fullWidth="xl" */
-					fullWidth
+					fullWidth="l" 					
 					maxWidth='l'>
 					<DialogContent>
 						<RutinePage 
@@ -405,7 +355,7 @@ const PatientCalendarPage = () => {
 							setMessageAlertUS={setMessageAlertUS}
 							setOpenAlertUS={setOpenAlertUS}
 							setSeverityAlertUS={setSeverityAlertUS}
-							/* user={} */
+							
 						/>
 					</DialogContent>
 					<DialogActions>
@@ -416,7 +366,7 @@ const PatientCalendarPage = () => {
 							Volver{' '}
 						</Button>
 					</DialogActions>
-				</Dialog>
+				</Dialog> 
 
 				<Snackbar
 					open={openAlertUS}
