@@ -1,10 +1,13 @@
 import * as React from 'react';
-
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
-import Button from '../components/Button';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
+import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
 import Typography from '../components/Typography';
+import appCurvyLines from '../image/appCurvyLines.png';
+
 
 const item = {
 	display: 'flex',
@@ -20,10 +23,7 @@ const number = {
 	fontWeight: 'medium',
 };
 
-const image = {
-	height: 55,
-	my: 4,
-};
+
 
 function ProductHowItWorks() {
 	return (
@@ -41,7 +41,7 @@ function ProductHowItWorks() {
 				}}>
 				<Box
 					component='img'
-					src='/static/themes/onepirate/productCurvyLines.png'
+					src={appCurvyLines}
 					alt='curvy lines'
 					sx={{
 						pointerEvents: 'none',
@@ -67,16 +67,13 @@ function ProductHowItWorks() {
 							md={4}>
 							<Box sx={item}>
 								<Box sx={number}>1.</Box>
-								<Box
-									component='img'
-									src='/static/themes/onepirate/productHowItWorks1.svg'
-									alt='suitcase'
-									sx={image}
+								<MailOutlineIcon
+								sx={{ fontSize: 80 }}
 								/>
 								<Typography
 									variant='h5'
 									align='center'>
-									Recibe la invitación por parte de un profesional de la salud.
+									Reciba la invitación por parte de un profesional de la salud.
 								</Typography>
 							</Box>
 						</Grid>
@@ -86,17 +83,14 @@ function ProductHowItWorks() {
 							md={4}>
 							<Box sx={item}>
 								<Box sx={number}>2.</Box>
-								<Box
-									component='img'
-									src='/static/themes/onepirate/productHowItWorks2.svg'
-									alt='graph'
-									sx={image}
+								<PlaylistAddCheckIcon
+								sx={{ fontSize: 80 }}
 								/>
 								<Typography
 									variant='h5'
 									align='center'>
-									Realiza las actividades indicadas por el profesional. Indica
-									como te fue con cada una de ellas.
+									Realice las actividades indicadas por el profesional. Indique
+									como se sitio con cada una de ellas.
 								</Typography>
 							</Box>
 						</Grid>
@@ -106,31 +100,19 @@ function ProductHowItWorks() {
 							md={4}>
 							<Box sx={item}>
 								<Box sx={number}>3.</Box>
-								<Box
-									component='img'
-									src='/static/themes/onepirate/productHowItWorks3.svg'
-									alt='clock'
-									sx={image}
+								<SignalCellularAltIcon
+								sx={{ fontSize: 80 }}
 								/>
 								<Typography
 									variant='h5'
 									align='center'>
-									Realiza un seguimiento y control de tus evolucion y estado de
+									Realice un seguimiento y control de su evolucion y estado de
 									salud con el profesional de la salud.
 								</Typography>
 							</Box>
 						</Grid>
 					</Grid>
 				</div>
-				<Button
-					color='secondary'
-					size='large'
-					variant='contained'
-					component='a'
-					href='/premium-themes/onepirate/sign-up/'
-					sx={{ mt: 8 }}>
-					Get started
-				</Button>
 			</Container>
 		</Box>
 	);
