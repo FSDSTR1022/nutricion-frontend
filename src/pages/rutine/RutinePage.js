@@ -36,6 +36,10 @@ import {
 	MenuItem,
 	Grid,
 	Item,
+	Rating,
+	InputLabel,
+	Select,
+	SelectChangeEvent
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -107,6 +111,10 @@ export default function RutinePage(props) {
 	const [openPopoverExerciseUS, setOpenPopoverExerciseUS] = useState(null);
 	const [openPopoverRutineUS, setOpenPopoverRutineUS] = useState(null);
 	const [localUserUS, setLocalUserUS] = useState({});
+
+	const [openFeedbackDialog,setOpenFeedbackDialog] = useState(false)
+	const [startFeedbackUS, setStartFeedbackUS] = useState("1");
+	 const[textFeedbackUS, setTextFeedbackUS] = useState('');
 
 	const navigate = useNavigate();
 
@@ -413,6 +421,8 @@ export default function RutinePage(props) {
 
 		setExerciseToAddUS([]);
 		setOpenViewExerciseDialog(false);
+
+		setOpenFeedbackDialog(false)
 	};
 
 	const handleClickShowexerciseButton = () => {
@@ -500,6 +510,7 @@ export default function RutinePage(props) {
 			rutineToSave.name = rutineNameUS;
 			rutineToSave.day = rutineDateUS;
 			rutineToSave.user = patientUS._id;
+			rutineToSave.status="pending";
 
 			console.log('Rutina a guardar: ', rutineToSave);
 
@@ -957,6 +968,37 @@ export default function RutinePage(props) {
 		);
 	};
 
+	const prueba2 =() =>{
+		console.log(rutineUS)
+	}
+
+	const handleClickRealizarRutinaButoon = () => {
+		
+		const rutineToUpdate={
+			_id:rutineUS._id,
+			status: "done"}
+
+		updateRutine(rutineToUpdate).then(response => {
+			if (response.status === 200) {
+				console.log('SE SE ACTUALIZÓ LA RUTINA');
+				setOpenFeedbackDialog(true)
+				/* setOpenDialog(false);
+				setIsLoading(true);
+				setMessageAlertUS(`Se modificó la rutina`);
+				setOpenAlertUS(true);
+				setSeverityAlertUS('success'); */
+			} else {
+				console.log('NO SE ACTUALIZÓ LA RUTINA');
+				console.log('response: ', response);
+			}
+		});
+	}
+
+	const handleChangeTextFeddback = () => {
+    	setTextFeedbackUS("");
+  };
+
+
 	const getTitle = () => {
 		switch (actionUS) {
 			case 'newRutine':
@@ -993,10 +1035,16 @@ export default function RutinePage(props) {
 							{getTitle()}
 						</Typography>
 					</Stack>
+					<Button
+										variant='contained'
+										color="success"										
+										onClick={prueba2}>
+										mostrar Rutina
+							</Button>
 
 					<Card>
 						{localUserUS.type==="profesional"?(
-							<Card>
+						<Card>
 							<Typography
 								variant='h6'
 								textAlign='left'
@@ -1025,45 +1073,44 @@ export default function RutinePage(props) {
 									value={patientUS.lastName}
 									onChange={handleChangePacienteNameTextField}
 								/>
-							</FormControl>
-							</Card>
+							</FormControl>								
+						</Card>
 						)
 						:(<></>)}
 
 						
 						
-						<Card>
+					<Card>
 						{localUserUS.type==="profesional"?(
 							<Grid
 							container
 							spacing={4}>
-							<Grid
-								item
-								xs={11}>
-								<Typography
-									variant='h6'
-									textAlign='left'
-									sx={{ m: 1 }}>
-									Rutina
-								</Typography>
+								<Grid
+									item
+									xs={11}>
+									<Typography
+										variant='h6'
+										textAlign='left'
+										sx={{ m: 1 }}>
+										Rutina
+									</Typography>
+								</Grid>
+								<Grid
+									item
+									xs={1}>
+									{actionUS !== 'newRutine' ? (
+										<IconButton
+											size='large'
+											color='inherit'
+											onClick={handleOpenMenuRutine()}>
+											<Iconify icon={'eva:more-vertical-fill'} />
+										</IconButton>
+									) : (
+										<></>
+									)}
+								</Grid>
 							</Grid>
-							<Grid
-								item
-								xs={1}>
-								{actionUS !== 'newRutine' ? (
-									<IconButton
-										size='large'
-										color='inherit'
-										onClick={handleOpenMenuRutine()}>
-										<Iconify icon={'eva:more-vertical-fill'} />
-									</IconButton>
-								) : (
-									<></>
-								)}
-							</Grid>
-						</Grid>
-							)
-							:(<></>)}
+						):(<></>)}
 							
 							<FormControl sx={{ m: 1 }}>
 								<TextField
@@ -1109,6 +1156,62 @@ export default function RutinePage(props) {
 									)}
 								/>
 							</LocalizationProvider>
+
+							{localUserUS.type==="profesional"?(
+								<Typography
+								variant='h6'
+								textAlign='left'
+								color={rutineUS.status==="pending"?("Red"):("Green")}
+								sx={{ m: 1 }}>
+								{rutineUS.status==="pending"?("Rutina No Realizada"):("Rutina SI realiza")}
+							</Typography>
+							):(
+							<>
+							{rutineUS.status==="pending"?
+							(
+								<Button
+										variant='contained'
+										value='cancelar'
+										color="success"										
+										onClick={handleClickRealizarRutinaButoon}>
+											Realizar Rutina
+								</Button>
+
+							):(
+								<Typography
+								variant='h6'
+								textAlign='left'
+								color="Green"
+								sx={{ m: 1 }}>
+								Rutina Realiza
+							</Typography>
+								
+
+							)}
+
+							</>)}
+
+							{/* {rutineUS.status==="pending"?
+							(
+								<Button
+										variant='contained'
+										value='cancelar'
+										color="success"
+										disabled
+										onClick={handleCloseDialog}>
+										Rutina Realizada
+							</Button>
+
+							):(
+								<Typography
+								variant='h6'
+								textAlign='left'
+								sx={{ m: 1 }}>
+								Rutina Realiza
+							</Typography>
+								
+
+							)}	 */}						
 
 							<div>
 								{rutineUS.rounds.map(round => getAccordions(round))}
@@ -1188,8 +1291,8 @@ export default function RutinePage(props) {
 							</Dialog>
 						</div>
 
-						{/* /////////////////// dialogo mostrar de ejercicio /////////////////// */}
-						<div>
+{/* /////////////////// dialogo mostrar de ejercicio /////////////////// */}
+					
 							<Dialog
 								open={openViewExerciseDialog}
 								onClose={handleCloseDialog}
@@ -1213,7 +1316,49 @@ export default function RutinePage(props) {
 									</Button>
 								</DialogActions>
 							</Dialog>
-						</div>
+
+{/* /////////////////// dialogo mostrar de ejercicio /////////////////// */}
+					
+<Dialog
+								open={openFeedbackDialog}
+								onClose={handleCloseDialog}
+								aria-labelledby='alert-dialog-title'
+								aria-describedby='alert-dialog-description'
+								fullWidth='xl'
+								maxWidth='xl'>
+								<DialogContent>
+										<Typography component="legend">Controlled</Typography>
+										<Rating
+											name="simple-controlled"
+											value={startFeedbackUS}
+											onChange={(event, newValue) => {
+											setStartFeedbackUS(newValue);
+											}}
+										/>
+										<FormControl fullWidth>
+										<InputLabel id="demo-simple-select-label">Age</InputLabel>
+										<Select
+											labelId="demo-simple-select-label"
+											id="demo-simple-select"
+											value={textFeedbackUS}
+											label="Age"
+											onChange={handleChangeTextFeddback}
+										>
+											<MenuItem value={"No termine"}>No termine</MenuItem>
+											<MenuItem value={"Bien"}>Bien</MenuItem>
+											<MenuItem value={"Necesito más"}>Necesito más</MenuItem>
+										</Select>
+										</FormControl>
+								</DialogContent>
+								<DialogActions>
+									<Button
+										value='cancelar'
+										onClick={handleCloseDialog}>
+										Cerrar
+									</Button>
+								</DialogActions>
+							</Dialog>							
+						
 
 						<div>{getConfirmationDialog()}</div>
 					</Card>
