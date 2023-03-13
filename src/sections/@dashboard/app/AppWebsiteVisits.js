@@ -73,7 +73,7 @@ export default function AppWebsiteVisits({
 				sx={{ p: 3, pb: 1 }}
 				dir='ltr'>
 				<ReactApexChart
-					type='line'
+					type='bar'
 					series={chartData}
 					options={chartOptions}
 					height={364}
