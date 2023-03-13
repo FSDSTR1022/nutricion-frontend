@@ -22,32 +22,15 @@ export default function AppWebsiteVisits({
 	...other
 }) {
 	const chartOptions = useChart({
-		plotOptions: { bar: { columnWidth: '16%' } },
+		plotOptions: {
+			bar: { columnWidth: '16%' },
+			stacked: true,
+			stackType: '100%',
+		},
 		fill: { type: chartData.map(i => i.fill) },
 		labels: chartLabels,
-		xaxis: { type: 'string' },
-		annotations: {
-			yaxis: [
-				{
-					y: 15,
-					y2: 20,
-					borderColor: '#000',
-					fillColor: '#FEB019',
-					label: {
-						text: 'Eficiency Range Week',
-					},
-				},
-				{
-					y: 55,
-					y2: 65,
-					borderColor: '#000',
-					fillColor: '#97DEFF',
-					label: {
-						text: 'Eficiency Range Month',
-					},
-				},
-			],
-		},
+		xaxis: { type: 'date' },
+
 		tooltip: {
 			shared: true,
 			intersect: false,
