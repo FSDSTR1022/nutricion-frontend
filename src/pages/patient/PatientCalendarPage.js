@@ -32,12 +32,8 @@ import {
 
  import RutinePage from '../rutine/RutinePage'
  import {getRutines} from '../../services/routineService'
- import { getAllUsers } from '../../services/userService';
+ import { getAllUsers,getUserById } from '../../services/userService';
  
-
-
-
-
 
 const PatientCalendarPage = () => {
 	/* todas las rutinas de la BD */
@@ -61,58 +57,72 @@ const PatientCalendarPage = () => {
 	const [openAlertUS, setOpenAlertUS] = useState(false);
 	const [messageAlertUS, setMessageAlertUS] = useState('');
 	const [severityAlertUS, setSeverityAlertUS] = useState('success');
-	const [idUserUS,setIdUserUS] = useState('')
+/* 	const [idUserUS,setIdUserUS] = useState('') */
+	const [localUserUS, setLocalUserUS] = useState({});
 	
 
 	const { id } = useParams();
 
-	let idUsuario =''
-
-	const user = localStorage.getItem('user');
-	const userJSON = JSON.parse(user)
-	console.log("USER CALENDARIO: ",userJSON)
-
-
+/* 	const user2 = localStorage.getItem('user');
+	const userJSON = JSON.parse(user2)
+ */
+/* 
+	console.log("USER de localStorage: ",userJSON) */
 
 	
 	useEffect(() => {
+		const localUser = JSON.parse(localStorage.getItem('user'));
+		console.log("USER Local: ",localUser)
+		setLocalUserUS(localUser)
 
 		if(id!==undefined){
-			idUsuario=id
-			setIdUserUS(id)
+			setPatient(id)
+			getRoutines(id);
 		}
 		else{
-			idUsuario=userJSON.id
-			setIdUserUS(userJSON.id)
-		}
-	
-		console.log("id: ",id)
-		console.log("userJSON._id: ",userJSON.id)
-		getAllusers();		
-		getRoutines();
+			
+			setPatient(localUser.id)
+			getRoutines(localUser.id);
+		}	
 		
 	}, [openAlertUS,render]);
 
-	const getRoutines = async () => {
+	async function setPatient(id) {
+		console.log("USER BD: ",await getUserById(id))
+		setPatientUS(await getUserById(id));
+	}
+
+	const getRoutines = async (id) => {
 		const response = await getRutines();
 		if (response.status === 200) {
 
 				setRutinasListUS(response.data);
 				
-				const userRutines = response.data.filter(rut => rut.user._id === idUsuario);
-				console.log("userRutines ",userRutines)
+				const userRutines = response.data.filter(rut => rut.user._id === id);
 				setUserRutinesListUS(userRutines);
 
 				const events = [];
-					userRutines.map(ob =>
-						events.push({
+					// eslint-disable-next-line array-callback-return
+					userRutines.map(ob =>{
+						const evento={
 							id: ob._id,
 							title: ob.name,
 							start: ob.day,
 							allDay: true,
-							editable: true,
-						})
-					);
+							editable: true
+						}
+
+						if(localUserUS.type==="profesional"){
+							console.log("ENTRO a profesional")
+							evento.editable= true
+						}else{
+							console.log("ENTRO a paciente")
+							evento.editable = false
+						}
+
+						events.push(evento)
+					});
+
 				setEventsCalendar(events)
 				
 				const nextR = userRutines.filter(rut => Date.parse(rut.day) >= today);
@@ -123,27 +133,6 @@ const PatientCalendarPage = () => {
 		}
 	};
 
-	const getAllusers = async () => {
-		const response = await getAllUsers();
-		if (response.status === 200) {
-			const pat = response.data.filter(p => p._id === idUsuario).pop();
-			console.log("Pacientes:",pat)
-			setPatientUS(pat);
-		}
-	};
-
-
-	const getPatients = () => {
-		fetch('http://localhost:3000/users/all')
-			.then(res => res.json())
-			.then(data => {
-				const pat = data.filter(p => p._id === id).pop();
-				setPatientUS(pat);
-			})
-			.catch(err => console.log('error', err));
-	};
-
-
 	const handleEventClick = (id,day,e) => {
 
 		setAccionEnDialogo('viewRutine')
@@ -153,10 +142,13 @@ const PatientCalendarPage = () => {
 	};
 
 	const handleDateClick = date => {
-		console.log("date: ",date)
-		setAccionEnDialogo('newRutine')
-		setOpenRutineDialogUS(true)
-		setDateSelectedUS(date)
+
+		if(localUserUS.type ==="profesional"){
+			setAccionEnDialogo('newRutine')
+			setOpenRutineDialogUS(true)
+			setDateSelectedUS(date)
+		}
+		
 	};
 
 	const handleNewRutinaClose = () => {
@@ -170,8 +162,12 @@ const PatientCalendarPage = () => {
 		setNextRutinasUS(nextR);
 	};
 
+	// eslint-disable-next-line consistent-return
 	function putDropEvent(id, date) {
+		console.log("localUserUS.type: ",localUserUS.type)
 
+		if(localUserUS.type ==="profesional"){
+		
 		const rutineUrl = 'http://localhost:3000/rutines?id=';
 
 		return fetch(`${rutineUrl}${id}`, {
@@ -184,12 +180,13 @@ const PatientCalendarPage = () => {
 		})
 			.then(res => res.json())
 			.then(				
-				getRoutines()
+				getRoutines(patientUS._id)
 			)
 			.then(				
 				render? setRender(false) : setRender(true)
 			)
 			.catch(error => console.log('Error:', error));
+		}
 	}
 
 	const Item = styled(Paper)(({ theme }) => ({
@@ -228,7 +225,7 @@ const PatientCalendarPage = () => {
 		</Helmet>
 
 		<Container>
-			<Stack
+			{/* <Stack
 				direction='row'
 				alignItems='center'
 				justifyContent='space-between'
@@ -238,7 +235,7 @@ const PatientCalendarPage = () => {
 					gutterBottom>
 					Paciente: {`${patientUS.name} ${patientUS.lastName}`}
 				</Typography>
-			</Stack>
+			</Stack> */}
 
 			<Card>
 				<Box sx={{ flexGrow: 3 }}>
@@ -358,12 +355,14 @@ const PatientCalendarPage = () => {
 						<RutinePage 
 							action={accionEnDialogo}
 							patien={patientUS}
+							localUser={localUserUS}
 							date={dateSelectedUS}
 							routineId={rutineUS}
 							setOpenDialog={setOpenRutineDialogUS}
 							setMessageAlertUS={setMessageAlertUS}
 							setOpenAlertUS={setOpenAlertUS}
 							setSeverityAlertUS={setSeverityAlertUS}
+							/* user={} */
 						/>
 					</DialogContent>
 					<DialogActions>

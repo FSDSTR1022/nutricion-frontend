@@ -11,15 +11,7 @@ const icon = name => (
 	/>
 );
 
-const userLocalStorag = localStorage.getItem('user');
-		const user = JSON.parse(userLocalStorag)
-
-let navConfig = []
-if(user!== null)
-{		
-	if(user.type === "profesional")
-	{
-		navConfig= [].concat([
+const navConfig = [
 			{
 				title: 'dashboard',
 				path: '/dashboard/app',
@@ -85,19 +77,7 @@ if(user!== null)
 				path: '/dashboard/profile',
 				icon: icon('ic_analytics'),
 			},
-		])
-	}
-	else if(user.type === "patient")
-	{
-		navConfig= [].concat([{
-			title: 'Rutinas',
-			path: '/rutinecalendar',
-			icon: icon('ic_analytics'),
-		},])
-	
-	}	
-
-}
+		];
 	
 
 export default navConfig;
