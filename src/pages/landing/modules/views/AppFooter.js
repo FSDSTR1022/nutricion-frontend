@@ -4,8 +4,8 @@ import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import Container from '@mui/material/Container';
 import Typography from '../components/Typography';
-import instagram from '../icon/instagram.png'
-import twitter from '../icon/twitter.png'
+import instagram from '../icon/instagram.png';
+import twitter from '../icon/twitter.png';
 
 function Copyright() {
 	return (
@@ -33,7 +33,6 @@ const iconStyle = {
 		bgcolor: 'warning.dark',
 	},
 };
-
 
 export default function AppFooter() {
 	return (
@@ -107,7 +106,7 @@ export default function AppFooter() {
 								<Link href='/premium-themes/onepirate/privacy/'>Privacy</Link>
 							</Box>
 						</Box>
-					</Grid>					
+					</Grid>
 				</Grid>
 			</Container>
 		</Typography>

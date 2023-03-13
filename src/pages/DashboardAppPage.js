@@ -1,8 +1,10 @@
+import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { faker } from '@faker-js/faker';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import { Grid, Container, Typography } from '@mui/material';
+import moment from 'moment';
 // components
 import Iconify from '../components/iconify';
 // sections
@@ -17,11 +19,78 @@ import {
 	AppCurrentSubject,
 	AppConversionRates,
 } from '../sections/@dashboard/app';
+import { getAllUsers } from '../services/userService';
 
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
 	const theme = useTheme();
+
+	const [patientsListUS, setPatientListUS] = useState([]);
+	const [isLoadingPatientsUS, setIsLoadingPatientsUS] = useState(true);
+	const [rutinasList, setRutinasList] = useState([]);
+	const [userRutinesList, setUserRutinesList] = useState([]);
+	const [chartLabels, setChartLabels] = useState([]);
+	const [fullRutineExpected, setFullRutineExpected] = useState([]);
+	const [fullRutineCompleted, setFullRutineCompleted] = useState([]);
+
+	useEffect(() => {
+		const getAllusers = async () => {
+			const response = await getAllUsers();
+			if (response.status === 200) {
+				setPatientListUS(response.data);
+				setIsLoadingPatientsUS(false);
+			}
+		};
+		const getRoutines = async () => {
+			const response = await getROutines();
+			if (response.status === 200) {
+				setRutinasList(response.data);
+				const rutProf = response.data.filter(
+					rut => rut.user.profetional === '640dadcf849d5a2688be06c2'
+				); // no se está guardando el "profetional" en la rutina. falta el id localstorage?
+				setUserRutinesList(rutProf);
+				datosGraph(rutProf);
+			}
+		};
+		getAllusers();
+		getRoutines();
+	}, []);
+
+	const getROutines = async () => {
+		const result = await fetch(`${process.env.REACT_APP_BACK_URL}/rutines`);
+		const parseResult = await result.json();
+		const data = { data: parseResult, status: result.status };
+		return data;
+	};
+
+	/* const getRoutines = () => {
+		fetch('https://backendrailways-production.up.railway.app/rutines/')
+			.then(res => res.json())
+			.then(data => {
+				setRutinasList(data);
+				console.log('rutinas lista', rutinasList);
+			})
+			.catch(err => console.log('error', err));
+	}; */
+
+	const datosGraph = profRutines => {
+		console.log('dentro datosGraph');
+
+		const fechasRutinas = profRutines?.map(rut => moment(rut.day).format('L'));
+		const axis = [...new Set(fechasRutinas)];
+		setChartLabels(axis);
+		const mm = [];
+		axis.forEach(date => {
+			const m = profRutines?.filter(
+				rut => moment(rut.day).format('L') === date
+			).length;
+			mm.push(m);
+			setFullRutineExpected(mm);
+			console.log(date, m, mm);
+			setFullRutineCompleted([1, 2, 0, 1, 1]);
+		});
+	};
 
 	return (
 		<>
@@ -45,9 +114,9 @@ export default function DashboardAppPage() {
 						sm={6}
 						md={3}>
 						<AppWidgetSummary
-							title='Total Pacientes'
-							total={12}
-							icon={'ant-design:android-filled'}
+							title='Total Patients'
+							total={patientsListUS.length}
+							icon={'fa6-solid:people-group'}
 						/>
 					</Grid>
 
@@ -57,10 +126,10 @@ export default function DashboardAppPage() {
 						sm={6}
 						md={3}>
 						<AppWidgetSummary
-							title='Total Rutinas'
-							total={1352831}
+							title='Total Routines'
+							total={userRutinesList.length}
 							color='info'
-							icon={'ant-design:apple-filled'}
+							icon={'fluent-mdl2:processing-run'}
 						/>
 					</Grid>
 
@@ -70,10 +139,10 @@ export default function DashboardAppPage() {
 						sm={6}
 						md={3}>
 						<AppWidgetSummary
-							title='Total Ejercicios'
+							title='Total Exercises'
 							total={1723315}
 							color='warning'
-							icon={'ant-design:windows-filled'}
+							icon={'healthicons:exercise-weights'}
 						/>
 					</Grid>
 
@@ -96,39 +165,21 @@ export default function DashboardAppPage() {
 						md={6}
 						lg={8}>
 						<AppWebsiteVisits
-							title='Website Visits'
-							subheader='(+43%) than last year'
-							chartLabels={[
-								'01/01/2003',
-								'02/01/2003',
-								'03/01/2003',
-								'04/01/2003',
-								'05/01/2003',
-								'06/01/2003',
-								'07/01/2003',
-								'08/01/2003',
-								'09/01/2003',
-								'10/01/2003',
-								'11/01/2003',
-							]}
+							title='Performance'
+							subheader='Routines filled Index'
+							chartLabels={chartLabels}
 							chartData={[
 								{
-									name: 'Team A',
+									name: 'Routinas Filled',
 									type: 'column',
 									fill: 'solid',
-									data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
+									data: fullRutineCompleted,
 								},
 								{
-									name: 'Team B',
-									type: 'area',
-									fill: 'gradient',
-									data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
-								},
-								{
-									name: 'Team C',
-									type: 'line',
+									name: 'Routinas Expected Filled',
+									type: 'column',
 									fill: 'solid',
-									data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
+									data: fullRutineExpected,
 								},
 							]}
 						/>

@@ -22,17 +22,22 @@ export default function AppWebsiteVisits({
 	...other
 }) {
 	const chartOptions = useChart({
-		plotOptions: { bar: { columnWidth: '16%' } },
+		plotOptions: {
+			bar: { columnWidth: '16%' },
+			stacked: true,
+			stackType: '100%',
+		},
 		fill: { type: chartData.map(i => i.fill) },
 		labels: chartLabels,
-		xaxis: { type: 'datetime' },
+		xaxis: { type: 'date' },
+
 		tooltip: {
 			shared: true,
 			intersect: false,
 			y: {
 				formatter: y => {
 					if (typeof y !== 'undefined') {
-						return `${y.toFixed(0)} visits`;
+						return `${y.toFixed(0)} routines`;
 					}
 					return y;
 				},
@@ -51,7 +56,7 @@ export default function AppWebsiteVisits({
 				sx={{ p: 3, pb: 1 }}
 				dir='ltr'>
 				<ReactApexChart
-					type='line'
+					type='bar'
 					series={chartData}
 					options={chartOptions}
 					height={364}

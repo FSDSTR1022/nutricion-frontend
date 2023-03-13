@@ -8,7 +8,6 @@ import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
 import Typography from '../components/Typography';
 import appCurvyLines from '../image/appCurvyLines.png';
 
-
 const item = {
 	display: 'flex',
 	flexDirection: 'column',
@@ -22,8 +21,6 @@ const number = {
 	color: 'secondary.main',
 	fontWeight: 'medium',
 };
-
-
 
 function ProductHowItWorks() {
 	return (
@@ -67,9 +64,7 @@ function ProductHowItWorks() {
 							md={4}>
 							<Box sx={item}>
 								<Box sx={number}>1.</Box>
-								<MailOutlineIcon
-								sx={{ fontSize: 80 }}
-								/>
+								<MailOutlineIcon sx={{ fontSize: 80 }} />
 								<Typography
 									variant='h5'
 									align='center'>
@@ -83,9 +78,7 @@ function ProductHowItWorks() {
 							md={4}>
 							<Box sx={item}>
 								<Box sx={number}>2.</Box>
-								<PlaylistAddCheckIcon
-								sx={{ fontSize: 80 }}
-								/>
+								<PlaylistAddCheckIcon sx={{ fontSize: 80 }} />
 								<Typography
 									variant='h5'
 									align='center'>
@@ -100,9 +93,7 @@ function ProductHowItWorks() {
 							md={4}>
 							<Box sx={item}>
 								<Box sx={number}>3.</Box>
-								<SignalCellularAltIcon
-								sx={{ fontSize: 80 }}
-								/>
+								<SignalCellularAltIcon sx={{ fontSize: 80 }} />
 								<Typography
 									variant='h5'
 									align='center'>

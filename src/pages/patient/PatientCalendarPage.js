@@ -4,20 +4,18 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
-
+import moment from 'moment';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interaction from '@fullcalendar/interaction';
-import { 
-	styled,
- } from '@mui/material/styles';
- import Box from '@mui/material/Box';
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 
-import { 
-	Stack, 
+import {
+	Stack,
 	Typography,
 	Container,
 	Card,
@@ -37,8 +35,8 @@ import {
 
 const PatientCalendarPage = () => {
 	/* todas las rutinas de la BD */
-	const[rutinasListUS, setRutinasListUS] = useState([]); 
-	
+	const [rutinasListUS, setRutinasListUS] = useState([]);
+
 	/* las rutinas de un paciente */
 	const [userRutinesListUS, setUserRutinesListUS] = useState([]);
 
@@ -48,11 +46,11 @@ const PatientCalendarPage = () => {
 	const [actionUS, setActionUS] = useState('');
 	const [dateSelectedUS, setDateSelectedUS] = useState(new Date());
 	const [nextRutinasUS, setNextRutinasUS] = useState([]);
-	
+
 	const [patientUS, setPatientUS] = useState({});
-	const [accionEnDialogo,setAccionEnDialogo] = useState('newRutine')
-	const [eventsCalendar,setEventsCalendar] = useState()
-	const [render, setRender] = useState(false)
+	const [accionEnDialogo, setAccionEnDialogo] = useState('newRutine');
+	const [eventsCalendar, setEventsCalendar] = useState();
+	const [render, setRender] = useState(false);
 
 	const [openAlertUS, setOpenAlertUS] = useState(false);
 	const [messageAlertUS, setMessageAlertUS] = useState('');
@@ -95,11 +93,10 @@ const PatientCalendarPage = () => {
 	const getRoutines = async (id) => {
 		const response = await getRutines();
 		if (response.status === 200) {
+			setRutinasListUS(response.data);
 
-				setRutinasListUS(response.data);
-				
-				const userRutines = response.data.filter(rut => rut.user._id === id);
-				setUserRutinesListUS(userRutines);
+			const userRutines = response.data.filter(rut => rut.user._id === id);
+			setUserRutinesListUS(userRutines);
 
 				const events = [];
 					// eslint-disable-next-line array-callback-return
@@ -158,7 +155,9 @@ const PatientCalendarPage = () => {
 	const today = Date.now() - 86400000;
 
 	const handleNextRutines = async () => {
-		const nextR = await rutinasListUS.filter(rut => Date.parse(rut.day) >= today);
+		const nextR = await rutinasListUS.filter(
+			rut => Date.parse(rut.day) >= today
+		);
 		setNextRutinasUS(nextR);
 	};
 
@@ -195,34 +194,32 @@ const PatientCalendarPage = () => {
 		padding: theme.spacing(1),
 		textAlign: 'center',
 		color: theme.palette.text.secondary,
-	  }));
+	}));
 
-
-	  const handleClickAceptButton = async event => {
-		setOpenRutineDialogUS(false)
-	  }
-
-	  const handleClickCancelButton = async event => {
-		setOpenRutineDialogUS(false)
-	  }
-
-	  const handleCloseFormExerciseDialog = evento => {
+	const handleClickAceptButton = async event => {
 		setOpenRutineDialogUS(false);
 	};
 
-	
+	const handleClickCancelButton = async event => {
+		setOpenRutineDialogUS(false);
+	};
+
+	const handleCloseFormExerciseDialog = evento => {
+		setOpenRutineDialogUS(false);
+	};
+
 	const handleCloseMessage = (event, reason) => {
 		if (reason === 'clickaway') {
 			setOpenAlertUS(false);
 		}
 		setOpenAlertUS(false);
 	};
-	  
 
-	return (<>
-		<Helmet>
-			<title> Paciente </title>
-		</Helmet>
+	return (
+		<>
+			<Helmet>
+				<title> Paciente </title>
+			</Helmet>
 
 		<Container>
 			{/* <Stack
@@ -237,93 +234,141 @@ const PatientCalendarPage = () => {
 				</Typography>
 			</Stack> */}
 
-			<Card>
-				<Box sx={{ flexGrow: 3 }}>
-					<Grid
-						container
-						spacing={2}>
-						<Grid xs={3}>
-							<Item>
-								<img
-									style={{ borderRadius: "20px" }}
-									src={patientUS.imgUrl}
-									alt={patientUS.name} />
-							</Item>
-						</Grid>
-						<Grid xs={4}>
-							<Item>
-								<Typography
-									variant='h3'
-									textAlign='center'
-								>
-									Datos Paciente
-								</Typography>
-								<Typography
-									variant='h4'
-									textAlign='left'
-								>
-									Nombre: {patientUS.name}
-								</Typography>
+				<Card>
+					<Box sx={{ flexGrow: 3 }}>
+						<Grid
+							container
+							spacing={2}>
+							<Grid xs={3}>
+								<Item>
+									<img
+										style={{ borderRadius: '20px' }}
+										src={patientUS.imgUrl}
+										alt={patientUS.name}
+									/>
+								</Item>
+							</Grid>
+							<Grid xs={4}>
+								<Item>
+									<Typography
+										variant='h3'
+										textAlign='center'>
+										Datos Paciente
+									</Typography>
+									<Typography
+										variant='h5'
+										textAlign='left'>
+										Nombre: {patientUS.name}
+									</Typography>
 
-								<Typography
-									variant='h4'
-									textAlign='left'
-								>
-									{`Last Name: ${patientUS.lastName}`}
-								</Typography>
-								<Typography
-									variant='h4'
-									textAlign='left'
-								>
-									{`DNI: ${patientUS.dni}`}
-								</Typography>
-								<Typography
-									variant='h4'
-									textAlign='left'
-								>
-									{`Paciente desde: ${patientUS.createdAt}`}
-								</Typography>
-							</Item>
-						</Grid>
-						<Grid xs={4}>
-							<Item>
-								<Typography
-									variant='h3'
-									textAlign='center'
-								>
-									Próxima Rutina
-								</Typography>
-								{nextRutinasUS.length ? (
-									<>
-										<Typography
-											variant='h4'
-											textAlign='left'>
-											{`Fecha:  ${nextRutinasUS[0]?.day}`}
-										</Typography>
-										<Typography
-											variant='h4'
-											textAlign='left'>
-											{`Nombre: ${nextRutinasUS[0]?.name}`}
-										</Typography>
+									<Typography
+										variant='h5'
+										textAlign='left'>
+										{`Last Name: ${patientUS.lastName}`}
+									</Typography>
+									<Typography
+										variant='h5'
+										textAlign='left'>
+										{`DNI: ${patientUS.dni}`}
+									</Typography>
+									<Typography
+										variant='h5'
+										textAlign='left'>
+										{`Paciente desde: ${moment(patientUS.Date).format('LL')}`}
+									</Typography>
+								</Item>
+							</Grid>
+							<Grid xs={4}>
+								<Item>
+									<Typography
+										variant='h3'
+										textAlign='center'>
+										Próxima Rutina
+									</Typography>
+									{nextRutinasUS.length ? (
+										<>
+											<Typography
+												variant='h5'
+												textAlign='left'>
+												{`Fecha:  ${moment(nextRutinasUS[0]?.day).calendar()}`}
+											</Typography>
+											<Typography
+												variant='h5'
+												textAlign='left'>
+												{`Nombre: ${nextRutinasUS[0]?.name}`}
+											</Typography>
 
-										<Typography
-											variant='h4'
-											textAlign='left'>
-											{`Rounds: ${nextRutinasUS[0]?.rounds.length}`}
-										</Typography>
-										<Typography
-											variant='h4'
-											textAlign='left'>
-											{`Estimated time = ${nextRutinasUS[0]?.rounds.length * 12 + 8} minutes`}
-										</Typography>
-									</>
-								) : (
-									<Typography>No hay rutinas previstas</Typography>
-								)}
-							</Item>
+											<Typography
+												variant='h5'
+												textAlign='left'>
+												{`Rounds: ${nextRutinasUS[0]?.rounds.length}`}
+											</Typography>
+											<Typography
+												variant='h5'
+												textAlign='left'>
+												{`Estimated time = ${
+													nextRutinasUS[0]?.rounds.length * 12 + 8
+												} minutes`}
+											</Typography>
+										</>
+									) : (
+										<Typography>No hay rutinas previstas</Typography>
+									)}
+								</Item>
+							</Grid>
 						</Grid>
-					</Grid>
-				</Box>
+					</Box>
+
+					<FullCalendar
+						plugins={[dayGridPlugin, interaction, timeGridPlugin, listPlugin]}
+						headerToolbar={{
+							start: 'today',
+							center: 'title',
+							end: 'prev,next',
+						}}
+						height={'85vh'}
+						initialView='dayGridMonth'
+						editable='true'
+						events={eventsCalendar}
+						eventClick={info =>
+							handleEventClick(info.event.id, info.event.startStr)
+						}
+						dateClick={info => handleDateClick(info.dateStr)}
+						eventDrop={info => putDropEvent(info.event.id, info.event.start)}
+					/>
+				</Card>
+			</Container>
+
+			{/* ///////////////////// Dialogo mostrar rutina  ///////////////////// */}
+			<Dialog
+				open={openRutineDialogUS}
+				onClose={handleCloseFormExerciseDialog}
+				aria-labelledby='alert-dialog-title'
+				aria-describedby='alert-dialog-description'
+				/* fullWidth="xl" */
+				fullWidth
+				maxWidth='l'>
+				<DialogContent>
+					<RutinePage
+						action={accionEnDialogo}
+						patien={patientUS}
+						date={dateSelectedUS}
+						routineId={rutineUS}
+						setOpenDialog={setOpenRutineDialogUS}
+						setMessageAlertUS={setMessageAlertUS}
+						setOpenAlertUS={setOpenAlertUS}
+						setSeverityAlertUS={setSeverityAlertUS}
+					/>
+				</DialogContent>
+				<DialogActions>
+					<Button
+						value='cancelar'
+						onClick={handleClickCancelButton}>
+						{' '}
+						Volver{' '}
+					</Button>
+				</DialogActions>
+			</Dialog>
 
 				<FullCalendar
 					plugins={[dayGridPlugin, interaction, timeGridPlugin, listPlugin]}
@@ -339,8 +384,6 @@ const PatientCalendarPage = () => {
 					eventClick={info => handleEventClick(info.event.id,info.event.startStr)}
 					dateClick={info => handleDateClick(info.dateStr)}
 					eventDrop={info => putDropEvent(info.event.id, info.event.start)} />
-			</Card>
-		</Container>
 
 {/* ///////////////////// Dialogo mostrar rutina  ///////////////////// */}
 		<Dialog
