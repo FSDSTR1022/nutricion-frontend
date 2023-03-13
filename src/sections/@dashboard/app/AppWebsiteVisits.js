@@ -25,14 +25,36 @@ export default function AppWebsiteVisits({
 		plotOptions: { bar: { columnWidth: '16%' } },
 		fill: { type: chartData.map(i => i.fill) },
 		labels: chartLabels,
-		xaxis: { type: 'datetime' },
+		xaxis: { type: 'string' },
+		annotations: {
+			yaxis: [
+				{
+					y: 15,
+					y2: 20,
+					borderColor: '#000',
+					fillColor: '#FEB019',
+					label: {
+						text: 'Eficiency Range Week',
+					},
+				},
+				{
+					y: 55,
+					y2: 65,
+					borderColor: '#000',
+					fillColor: '#97DEFF',
+					label: {
+						text: 'Eficiency Range Month',
+					},
+				},
+			],
+		},
 		tooltip: {
 			shared: true,
 			intersect: false,
 			y: {
 				formatter: y => {
 					if (typeof y !== 'undefined') {
-						return `${y.toFixed(0)} visits`;
+						return `${y.toFixed(0)} routines`;
 					}
 					return y;
 				},

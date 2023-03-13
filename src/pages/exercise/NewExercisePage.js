@@ -741,7 +741,13 @@ export default function NewExercisePage(props) {
 									<Item>
 										<img
 											style={{ width: 120, height: 120 }}
-											src={!cloudUrlImg ? imgUp : cloudUrlImg}
+											src={
+												!excerciseToEditODeleteUS.photo
+													? !cloudUrlImg
+														? imgUp
+														: cloudUrlImg
+													: excerciseToEditODeleteUS.photo
+											}
 											alt={'Hats'}
 											loading='lazy'
 										/>
@@ -770,7 +776,13 @@ export default function NewExercisePage(props) {
 										<Item>
 											<img
 												style={{ width: 120, height: 120 }}
-												src={!cloudUrlVid ? vidUp : cloudUrlVid}
+												src={
+													!excerciseToEditODeleteUS.video
+														? !cloudUrlVid
+															? vidUp
+															: cloudUrlVid
+														: excerciseToEditODeleteUS.video
+												}
 												alt={'Hats'}
 												loading='lazy'
 											/>

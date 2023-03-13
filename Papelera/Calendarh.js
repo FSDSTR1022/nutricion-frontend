@@ -22,25 +22,7 @@ import Grid from '@mui/material/Grid';
 
 // const localizer = momentLocalizer(moment); // or globalizeLocalizer
 
-const rutineUrl = 'http://localhost:3000/rutines?id=';
-
-const patientExample = {
-	_id: '63fa12a0e716c52f3d4274ad',
-	email: 'federicogomdyezz.ar@gmail.com',
-	password: '',
-	name: 'Toto',
-	lastName: 'Wolf',
-	dni: 'Y12345S',
-	phone: '1234556678',
-	isActive: true,
-	imgUrl:
-		'https://res.cloudinary.com/dtnuuoiih/image/upload/v1677779479/toto_vpt9uo.jpg',
-	createdAt: '2023-02-25T13:52:32.403Z',
-	updatedAt: '2023-02-25T14:18:28.357Z',
-	__v: 0,
-	userType: 'patient',
-	professional: '63d1b05e3848057c6b281253',
-};
+const rutineUrl = `https://backendrailways-production.up.railway.app/rutines?id=`;
 
 const Calendarh = () => {
 	const [rutinasList, setRutinasList] = useState([]);
@@ -64,7 +46,7 @@ const Calendarh = () => {
 	}, []);
 
 	const getMeassures = () => {
-		fetch('http://localhost:3000/rutines/')
+		fetch('https://backendrailways-production.up.railway.app/rutines/')
 			.then(res => res.json())
 			.then(data => {
 				setRutinasList(data);
@@ -83,7 +65,7 @@ const Calendarh = () => {
 	};
 
 	const getPatients = () => {
-		fetch('http://localhost:3000/users/all')
+		fetch('https://backendrailways-production.up.railway.app/users/all')
 			.then(res => res.json())
 			.then(data => {
 				const pat = data.filter(p => p._id === id).pop();

@@ -1,8 +1,10 @@
+import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { faker } from '@faker-js/faker';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import { Grid, Container, Typography } from '@mui/material';
+
 // components
 import Iconify from '../components/iconify';
 // sections
@@ -17,11 +19,45 @@ import {
 	AppCurrentSubject,
 	AppConversionRates,
 } from '../sections/@dashboard/app';
+import { getAllUsers } from '../services/userService';
 
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
 	const theme = useTheme();
+	const [patientsListUS, setPatientListUS] = useState([]);
+	const [isLoadingPatientsUS, setIsLoadingPatientsUS] = useState(true);
+	const [rutinasList, setRutinasList] = useState([]);
+	// const [userRutinesList, setUserRutinesList] = useState([]);
+
+	useEffect(() => {
+		const getAllusers = async () => {
+			const response = await getAllUsers();
+			if (response.status === 200) {
+				setPatientListUS(response.data);
+				setIsLoadingPatientsUS(false);
+			}
+		};
+		getAllusers();
+		getMeassures();
+	}, []);
+	const getMeassures = () => {
+		fetch('https://backendrailways-production.up.railway.app/rutines/')
+			.then(res => res.json())
+			.then(data => {
+				setRutinasList(data);
+				/* const userRutines = data.filter(rut => rut.user._id === id);
+				 setUserRutinesList(userRutines);
+				const nextR = userRutines.filter(rut => Date.parse(rut.day) >= today);
+				const nextRs = nextR.sort(
+					(a, b) => Date.parse(a.day) - Date.parse(b.day)
+				);
+
+				setNextRutinas(nextRs); */
+			})
+
+			.catch(err => console.log('error', err));
+	};
 
 	return (
 		<>
@@ -45,9 +81,9 @@ export default function DashboardAppPage() {
 						sm={6}
 						md={3}>
 						<AppWidgetSummary
-							title='Total Pacientes'
-							total={12}
-							icon={'ant-design:android-filled'}
+							title='Total Patients'
+							total={patientsListUS.length}
+							icon={'fa6-solid:people-group'}
 						/>
 					</Grid>
 
@@ -57,10 +93,10 @@ export default function DashboardAppPage() {
 						sm={6}
 						md={3}>
 						<AppWidgetSummary
-							title='Total Rutinas'
-							total={1352831}
+							title='Total Routines'
+							total={rutinasList.length}
 							color='info'
-							icon={'ant-design:apple-filled'}
+							icon={'fluent-mdl2:processing-run'}
 						/>
 					</Grid>
 
@@ -70,10 +106,10 @@ export default function DashboardAppPage() {
 						sm={6}
 						md={3}>
 						<AppWidgetSummary
-							title='Total Ejercicios'
+							title='Total Exercises'
 							total={1723315}
 							color='warning'
-							icon={'ant-design:windows-filled'}
+							icon={'healthicons:exercise-weights'}
 						/>
 					</Grid>
 
@@ -96,39 +132,27 @@ export default function DashboardAppPage() {
 						md={6}
 						lg={8}>
 						<AppWebsiteVisits
-							title='Website Visits'
-							subheader='(+43%) than last year'
-							chartLabels={[
-								'01/01/2003',
-								'02/01/2003',
-								'03/01/2003',
-								'04/01/2003',
-								'05/01/2003',
-								'06/01/2003',
-								'07/01/2003',
-								'08/01/2003',
-								'09/01/2003',
-								'10/01/2003',
-								'11/01/2003',
-							]}
+							title='Routines'
+							subheader='Daily/Weekly/Monthly'
+							chartLabels={patientsListUS?.map(pat => pat.name)}
 							chartData={[
 								{
-									name: 'Team A',
+									name: 'Today',
 									type: 'column',
 									fill: 'solid',
-									data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
+									data: [3, 1, 2, 7, 3, 2, 7, 1, 4],
 								},
 								{
-									name: 'Team B',
+									name: 'Last Week',
 									type: 'area',
 									fill: 'gradient',
-									data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
+									data: [24, 25, 21, 37, 12, 24, 21, 11, 31],
 								},
 								{
-									name: 'Team C',
+									name: 'Last Month',
 									type: 'line',
 									fill: 'solid',
-									data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
+									data: [30, 25, 36, 60, 45, 35, 64, 52, 59],
 								},
 							]}
 						/>
