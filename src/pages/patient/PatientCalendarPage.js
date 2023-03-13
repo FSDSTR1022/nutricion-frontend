@@ -93,6 +93,7 @@ const PatientCalendarPage = () => {
 	const getRoutines = async (id) => {
 		const response = await getRutines();
 		if (response.status === 200) {
+			console.log(response)
 			setRutinasListUS(response.data);
 
 			const userRutines = response.data.filter(rut => rut.user._id === id);
@@ -106,14 +107,19 @@ const PatientCalendarPage = () => {
 							title: ob.name,
 							start: ob.day,
 							allDay: true,
-							editable: true
+							editable: true,
+							
+						}
+						
+						if(ob.status==="done"){
+							evento.color="green"
+						}else{
+							evento.color="red"
 						}
 
 						if(localUserUS.type==="profesional"){
-							console.log("ENTRO a profesional")
 							evento.editable= true
 						}else{
-							console.log("ENTRO a paciente")
 							evento.editable = false
 						}
 
@@ -342,7 +348,7 @@ const PatientCalendarPage = () => {
 					onClose={handleCloseFormExerciseDialog}
 					aria-labelledby='alert-dialog-title'
 					aria-describedby='alert-dialog-description'
-					fullWidth="l" 					
+					fullWidth					
 					maxWidth='l'>
 					<DialogContent>
 						<RutinePage 
