@@ -4,7 +4,7 @@ import { faker } from '@faker-js/faker';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import { Grid, Container, Typography } from '@mui/material';
-
+import moment from 'moment';
 // components
 import Iconify from '../components/iconify';
 // sections
@@ -25,10 +25,14 @@ import { getAllUsers } from '../services/userService';
 
 export default function DashboardAppPage() {
 	const theme = useTheme();
+
 	const [patientsListUS, setPatientListUS] = useState([]);
 	const [isLoadingPatientsUS, setIsLoadingPatientsUS] = useState(true);
 	const [rutinasList, setRutinasList] = useState([]);
-	// const [userRutinesList, setUserRutinesList] = useState([]);
+	const [userRutinesList, setUserRutinesList] = useState([]);
+	const [chartLabels, setChartLabels] = useState([]);
+	const [fullRutineExpected, setFullRutineExpected] = useState([]);
+	const [fullRutineCompleted, setFullRutineCompleted] = useState([]);
 
 	useEffect(() => {
 		const getAllusers = async () => {
@@ -38,25 +42,54 @@ export default function DashboardAppPage() {
 				setIsLoadingPatientsUS(false);
 			}
 		};
+		const getRoutines = async () => {
+			const response = await getROutines();
+			if (response.status === 200) {
+				setRutinasList(response.data);
+				const rutProf = response.data.filter(
+					rut => rut.user.profetional === '640dadcf849d5a2688be06c2'
+				); // no se está guardando el "profetional" en la rutina. falta el id localstorage?
+				setUserRutinesList(rutProf);
+				datosGraph(rutProf);
+			}
+		};
 		getAllusers();
-		getMeassures();
+		getRoutines();
 	}, []);
-	const getMeassures = () => {
+
+	const getROutines = async () => {
+		const result = await fetch(`${process.env.REACT_APP_BACK_URL}/rutines`);
+		const parseResult = await result.json();
+		const data = { data: parseResult, status: result.status };
+		return data;
+	};
+
+	/* const getRoutines = () => {
 		fetch('https://backendrailways-production.up.railway.app/rutines/')
 			.then(res => res.json())
 			.then(data => {
 				setRutinasList(data);
-				/* const userRutines = data.filter(rut => rut.user._id === id);
-				 setUserRutinesList(userRutines);
-				const nextR = userRutines.filter(rut => Date.parse(rut.day) >= today);
-				const nextRs = nextR.sort(
-					(a, b) => Date.parse(a.day) - Date.parse(b.day)
-				);
-
-				setNextRutinas(nextRs); */
+				console.log('rutinas lista', rutinasList);
 			})
-
 			.catch(err => console.log('error', err));
+	}; */
+
+	const datosGraph = profRutines => {
+		console.log('dentro datosGraph');
+
+		const fechasRutinas = profRutines?.map(rut => moment(rut.day).format('L'));
+		const axis = [...new Set(fechasRutinas)];
+		setChartLabels(axis);
+		const mm = [];
+		axis.forEach(date => {
+			const m = profRutines?.filter(
+				rut => moment(rut.day).format('L') === date
+			).length;
+			mm.push(m);
+			setFullRutineExpected(mm);
+			console.log(date, m, mm);
+			setFullRutineCompleted([1, 2, 0, 1, 1]);
+		});
 	};
 
 	return (
@@ -94,7 +127,7 @@ export default function DashboardAppPage() {
 						md={3}>
 						<AppWidgetSummary
 							title='Total Routines'
-							total={rutinasList.length}
+							total={userRutinesList.length}
 							color='info'
 							icon={'fluent-mdl2:processing-run'}
 						/>
@@ -132,27 +165,21 @@ export default function DashboardAppPage() {
 						md={6}
 						lg={8}>
 						<AppWebsiteVisits
-							title='Routines'
-							subheader='Daily/Weekly/Monthly'
-							chartLabels={patientsListUS?.map(pat => pat.name)}
+							title='Performance'
+							subheader='Routines filled Index'
+							chartLabels={chartLabels}
 							chartData={[
 								{
-									name: 'Today',
+									name: 'Routinas Filled',
 									type: 'column',
 									fill: 'solid',
-									data: [3, 1, 2, 7, 3, 2, 7, 1, 4],
+									data: fullRutineCompleted,
 								},
 								{
-									name: 'Last Week',
-									type: 'area',
-									fill: 'gradient',
-									data: [24, 25, 21, 37, 12, 24, 21, 11, 31],
-								},
-								{
-									name: 'Last Month',
-									type: 'line',
+									name: 'Routinas Expected Filled',
+									type: 'column',
 									fill: 'solid',
-									data: [30, 25, 36, 60, 45, 35, 64, 52, 59],
+									data: fullRutineExpected,
 								},
 							]}
 						/>
