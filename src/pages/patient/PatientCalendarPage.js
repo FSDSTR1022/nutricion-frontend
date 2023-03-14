@@ -357,7 +357,7 @@ const PatientCalendarPage = () => {
 							localUser={localUserUS}
 							date={dateSelectedUS}
 							routineId={rutineUS}
-							setOpenDialog={setOpenRutineDialogUS}
+							setOpenRutineDialog={setOpenRutineDialogUS}
 							setMessageAlertUS={setMessageAlertUS}
 							setOpenAlertUS={setOpenAlertUS}
 							setSeverityAlertUS={setSeverityAlertUS}
