@@ -51,7 +51,7 @@ export default function DashboardAppPage() {
 			if (response.status === 200) {
 				setRutinasList(response.data);
 				const rutProf = response.data.filter(
-					rut => rut.user.profetional === '640dadcf849d5a2688be06c2' // userJSON.id
+					rut => rut.professional === userJSON.id
 				); // no se está guardando el "profetional" en la rutina. falta el id localstorage?
 				setUserRutinesList(rutProf);
 				datosGraph(rutProf);
@@ -84,15 +84,20 @@ export default function DashboardAppPage() {
 		const fechasRutinas = profRutines?.map(rut => moment(rut.day).format('L'));
 		const axis = [...new Set(fechasRutinas)];
 		setChartLabels(axis);
-		const mm = [];
+		const numberOfRoutinesPerDay = [];
+		const numberOfRoutinesCompletedPerDay = [];
 		axis.forEach(date => {
-			const m = profRutines?.filter(
+			const routinesPerDate = profRutines?.filter(
 				rut => moment(rut.day).format('L') === date
-			).length;
-			mm.push(m);
-			setFullRutineExpected(mm);
-			console.log(date, m, mm);
-			setFullRutineCompleted([1, 2, 0, 1, 1]);
+			);
+			numberOfRoutinesPerDay.push(routinesPerDate.length);
+			setFullRutineExpected(numberOfRoutinesPerDay);
+			console.log(date, routinesPerDate, numberOfRoutinesPerDay);
+			const RoutinesCompletedPerDay = routinesPerDate.filter(
+				rut => rut.status === 'done'
+			);
+			numberOfRoutinesCompletedPerDay.push(RoutinesCompletedPerDay.length);
+			setFullRutineCompleted(numberOfRoutinesCompletedPerDay);
 		});
 	};
 

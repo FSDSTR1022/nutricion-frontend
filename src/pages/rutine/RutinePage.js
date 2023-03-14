@@ -39,7 +39,7 @@ import {
 	Rating,
 	InputLabel,
 	Select,
-	SelectChangeEvent
+	SelectChangeEvent,
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -112,11 +112,16 @@ export default function RutinePage(props) {
 	const [openPopoverRutineUS, setOpenPopoverRutineUS] = useState(null);
 	const [localUserUS, setLocalUserUS] = useState({});
 
-	const [openFeedbackDialog,setOpenFeedbackDialog] = useState(false)
-	const [startFeedbackUS, setStartFeedbackUS] = useState("1");
-	 const[textFeedbackUS, setTextFeedbackUS] = useState('');
+	const [openFeedbackDialog, setOpenFeedbackDialog] = useState(false);
+	const [startFeedbackUS, setStartFeedbackUS] = useState('1');
+	const [textFeedbackUS, setTextFeedbackUS] = useState('');
 
 	const navigate = useNavigate();
+
+	const user2 = localStorage.getItem('user');
+	const userJSON = JSON.parse(user2);
+
+	console.log('profesional', userJSON.id);
 
 	const {
 		action,
@@ -134,7 +139,7 @@ export default function RutinePage(props) {
 
 	useEffect(() => {
 		console.log('PROPS:', props);
-		setLocalUserUS(localUser)
+		setLocalUserUS(localUser);
 
 		switch (action) {
 			case undefined:
@@ -422,7 +427,7 @@ export default function RutinePage(props) {
 		setExerciseToAddUS([]);
 		setOpenViewExerciseDialog(false);
 
-		setOpenFeedbackDialog(false)
+		setOpenFeedbackDialog(false);
 	};
 
 	const handleClickShowexerciseButton = () => {
@@ -506,11 +511,11 @@ export default function RutinePage(props) {
 			console.log('roundModificados: ', roundModificados);
 
 			rutineToSave.rounds = roundModificados;
-
+			rutineToSave.professional = userJSON.id;
 			rutineToSave.name = rutineNameUS;
 			rutineToSave.day = rutineDateUS;
 			rutineToSave.user = patientUS._id;
-			rutineToSave.status="pending";
+			rutineToSave.status = 'pending';
 
 			console.log('Rutina a guardar: ', rutineToSave);
 
@@ -968,20 +973,20 @@ export default function RutinePage(props) {
 		);
 	};
 
-	const prueba2 =() =>{
-		console.log(rutineUS)
-	}
+	const prueba2 = () => {
+		console.log(rutineUS);
+	};
 
 	const handleClickRealizarRutinaButoon = () => {
-		
-		const rutineToUpdate={
-			_id:rutineUS._id,
-			status: "done"}
+		const rutineToUpdate = {
+			_id: rutineUS._id,
+			status: 'done',
+		};
 
 		updateRutine(rutineToUpdate).then(response => {
 			if (response.status === 200) {
 				console.log('SE SE ACTUALIZÓ LA RUTINA');
-				setOpenFeedbackDialog(true)
+				setOpenFeedbackDialog(true);
 				/* setOpenDialog(false);
 				setIsLoading(true);
 				setMessageAlertUS(`Se modificó la rutina`);
@@ -992,12 +997,11 @@ export default function RutinePage(props) {
 				console.log('response: ', response);
 			}
 		});
-	}
+	};
 
 	const handleChangeTextFeddback = () => {
-    	setTextFeedbackUS("");
-  };
-
+		setTextFeedbackUS('');
+	};
 
 	const getTitle = () => {
 		switch (actionUS) {
@@ -1036,82 +1040,83 @@ export default function RutinePage(props) {
 						</Typography>
 					</Stack>
 					<Button
-										variant='contained'
-										color="success"										
-										onClick={prueba2}>
-										mostrar Rutina
-							</Button>
+						variant='contained'
+						color='success'
+						onClick={prueba2}>
+						mostrar Rutina
+					</Button>
 
 					<Card>
-						{localUserUS.type==="profesional"?(
+						{localUserUS.type === 'profesional' ? (
+							<Card>
+								<Typography
+									variant='h6'
+									textAlign='left'
+									sx={{ m: 1 }}>
+									Paciente
+								</Typography>
+
+								<FormControl sx={{ m: 1 }}>
+									<TextField
+										id='pacientName'
+										label='Nombre'
+										variant='outlined'
+										inputProps={{ readOnly: true }}
+										/* error={!!errorsUS.pacientName} */
+										value={patientUS.name}
+										onChange={handleChangePacienteNameTextField}
+									/>
+								</FormControl>
+								<FormControl sx={{ m: 1 }}>
+									<TextField
+										id='patientLasname'
+										label='Apellido'
+										variant='outlined'
+										inputProps={{ readOnly: true }}
+										/* error={!!errorsUS.pacientName} */
+										value={patientUS.lastName}
+										onChange={handleChangePacienteNameTextField}
+									/>
+								</FormControl>
+							</Card>
+						) : (
+							<></>
+						)}
+
 						<Card>
-							<Typography
-								variant='h6'
-								textAlign='left'
-								sx={{ m: 1 }}>
-								Paciente
-							</Typography>
-
-							<FormControl sx={{ m: 1 }}>
-								<TextField
-									id='pacientName'
-									label='Nombre'
-									variant='outlined'
-									inputProps={{ readOnly: true }}
-									/* error={!!errorsUS.pacientName} */
-									value={patientUS.name}
-									onChange={handleChangePacienteNameTextField}
-								/>
-							</FormControl>
-							<FormControl sx={{ m: 1 }}>
-								<TextField
-									id='patientLasname'
-									label='Apellido'
-									variant='outlined'
-									inputProps={{ readOnly: true }}
-									/* error={!!errorsUS.pacientName} */
-									value={patientUS.lastName}
-									onChange={handleChangePacienteNameTextField}
-								/>
-							</FormControl>								
-						</Card>
-						)
-						:(<></>)}
-
-						
-						
-					<Card>
-						{localUserUS.type==="profesional"?(
-							<Grid
-							container
-							spacing={4}>
+							{localUserUS.type === 'profesional' ? (
 								<Grid
-									item
-									xs={11}>
-									<Typography
-										variant='h6'
-										textAlign='left'
-										sx={{ m: 1 }}>
-										Rutina
-									</Typography>
+									container
+									spacing={4}>
+									<Grid
+										item
+										xs={11}>
+										<Typography
+											variant='h6'
+											textAlign='left'
+											sx={{ m: 1 }}>
+											Rutina
+										</Typography>
+									</Grid>
+									<Grid
+										item
+										xs={1}>
+										{actionUS !== 'newRutine' ? (
+											<IconButton
+												size='large'
+												color='inherit'
+												onClick={handleOpenMenuRutine()}>
+												<Iconify icon={'eva:more-vertical-fill'} />
+											</IconButton>
+										) : (
+											<></>
+										)}
+									</Grid>
 								</Grid>
-								<Grid
-									item
-									xs={1}>
-									{actionUS !== 'newRutine' ? (
-										<IconButton
-											size='large'
-											color='inherit'
-											onClick={handleOpenMenuRutine()}>
-											<Iconify icon={'eva:more-vertical-fill'} />
-										</IconButton>
-									) : (
-										<></>
-									)}
-								</Grid>
-							</Grid>
-						):(<></>)}
-							
+							) : (
+								<></>
+							)}
+
 							<FormControl sx={{ m: 1 }}>
 								<TextField
 									id='rutineName'
@@ -1157,39 +1162,37 @@ export default function RutinePage(props) {
 								/>
 							</LocalizationProvider>
 
-							{localUserUS.type==="profesional"?(
+							{localUserUS.type === 'profesional' ? (
 								<Typography
-								variant='h6'
-								textAlign='left'
-								color={rutineUS.status==="pending"?("Red"):("Green")}
-								sx={{ m: 1 }}>
-								{rutineUS.status==="pending"?("Rutina No Realizada"):("Rutina SI realiza")}
-							</Typography>
-							):(
-							<>
-							{rutineUS.status==="pending"?
-							(
-								<Button
-										variant='contained'
-										value='cancelar'
-										color="success"										
-										onClick={handleClickRealizarRutinaButoon}>
+									variant='h6'
+									textAlign='left'
+									color={rutineUS.status === 'pending' ? 'Red' : 'Green'}
+									sx={{ m: 1 }}>
+									{rutineUS.status === 'pending'
+										? 'Rutina No Realizada'
+										: 'Rutina SI realiza'}
+								</Typography>
+							) : (
+								<>
+									{rutineUS.status === 'pending' ? (
+										<Button
+											variant='contained'
+											value='cancelar'
+											color='success'
+											onClick={handleClickRealizarRutinaButoon}>
 											Realizar Rutina
-								</Button>
-
-							):(
-								<Typography
-								variant='h6'
-								textAlign='left'
-								color="Green"
-								sx={{ m: 1 }}>
-								Rutina Realiza
-							</Typography>
-								
-
+										</Button>
+									) : (
+										<Typography
+											variant='h6'
+											textAlign='left'
+											color='Green'
+											sx={{ m: 1 }}>
+											Rutina Realiza
+										</Typography>
+									)}
+								</>
 							)}
-
-							</>)}
 
 							{/* {rutineUS.status==="pending"?
 							(
@@ -1211,7 +1214,7 @@ export default function RutinePage(props) {
 							</Typography>
 								
 
-							)}	 */}						
+							)}	 */}
 
 							<div>
 								{rutineUS.rounds.map(round => getAccordions(round))}
@@ -1291,74 +1294,72 @@ export default function RutinePage(props) {
 							</Dialog>
 						</div>
 
-{/* /////////////////// dialogo mostrar de ejercicio /////////////////// */}
-					
-							<Dialog
-								open={openViewExerciseDialog}
-								onClose={handleCloseDialog}
-								aria-labelledby='alert-dialog-title'
-								aria-describedby='alert-dialog-description'
-								fullWidth='xl'
-								maxWidth='xl'>
-								<DialogContent>
-									<FormExercise
-										action={{
-											action: 'viewExercise',
-											exercise: exerciseToViewUS,
-										}}
-									/>
-								</DialogContent>
-								<DialogActions>
-									<Button
-										value='cancelar'
-										onClick={handleCloseDialog}>
-										Cerrar
-									</Button>
-								</DialogActions>
-							</Dialog>
+						{/* /////////////////// dialogo mostrar de ejercicio /////////////////// */}
 
-{/* /////////////////// dialogo mostrar de ejercicio /////////////////// */}
-					
-<Dialog
-								open={openFeedbackDialog}
-								onClose={handleCloseDialog}
-								aria-labelledby='alert-dialog-title'
-								aria-describedby='alert-dialog-description'
-								fullWidth='xl'
-								maxWidth='xl'>
-								<DialogContent>
-										<Typography component="legend">Controlled</Typography>
-										<Rating
-											name="simple-controlled"
-											value={startFeedbackUS}
-											onChange={(event, newValue) => {
-											setStartFeedbackUS(newValue);
-											}}
-										/>
-										<FormControl fullWidth>
-										<InputLabel id="demo-simple-select-label">Age</InputLabel>
-										<Select
-											labelId="demo-simple-select-label"
-											id="demo-simple-select"
-											value={textFeedbackUS}
-											label="Age"
-											onChange={handleChangeTextFeddback}
-										>
-											<MenuItem value={"No termine"}>No termine</MenuItem>
-											<MenuItem value={"Bien"}>Bien</MenuItem>
-											<MenuItem value={"Necesito más"}>Necesito más</MenuItem>
-										</Select>
-										</FormControl>
-								</DialogContent>
-								<DialogActions>
-									<Button
-										value='cancelar'
-										onClick={handleCloseDialog}>
-										Cerrar
-									</Button>
-								</DialogActions>
-							</Dialog>							
-						
+						<Dialog
+							open={openViewExerciseDialog}
+							onClose={handleCloseDialog}
+							aria-labelledby='alert-dialog-title'
+							aria-describedby='alert-dialog-description'
+							fullWidth='xl'
+							maxWidth='xl'>
+							<DialogContent>
+								<FormExercise
+									action={{
+										action: 'viewExercise',
+										exercise: exerciseToViewUS,
+									}}
+								/>
+							</DialogContent>
+							<DialogActions>
+								<Button
+									value='cancelar'
+									onClick={handleCloseDialog}>
+									Cerrar
+								</Button>
+							</DialogActions>
+						</Dialog>
+
+						{/* /////////////////// dialogo mostrar de ejercicio /////////////////// */}
+
+						<Dialog
+							open={openFeedbackDialog}
+							onClose={handleCloseDialog}
+							aria-labelledby='alert-dialog-title'
+							aria-describedby='alert-dialog-description'
+							fullWidth='xl'
+							maxWidth='xl'>
+							<DialogContent>
+								<Typography component='legend'>Controlled</Typography>
+								<Rating
+									name='simple-controlled'
+									value={startFeedbackUS}
+									onChange={(event, newValue) => {
+										setStartFeedbackUS(newValue);
+									}}
+								/>
+								<FormControl fullWidth>
+									<InputLabel id='demo-simple-select-label'>Age</InputLabel>
+									<Select
+										labelId='demo-simple-select-label'
+										id='demo-simple-select'
+										value={textFeedbackUS}
+										label='Age'
+										onChange={handleChangeTextFeddback}>
+										<MenuItem value={'No termine'}>No termine</MenuItem>
+										<MenuItem value={'Bien'}>Bien</MenuItem>
+										<MenuItem value={'Necesito más'}>Necesito más</MenuItem>
+									</Select>
+								</FormControl>
+							</DialogContent>
+							<DialogActions>
+								<Button
+									value='cancelar'
+									onClick={handleCloseDialog}>
+									Cerrar
+								</Button>
+							</DialogActions>
+						</Dialog>
 
 						<div>{getConfirmationDialog()}</div>
 					</Card>
