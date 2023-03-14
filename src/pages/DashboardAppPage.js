@@ -33,6 +33,10 @@ export default function DashboardAppPage() {
 	const [chartLabels, setChartLabels] = useState([]);
 	const [fullRutineExpected, setFullRutineExpected] = useState([]);
 	const [fullRutineCompleted, setFullRutineCompleted] = useState([]);
+	const [nRounds, setNRounds] = useState();
+	const [nExer, seTNExer] = useState();
+	const [numberOfRoutines, setNumberOfRoutines] = useState();
+	const [percentage, setPercentage] = useState('');
 
 	useEffect(() => {
 		const user = localStorage.getItem('user');
@@ -54,6 +58,7 @@ export default function DashboardAppPage() {
 					rut => rut.professional === userJSON.id
 				); // no se está guardando el "profetional" en la rutina. falta el id localstorage?
 				setUserRutinesList(rutProf);
+				setNumberOfRoutines(rutProf.length);
 				datosGraph(rutProf);
 			}
 		};
@@ -86,6 +91,11 @@ export default function DashboardAppPage() {
 		setChartLabels(axis);
 		const numberOfRoutinesPerDay = [];
 		const numberOfRoutinesCompletedPerDay = [];
+		let exercisesTotalArray = [];
+		let numberOfExercises = 0;
+		let rounds = [];
+		let nCompl = 0;
+
 		axis.forEach(date => {
 			const routinesPerDate = profRutines?.filter(
 				rut => moment(rut.day).format('L') === date
@@ -93,13 +103,45 @@ export default function DashboardAppPage() {
 			numberOfRoutinesPerDay.push(routinesPerDate.length);
 			setFullRutineExpected(numberOfRoutinesPerDay);
 			console.log(date, routinesPerDate, numberOfRoutinesPerDay);
-			const RoutinesCompletedPerDay = routinesPerDate.filter(
+			const routinesCompletedPerDay = routinesPerDate.filter(
 				rut => rut.status === 'done'
 			);
-			numberOfRoutinesCompletedPerDay.push(RoutinesCompletedPerDay.length);
+			numberOfRoutinesCompletedPerDay.push(routinesCompletedPerDay.length);
+			nCompl += routinesCompletedPerDay.length;
+			console.log('numbers completed', nCompl);
 			setFullRutineCompleted(numberOfRoutinesCompletedPerDay);
 		});
+
+		profRutines?.forEach(routine => {
+			const roundsPerRoutine = [...routine?.rounds];
+			console.log('rounds per routine', roundsPerRoutine);
+			rounds = [...rounds, ...roundsPerRoutine];
+			console.log('Rounds sum', rounds);
+		});
+
+		rounds?.forEach(round => {
+			const exerPerRound = [...round?.exercises];
+			console.log('exer per round', exerPerRound);
+			exercisesTotalArray = [...exercisesTotalArray, ...exerPerRound];
+			numberOfExercises = exercisesTotalArray.length;
+			console.log('exer per routines', exercisesTotalArray, numberOfExercises);
+		});
+
+		setNRounds(rounds.length);
+		seTNExer(numberOfExercises);
+		console.log('rutinas totals', numberOfRoutines);
+		const percen = Number(nCompl / numberOfRoutines);
+		console.log('percen', percen);
+
+		/* roundsPerRoutine.forEach(round => {
+				const exerPerRound = [...round?.execises];
+				console.log('exercises per routine', exerPerRound);
+			});
+			console.log('rounds per rutine', roundsPerRoutine); */
 	};
+
+	const user = localStorage.getItem('user');
+	const userJSON = JSON.parse(user);
 
 	return (
 		<>
@@ -148,8 +190,8 @@ export default function DashboardAppPage() {
 						sm={6}
 						md={3}>
 						<AppWidgetSummary
-							title='Total Exercises'
-							total={1723315}
+							title='Total Rounds'
+							total={nExer}
 							color='warning'
 							icon={'healthicons:exercise-weights'}
 						/>
@@ -161,10 +203,10 @@ export default function DashboardAppPage() {
 						sm={6}
 						md={3}>
 						<AppWidgetSummary
-							title='Bug Reports'
-							total={234}
+							title='Ratio Routines Completed'
+							total={`${percentage} %`}
 							color='error'
-							icon={'ant-design:bug-filled'}
+							icon={'healthicons:exercise-weights'}
 						/>
 					</Grid>
 
@@ -174,18 +216,18 @@ export default function DashboardAppPage() {
 						md={6}
 						lg={8}>
 						<AppWebsiteVisits
-							title='Performance'
-							subheader='Routines filled Index'
+							title={`Performance Professional:  ${userJSON.name.toUpperCase()}`}
+							subheader='Routines Completed Index'
 							chartLabels={chartLabels}
 							chartData={[
 								{
-									name: 'Routinas Filled',
+									name: 'Routinas Completed',
 									type: 'column',
 									fill: 'solid',
 									data: fullRutineCompleted,
 								},
 								{
-									name: 'Routinas Expected Filled',
+									name: 'Total Routinas',
 									type: 'column',
 									fill: 'solid',
 									data: fullRutineExpected,
