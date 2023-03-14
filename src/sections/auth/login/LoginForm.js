@@ -31,6 +31,7 @@ export default function LoginForm() {
 			if (!data.succes) {
 				return;
 			}
+			console.log("DATA: ",data)
 
 			// guardar token en local host
 			if (localStorage.getItem('user')) {
@@ -38,8 +39,16 @@ export default function LoginForm() {
 			}
 			localStorage.setItem('user', JSON.stringify(data.user));
 
-			// redirigir a la url del dashboard
-			navigate('/dashboard', { replace: true });
+			if(data.user.type==="profesional")
+			{
+				// redirigir a la url del dashboard
+				navigate('/dashboard', { replace: true });
+			}else{
+				// redirigir a la url del dashboard
+				navigate('/dashboard/rutinecalendar', { replace: true });
+			}
+
+			
 		});
 	};
 

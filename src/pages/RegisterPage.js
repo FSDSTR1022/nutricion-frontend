@@ -10,6 +10,7 @@ import Logo from '../components/logo';
 // sections
 import { RegisterForm } from '../sections/auth/register';
 // navigate
+import fitnessPeople from './image/fitnessPeople.png'
 
 // ----------------------------------------------------------------------
 
@@ -68,10 +69,10 @@ export default function RegisterPage() {
 						<Typography
 							variant='h3'
 							sx={{ px: 5, mt: 10, mb: 5 }}>
-							Hola, Bien venido!
+							Hola, Bienvenido!
 						</Typography>
 						<img
-							src='/assets/illustrations/illustration_login.png'
+							src={fitnessPeople}
 							alt='login'
 						/>
 					</StyledSection>
