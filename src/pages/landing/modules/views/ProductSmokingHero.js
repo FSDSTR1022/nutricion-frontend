@@ -10,7 +10,8 @@ function ProductSmokingHero() {
 				flexDirection: 'column',
 				alignItems: 'center',
 				my: 3,
-			}} />
+			}}
+		/>
 	);
 }
 

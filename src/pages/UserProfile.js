@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import {
@@ -6,6 +7,7 @@ import {
 	InputAdornment,
 	TextField,
 	Box,
+	Button,
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +15,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 // icons
 import Iconify from '../components/iconify';
 // llamada al back
-import { getUserById } from '../services/userService';
+import { getUserById, updateUser } from '../services/userService';
 
 // ----------------------------------------------------------------------
 
@@ -22,13 +24,22 @@ export default function UserProfile() {
 	// Mostrar y ocultar contraseña
 	const [showPassword, setShowPassword] = useState(false);
 	const [showRepeatPassword, setShowRepeatPassword] = useState(false);
+	const [repeatPasswordError, setRepeatPasswordError] = useState(false);
 	// User info
 	const [user, setUser] = useState({});
+	// Información formulario
+	const [firstName, setFirstName] = useState('');
+	const [lastName, setLastName] = useState('');
+	const [dni, setDni] = useState('');
+	const [phone, setPhone] = useState('');
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+	const [repeatPassword, setRepeatPassword] = useState('');
+	const [imgUrl, setImgUrl] = useState('');
 
 	useEffect(() => {
 		async function searchUser() {
 			const localUser = JSON.parse(localStorage.getItem('user'));
-			console.log('localUser', localUser);
 			if (!localUser || !localUser.id) {
 				navigate('/login', { replace: true });
 				return;
@@ -39,7 +50,113 @@ export default function UserProfile() {
 	}, []);
 
 	const updateAction = () => {
-		console.log('Update');
+		if (
+			(!password.length && repeatPassword.length) ||
+			password !== repeatPassword
+		) {
+			setRepeatPasswordError(true);
+			return;
+		}
+
+		const localUser = JSON.parse(localStorage.getItem('user'));
+
+		const userInfo = {};
+
+		userInfo.id = localUser.id;
+		userInfo.name = firstName;
+		userInfo.lastName = lastName;
+		userInfo.dni = dni;
+		userInfo.phone = phone;
+		userInfo.email = email;
+		userInfo.password = password;
+		userInfo.imgUrl = imgUrl;
+
+		const objValues = Object.values(userInfo);
+		const objKeys = Object.keys(userInfo);
+
+		for (let i = 0; i < objValues.length; i++) {
+			if (!objValues[i].length) {
+				delete userInfo[objKeys[i]];
+			}
+		}
+
+		// En el caso de que solo se envie la ID no se hace nanda.
+		if (!Object.keys(userInfo).length > 1) {
+			return;
+		}
+
+		updateUser(userInfo).then(() => {
+			window.location.replace('');
+		});
+	};
+
+	// imagen
+	const urlCloudinary =
+		'https://api.cloudinary.com/v1_1/dtnuuoiih/image/upload/'; // aquí deberí ir >process.env.URL_CLOUDINARY_IMG
+
+	const upLoadImage = image => {
+		const data = new FormData();
+
+		data.append('file', image);
+		data.append('upload_preset', 'x12akkid');
+		data.append('cloud_name', 'dtnuuoiih');
+		data.append('folder', 'exercises/images');
+
+		fetch(urlCloudinary, {
+			method: 'post',
+			body: data,
+		})
+			.then(res => res.json())
+			.then(data => {
+				if (data.error) {
+					return;
+				}
+
+				setImgUrl(data.url);
+			})
+
+			.catch(err => console.log('error', err));
+	};
+
+	// Asignar valores a las variables y hacer validación
+	const setValues = (type, value) => {
+		switch (type) {
+			case 'firstName':
+				setFirstName(value);
+				break;
+			case 'lastName':
+				setLastName(value);
+				break;
+			case 'dni':
+				setDni(value);
+				break;
+			case 'phone':
+				setPhone(value);
+				break;
+			case 'email':
+				setEmail(value);
+				break;
+			case 'password':
+				setPassword(value);
+				if (!value.length && !repeatPassword.length) {
+					setRepeatPasswordError(false);
+					break;
+				}
+				if (!value.length || value !== repeatPassword) {
+					setRepeatPasswordError(true);
+					break;
+				}
+				setRepeatPasswordError(false);
+				break;
+			default:
+				setRepeatPassword(value);
+				if (password === value) {
+					setRepeatPasswordError(false);
+					break;
+				}
+				setRepeatPasswordError(true);
+				break;
+		}
 	};
 
 	return (
@@ -57,47 +174,47 @@ export default function UserProfile() {
 				</Box>
 			) : (
 				<>
-					<h1>User profile</h1>
+					<h1>Mi Perfil</h1>
 					<Stack spacing={3}>
 						<TextField
 							name='firstName'
 							label={'Nombre'}
 							defaultValue={user.name}
-							// onChange={event => setFirstName(event.target.value)}
+							onChange={event => setValues('firstName', event.target.value)}
 						/>
 						<TextField
 							name='lastName'
 							label={'Apellidos'}
 							defaultValue={user.lastName}
-							// onChange={event => setValues('lastName', event.target.value)}
+							onChange={event => setValues('lastName', event.target.value)}
 						/>
 
 						<TextField
 							name='dni'
 							label={'DNI'}
 							defaultValue={user.dni}
-							// onChange={event => setValues('dni', event.target.value)}
+							onChange={event => setValues('dni', event.target.value)}
 						/>
 
 						<TextField
 							name='phone'
 							label={'Teléfono'}
 							defaultValue={user.phone}
-							// onChange={event => setValues('phone', event.target.value)}
+							onChange={event => setValues('phone', event.target.value)}
 						/>
 
 						<TextField
 							name='email'
 							label={'Correo elecrónico'}
 							defaultValue={user.email}
-							// onChange={event => setValues('email', event.target.value)}
+							onChange={event => setValues('email', event.target.value)}
 						/>
 
 						<TextField
 							name='password'
 							label={'Cambiar Contraseña'}
 							type={showPassword ? 'text' : 'password'}
-							// onChange={event => setValues('password', event.target.value)}
+							onChange={event => setValues('password', event.target.value)}
 							InputProps={{
 								endAdornment: (
 									<InputAdornment position='end'>
@@ -117,9 +234,16 @@ export default function UserProfile() {
 
 						<TextField
 							name='repeatPassword'
-							label={'Repetir Contraseña'}
+							label={
+								repeatPasswordError
+									? 'Las contraseñas deben ser iguales'
+									: 'Repetir Contraseña'
+							}
+							error={repeatPasswordError}
 							type={showRepeatPassword ? 'text' : 'password'}
-							// onChange={event => setValues('repeatPassword', event.target.value)}
+							onChange={event =>
+								setValues('repeatPassword', event.target.value)
+							}
 							InputProps={{
 								endAdornment: (
 									<InputAdornment position='end'>
@@ -138,6 +262,41 @@ export default function UserProfile() {
 								),
 							}}
 						/>
+						<Box
+							sx={{
+								display: 'flex',
+								flexDirection: 'column',
+								alignItems: 'center',
+								marginTop: '15px',
+							}}>
+							<span>Actualice aquí su imagen de perfil</span>
+							<img
+								style={{
+									marginTop: 10,
+									width: 220,
+									height: 220,
+									objectFit: 'cover',
+								}}
+								src={imgUrl !== '' ? imgUrl : user.imgUrl}
+								alt={'IMGEN USUARIO'}
+								loading='lazy'
+							/>
+							<br />
+							<Button
+								style={{ width: 220 }}
+								id='imagenButton'
+								variant='contained'
+								component='label'>
+								Selecciona una imagen
+								<input
+									hidden
+									onChange={file => upLoadImage(file.target.files[0])}
+									accept='image/*'
+									multiple
+									type='file'
+								/>
+							</Button>
+						</Box>
 					</Stack>
 
 					<LoadingButton

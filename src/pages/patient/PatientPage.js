@@ -32,7 +32,7 @@ import {
 	Snackbar,
 	Alert,
 	CircularProgress,
-	Box
+	Box,
 } from '@mui/material';
 import Label from '../../components/label';
 // components
@@ -550,9 +550,11 @@ export default function PatientPage() {
 		);
 	} else {
 		return (
-			<><Helmet>
-				<title> Pacientes </title>
-			</Helmet><Container>
+			<>
+				<Helmet>
+					<title> Pacientes </title>
+				</Helmet>
+				<Container>
 					<Stack
 						direction='row'
 						alignItems='center'
@@ -582,7 +584,8 @@ export default function PatientPage() {
 							<CircularProgress />
 						</Box>
 					</Card>
-				</Container></>
-				);
+				</Container>
+			</>
+		);
 	}
 }

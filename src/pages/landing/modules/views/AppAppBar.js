@@ -29,16 +29,16 @@ function AppAppBar() {
 							color='inherit'
 							variant='h6'
 							underline='none'
-							href='/premium-themes/onepirate/sign-in/'
+							href='/login'
 							sx={rightLink}>
-							{'Sign In'}
+							{'Ingresar'}
 						</Link>
 						<Link
 							variant='h6'
 							underline='none'
-							href='/premium-themes/onepirate/sign-up/'
+							href='/login'
 							sx={{ ...rightLink, color: 'secondary.main' }}>
-							{'Sign Up'}
+							{'Registrarse'}
 						</Link>
 					</Box>
 				</Toolbar>

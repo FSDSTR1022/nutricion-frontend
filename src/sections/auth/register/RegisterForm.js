@@ -1,7 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
-import { Stack, IconButton, InputAdornment, TextField } from '@mui/material';
+import {
+	Stack,
+	IconButton,
+	InputAdornment,
+	TextField,
+	Box,
+	Button,
+} from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // icons
 import Iconify from '../../../components/iconify';
@@ -35,7 +42,6 @@ export default function RegisterForm() {
 	const [emailError, setEmailError] = useState(false);
 	const [passwordError, setPasswordError] = useState(false);
 	const [repeatPasswordError, setRepeatPasswordError] = useState(false);
-	const [imgUrlError, setImgUrlError] = useState(false);
 
 	// Asignar valores a las variables y hacer validación
 	const setValues = (type, value) => {
@@ -88,7 +94,7 @@ export default function RegisterForm() {
 				}
 				setPasswordError(true);
 				break;
-			case 'repeatPassword':
+			default:
 				setRepeatPassword(value);
 				if (value.length && value === password) {
 					setRepeatPasswordError(false);
@@ -96,15 +102,35 @@ export default function RegisterForm() {
 				}
 				setRepeatPasswordError(true);
 				break;
-			default:
-				setImgUrl(value);
-				if (value.length) {
-					setImgUrlError(false);
-					break;
-				}
-				setImgUrlError(true);
-				console.log('imgUrlError', imgUrlError);
 		}
+	};
+
+	// imagen
+	const urlCloudinary =
+		'https://api.cloudinary.com/v1_1/dtnuuoiih/image/upload/'; // aquí deberí ir >process.env.URL_CLOUDINARY_IMG
+
+	const upLoadImage = image => {
+		const data = new FormData();
+
+		data.append('file', image);
+		data.append('upload_preset', 'x12akkid');
+		data.append('cloud_name', 'dtnuuoiih');
+		data.append('folder', 'exercises/images');
+
+		fetch(urlCloudinary, {
+			method: 'post',
+			body: data,
+		})
+			.then(res => res.json())
+			.then(data => {
+				if (data.error) {
+					return;
+				}
+
+				setImgUrl(data.url);
+			})
+
+			.catch(err => console.log('error', err));
 	};
 
 	const errorMesage = type => `${type} es un campo obligatorío`;
@@ -239,7 +265,44 @@ export default function RegisterForm() {
 					}}
 				/>
 			</Stack>
-
+			<Box
+				sx={{
+					display: 'flex',
+					flexDirection: 'column',
+					alignItems: 'center',
+					marginTop: '15px',
+				}}>
+				<span>Agrege su imagen de perfil aquí</span>
+				<img
+					style={{
+						marginTop: 10,
+						width: 220,
+						height: 220,
+						objectFit: 'cover',
+					}}
+					src={
+						imgUrl ||
+						'https://img.freepik.com/vector-premium/icono-marco-fotos-foto-vacia-blanco-vector-sobre-fondo-transparente-aislado-eps-10_399089-1290.jpg'
+					}
+					alt={'IMGEN USUARIO'}
+					loading='lazy'
+				/>
+				<br />
+				<Button
+					style={{ width: 220 }}
+					id='imagenButton'
+					variant='contained'
+					component='label'>
+					Selecciona una imagen
+					<input
+						hidden
+						onChange={file => upLoadImage(file.target.files[0])}
+						accept='image/*'
+						multiple
+						type='file'
+					/>
+				</Button>
+			</Box>
 			<LoadingButton
 				sx={{ my: 2 }}
 				fullWidth

@@ -13,10 +13,10 @@ import ProductCTAPatient from './modules/views/ProductCTAPatient';
 function Index() {
 	return (
 		<>
-			<AppAppBar />			
+			<AppAppBar />
 			<ProductHero />
 			<ProductHowItWorks />
-			<ProductCategories />			
+			<ProductCategories />
 			<ProductCTAProfetional />
 			<ProductCTAPatient />
 			<ProductSmokingHero />

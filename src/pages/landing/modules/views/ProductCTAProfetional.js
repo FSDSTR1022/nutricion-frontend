@@ -6,7 +6,7 @@ import Typography from '../components/Typography';
 import Button from '../components/Button';
 import img10 from '../image/image-10.png';
 
-function ProductCTAProfetional() {	
+function ProductCTAProfetional() {
 	return (
 		<Container
 			component='section'
@@ -25,21 +25,25 @@ function ProductCTAProfetional() {
 							py: 8,
 							px: 3,
 						}}>
-						<Box
-							sx={{ maxWidth: 400 }}>
+						<Box sx={{ maxWidth: 400 }}>
+							<Typography variant='h6'>Preparadores físicos</Typography>
 							<Typography
-								variant='h6'
+							/* variant='h5' */
 							>
-								Preparadores físicos
-							</Typography>	
-							<Typography
-								/* variant='h5' */
-								>
-								- Consulte el más completo listado de ejercicios según parte del cuerpo, intensidad, elementos entre otras muchas otras maneras de buscar.<br />
-								- Elabore planes de entrenamiento personalizados para cada persona.<br />
-								- Consulte las dietas y planes nutricionales de cada persona a fin de elaborar el plan de ejercicios.<br />
-								- Realice la comunicación con cada paciente de manera rápida, ágil y segura.<br /><br />
-
+								- Consulte el más completo listado de ejercicios según parte del
+								cuerpo, intensidad, elementos entre otras muchas otras maneras
+								de buscar.
+								<br />
+								- Elabore planes de entrenamiento personalizados para cada
+								persona.
+								<br />
+								- Consulte las dietas y planes nutricionales de cada persona a
+								fin de elaborar el plan de ejercicios.
+								<br />
+								- Realice la comunicación con cada paciente de manera rápida,
+								ágil y segura.
+								<br />
+								<br />
 							</Typography>
 							<Button
 								/* type='submit'
@@ -64,7 +68,8 @@ function ProductCTAProfetional() {
 							right: 0,
 							bottom: 0,
 							width: '100%',
-							background:'url(/static/themes/onepirate/productCTAImageDots.png)',
+							background:
+								'url(/static/themes/onepirate/productCTAImageDots.png)',
 						}}
 					/>
 					<Box
