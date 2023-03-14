@@ -35,6 +35,10 @@ export default function DashboardAppPage() {
 	const [fullRutineCompleted, setFullRutineCompleted] = useState([]);
 
 	useEffect(() => {
+		const user = localStorage.getItem('user');
+		const userJSON = JSON.parse(user);
+		console.log('usuario id', userJSON.id);
+
 		const getAllusers = async () => {
 			const response = await getAllUsers();
 			if (response.status === 200) {
@@ -47,7 +51,7 @@ export default function DashboardAppPage() {
 			if (response.status === 200) {
 				setRutinasList(response.data);
 				const rutProf = response.data.filter(
-					rut => rut.user.profetional === '640dadcf849d5a2688be06c2'
+					rut => rut.user.profetional === '640dadcf849d5a2688be06c2' // userJSON.id
 				); // no se está guardando el "profetional" en la rutina. falta el id localstorage?
 				setUserRutinesList(rutProf);
 				datosGraph(rutProf);
