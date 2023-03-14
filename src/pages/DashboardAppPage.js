@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { faker } from '@faker-js/faker';
@@ -64,18 +65,7 @@ export default function DashboardAppPage() {
 		return data;
 	};
 
-	/* const getRoutines = () => {
-		fetch('https://backendrailways-production.up.railway.app/rutines/')
-			.then(res => res.json())
-			.then(data => {
-				setRutinasList(data);
-				console.log('rutinas lista', rutinasList);
-			})
-			.catch(err => console.log('error', err));
-	}; */
-
 	const datosGraph = profRutines => {
-		console.log('dentro datosGraph');
 
 		const fechasRutinas = profRutines?.map(rut => moment(rut.day).format('L'));
 		const axis = [...new Set(fechasRutinas)];
@@ -102,7 +92,7 @@ export default function DashboardAppPage() {
 				<Typography
 					variant='h4'
 					sx={{ mb: 5 }}>
-					Hola, Bienvenido de nuevo
+					Hola, Bienvenido!
 				</Typography>
 
 				<Grid

@@ -1376,9 +1376,6 @@ export default function RutinePage(props) {
 										 </Grid>
 									</Grid>								
 							</DialogContent>
-							{/* <DialogActions>
-								
-							</DialogActions> */}
 						</Dialog>
 
 						<div>{getConfirmationDialog()}</div>
