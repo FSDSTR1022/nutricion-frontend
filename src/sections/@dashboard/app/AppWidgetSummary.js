@@ -60,8 +60,8 @@ export default function AppWidgetSummary({
 				}}>
 				<Iconify
 					icon={icon}
-					width={24}
-					height={24}
+					width={40}
+					height={40}
 				/>
 			</StyledIcon>
 

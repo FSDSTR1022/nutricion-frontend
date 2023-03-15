@@ -24,14 +24,13 @@ import {
 	DialogActions,
 	Button,
 	Snackbar,
-	Alert
- } from '@mui/material';
- import Grid from '@mui/material/Unstable_Grid2';
+	Alert,
+} from '@mui/material';
+import Grid from '@mui/material/Unstable_Grid2';
 
- import RutinePage from '../rutine/RutinePage'
- import {getRutines} from '../../services/routineService'
- import { getAllUsers,getUserById } from '../../services/userService';
- 
+import RutinePage from '../rutine/RutinePage';
+import { getRutines } from '../../services/routineService';
+import { getAllUsers, getUserById } from '../../services/userService';
 
 const PatientCalendarPage = () => {
 	/* todas las rutinas de la BD */
@@ -55,103 +54,94 @@ const PatientCalendarPage = () => {
 	const [openAlertUS, setOpenAlertUS] = useState(false);
 	const [messageAlertUS, setMessageAlertUS] = useState('');
 	const [severityAlertUS, setSeverityAlertUS] = useState('success');
-/* 	const [idUserUS,setIdUserUS] = useState('') */
+	/* 	const [idUserUS,setIdUserUS] = useState('') */
 	const [localUserUS, setLocalUserUS] = useState({});
-	
 
 	const { id } = useParams();
 
-/* 	const user2 = localStorage.getItem('user');
+	/* 	const user2 = localStorage.getItem('user');
 	const userJSON = JSON.parse(user2)
  */
-/* 
+	/* 
 	console.log("USER de localStorage: ",userJSON) */
 
-	
 	useEffect(() => {
 		const localUser = JSON.parse(localStorage.getItem('user'));
-		console.log("USER Local: ",localUser)
-		setLocalUserUS(localUser)
+		console.log('USER Local: ', localUser);
+		setLocalUserUS(localUser);
 
-		if(id!==undefined){
-			setPatient(id)
+		if (id !== undefined) {
+			setPatient(id);
 			getRoutines(id);
-		}
-		else{
-			
-			setPatient(localUser.id)
+		} else {
+			setPatient(localUser.id);
 			getRoutines(localUser.id);
-		}	
-		
-	}, [openAlertUS,render]);
+		}
+	}, [openAlertUS, render]);
 
 	async function setPatient(id) {
-		console.log("USER BD: ",await getUserById(id))
+		console.log('USER BD: ', await getUserById(id));
 		setPatientUS(await getUserById(id));
 	}
 
-	const getRoutines = async (id) => {
+	const getRoutines = async id => {
 		const response = await getRutines();
 		if (response.status === 200) {
-			console.log(response)
+			console.log(response);
 			setRutinasListUS(response.data);
 
 			const userRutines = response.data.filter(rut => rut.user._id === id);
 			setUserRutinesListUS(userRutines);
 
-				const events = [];
-					// eslint-disable-next-line array-callback-return
-					userRutines.map(ob =>{
-						const evento={
-							id: ob._id,
-							title: ob.name,
-							start: ob.day,
-							allDay: true,
-							editable: true,
-							
-						}
-						
-						if(ob.status==="done"){
-							evento.color="green"
-						}else{
-							evento.color="red"
-						}
+			const events = [];
+			// eslint-disable-next-line array-callback-return
+			userRutines.map(ob => {
+				const evento = {
+					id: ob._id,
+					title: ob.name,
+					start: ob.day,
+					allDay: true,
+					editable: true,
+				};
 
-						if(localUserUS.type==="profesional"){
-							evento.editable= true
-						}else{
-							evento.editable = false
-						}
+				if (ob.status === 'done') {
+					evento.color = 'green';
+				} else {
+					evento.color = 'red';
+				}
 
-						events.push(evento)
-					});
+				if (localUserUS.type === 'profesional') {
+					evento.editable = true;
+				} else {
+					evento.editable = false;
+				}
 
-				setEventsCalendar(events)
-				
-				const nextR = userRutines.filter(rut => Date.parse(rut.day) >= today);
-				const nextRs = nextR.sort(
-					(a, b) => Date.parse(a.day) - Date.parse(b.day)
-				);
-				setNextRutinasUS(nextRs);
+				events.push(evento);
+			});
+
+			setEventsCalendar(events);
+
+			const nextR = userRutines.filter(rut => Date.parse(rut.day) >= today);
+			const nextRs = nextR.sort(
+				(a, b) => Date.parse(a.day) - Date.parse(b.day)
+			);
+			setNextRutinasUS(nextRs);
 		}
 	};
 
-	const handleEventClick = (id,day,e) => {
-
-		setAccionEnDialogo('viewRutine')
-		setDateSelectedUS(day)
-		setRutineUS(id)
-		setOpenRutineDialogUS(true)
+	const handleEventClick = (id, day, e) => {
+		setAccionEnDialogo('viewRutine');
+		setDateSelectedUS(day);
+		setRutineUS(id);
+		setOpenRutineDialogUS(true);
 	};
 
 	const handleDateClick = date => {
-
-		if(localUserUS.type ==="profesional"){
-			setAccionEnDialogo('newRutine')
-			setOpenRutineDialogUS(true)
-			setDateSelectedUS(date)
+		if (localUserUS.type === 'profesional') {
+			setAccionEnDialogo('newRutine');
+			setOpenRutineDialogUS(true);
+			setDateSelectedUS(date);
 		}
-		
 	};
 
 	const handleNewRutinaClose = () => {
@@ -169,28 +159,23 @@ const PatientCalendarPage = () => {
 
 	// eslint-disable-next-line consistent-return
 	function putDropEvent(id, date) {
-		console.log("localUserUS.type: ",localUserUS.type)
+		console.log('localUserUS.type: ', localUserUS.type);
 
-		if(localUserUS.type ==="profesional"){
-		
-		const rutineUrl = 'http://localhost:3000/rutines?id=';
+		if (localUserUS.type === 'profesional') {
+			const rutineUrl = 'http://localhost:3000/rutines?id=';
 
-		return fetch(`${rutineUrl}${id}`, {
-			method: 'PUT',
-			mode: 'cors',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ day: date }),
-		})
-			.then(res => res.json())
-			.then(				
-				getRoutines(patientUS._id)
-			)
-			.then(				
-				render? setRender(false) : setRender(true)
-			)
-			.catch(error => console.log('Error:', error));
+			return fetch(`${rutineUrl}${id}`, {
+				method: 'PUT',
+				mode: 'cors',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ day: date }),
+			})
+				.then(res => res.json())
+				.then(getRoutines(patientUS._id))
+				.then(render ? setRender(false) : setRender(true))
+				.catch(error => console.log('Error:', error));
 		}
 	}
 
@@ -227,8 +212,8 @@ const PatientCalendarPage = () => {
 				<title> Health Guru | Paciente </title>
 			</Helmet>
 
-		<Container>
-			{/* <Stack
+			<Container>
+				{/* <Stack
 				direction='row'
 				alignItems='center'
 				justifyContent='space-between'
@@ -326,67 +311,69 @@ const PatientCalendarPage = () => {
 					</Box>
 
 					<FullCalendar
-					plugins={[dayGridPlugin, interaction, timeGridPlugin, listPlugin]}
-					headerToolbar={{
-						start: 'today',
-						center: 'title',
-						end: 'prev,next',
-					}}
-					height={'85vh'}
-					initialView='dayGridMonth'
-					editable='true'
-					events={eventsCalendar}
-					eventClick={info => handleEventClick(info.event.id,info.event.startStr)}
-					dateClick={info => handleDateClick(info.dateStr)}
-					eventDrop={info => putDropEvent(info.event.id, info.event.start)} />
+						plugins={[dayGridPlugin, interaction, timeGridPlugin, listPlugin]}
+						headerToolbar={{
+							start: 'today',
+							center: 'title',
+							end: 'prev,next',
+						}}
+						height={'85vh'}
+						initialView='dayGridMonth'
+						editable='true'
+						events={eventsCalendar}
+						eventClick={info =>
+							handleEventClick(info.event.id, info.event.startStr)
+						}
+						dateClick={info => handleDateClick(info.dateStr)}
+						eventDrop={info => putDropEvent(info.event.id, info.event.start)}
+					/>
 				</Card>
 			</Container>
 
-{/*  ///////////////////// Dialogo mostrar rutina  /////////////////////  */}
-		<Dialog
-					open={openRutineDialogUS}
-					onClose={handleCloseFormExerciseDialog}
-					aria-labelledby='alert-dialog-title'
-					aria-describedby='alert-dialog-description'
-					fullWidth					
-					maxWidth='l'>
-					<DialogContent>
-						<RutinePage 
-							action={accionEnDialogo}
-							patien={patientUS}
-							localUser={localUserUS}
-							date={dateSelectedUS}
-							routineId={rutineUS}
-							setOpenRutineDialog={setOpenRutineDialogUS}
-							setMessageAlertUS={setMessageAlertUS}
-							setOpenAlertUS={setOpenAlertUS}
-							setSeverityAlertUS={setSeverityAlertUS}
-							
-						/>
-					</DialogContent>
-					<DialogActions>
-						<Button
-							value='cancelar'
-							onClick={handleClickCancelButton}>
-							{' '}
-							Volver{' '}
-						</Button>
-					</DialogActions>
-				</Dialog> 
+			{/*  ///////////////////// Dialogo mostrar rutina  /////////////////////  */}
+			<Dialog
+				open={openRutineDialogUS}
+				onClose={handleCloseFormExerciseDialog}
+				aria-labelledby='alert-dialog-title'
+				aria-describedby='alert-dialog-description'
+				fullWidth
+				maxWidth='l'>
+				<DialogContent>
+					<RutinePage
+						action={accionEnDialogo}
+						patien={patientUS}
+						localUser={localUserUS}
+						date={dateSelectedUS}
+						routineId={rutineUS}
+						setOpenRutineDialog={setOpenRutineDialogUS}
+						setMessageAlertUS={setMessageAlertUS}
+						setOpenAlertUS={setOpenAlertUS}
+						setSeverityAlertUS={setSeverityAlertUS}
+					/>
+				</DialogContent>
+				<DialogActions>
+					<Button
+						value='cancelar'
+						onClick={handleClickCancelButton}>
+						{' '}
+						Volver{' '}
+					</Button>
+				</DialogActions>
+			</Dialog>
 
-				<Snackbar
-					open={openAlertUS}
-					autoHideDuration={6000}
-					onClose={handleCloseMessage}>
-					<Alert
-						variant='filled'
-						onClose={handleCloseMessage}
-						severity={severityAlertUS}
-						sx={{ width: '100%' }}>
-						{messageAlertUS}
-					</Alert>
-				</Snackbar>
-	</>
-	)	
-}	
+			<Snackbar
+				open={openAlertUS}
+				autoHideDuration={6000}
+				onClose={handleCloseMessage}>
+				<Alert
+					variant='filled'
+					onClose={handleCloseMessage}
+					severity={severityAlertUS}
+					sx={{ width: '100%' }}>
+					{messageAlertUS}
+				</Alert>
+			</Snackbar>
+		</>
+	);
+};
 export default PatientCalendarPage;
