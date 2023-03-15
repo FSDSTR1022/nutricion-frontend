@@ -111,19 +111,17 @@ export default function DashboardAppPage() {
 
 		rounds?.forEach(round => {
 			const exerPerRound = [...round?.exercises];
-			console.log('exer per round', exerPerRound);
+
 			exercisesTotalArray = [...exercisesTotalArray, ...exerPerRound];
 			numberOfExercises = exercisesTotalArray.length;
-			console.log('exer per routines', exercisesTotalArray, numberOfExercises);
 		});
 
 		setNRounds(rounds.length);
 		seTNExer(numberOfExercises);
-		console.log('rutinas totals', profRutines.length);
-		// setPercentage(95);
+
 		const percen = Math.round((nCompl / profRutines.length) * 100);
 		setPercentage(percen);
-		console.log('percen', percen);
+		// setPercentage(------)
 		const colorOp = [50, 70, 90];
 
 		if (percen >= colorOp[2]) {
