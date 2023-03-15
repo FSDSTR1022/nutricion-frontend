@@ -38,6 +38,7 @@ export default function DashboardAppPage() {
 	const [nExer, seTNExer] = useState();
 	const [numberOfRoutines, setNumberOfRoutines] = useState();
 	const [percentage, setPercentage] = useState('');
+	const [colorWidget, setColorWidget] = useState('success');
 
 	useEffect(() => {
 		const user = localStorage.getItem('user');
@@ -75,7 +76,6 @@ export default function DashboardAppPage() {
 	};
 
 	const datosGraph = profRutines => {
-
 		const fechasRutinas = profRutines?.map(rut => moment(rut.day).format('L'));
 		const axis = [...new Set(fechasRutinas)];
 		setChartLabels(axis);
@@ -119,9 +119,21 @@ export default function DashboardAppPage() {
 
 		setNRounds(rounds.length);
 		seTNExer(numberOfExercises);
-		console.log('rutinas totals', numberOfRoutines);
-		const percen = Number(nCompl / numberOfRoutines);
-		console.log('percen', percen);
+		console.log('rutinas totals', profRutines.length);
+		setPercentage(95);
+		// setPercentage(Math.round((nCompl / profRutines.length) * 100));
+		console.log('percen', percentage);
+		const colorOp = [0.5, 0.7, 0.9];
+
+		if (percentage >= colorOp[2]) {
+			setColorWidget('#C3F7BB');
+		} else if (percentage >= colorOp[1] && percentage < colorOp[2]) {
+			setColorWidget('info');
+		} else if (percentage >= colorOp[0] && percentage < colorOp[1]) {
+			setColorWidget('warning');
+		} else {
+			setColorWidget('error');
+		}
 
 		/* roundsPerRoutine.forEach(round => {
 				const exerPerRound = [...round?.execises];
@@ -194,9 +206,9 @@ export default function DashboardAppPage() {
 						md={3}>
 						<AppWidgetSummary
 							title='Ratio Routines Completed'
-							total={`${percentage} %`}
-							color='error'
-							icon={'healthicons:exercise-weights'}
+							total={`${percentage}%`}
+							color={colorWidget}
+							icon={'eos-icons:performance'}
 						/>
 					</Grid>
 
