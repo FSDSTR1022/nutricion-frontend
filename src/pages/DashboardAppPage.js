@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -39,6 +40,10 @@ export default function DashboardAppPage() {
 	const [numberOfRoutines, setNumberOfRoutines] = useState();
 	const [percentage, setPercentage] = useState('');
 	const [colorWidget, setColorWidget] = useState('success');
+	const [iconoWidget, setIconoWidget] = useState('');
+	const [satisfaction, setSatisfaction] = useState(
+		'ic:baseline-emoji-emotions'
+	);
 
 	useEffect(() => {
 		const user = localStorage.getItem('user');
@@ -62,6 +67,7 @@ export default function DashboardAppPage() {
 				setUserRutinesList(rutProf);
 				setNumberOfRoutines(rutProf.length);
 				datosGraph(rutProf);
+				satisfactionGraph(rutProf);
 			}
 		};
 		getAllusers();
@@ -121,24 +127,43 @@ export default function DashboardAppPage() {
 
 		const percen = Math.round((nCompl / profRutines.length) * 100);
 		setPercentage(percen);
-		// setPercentage(------)
+		// setPercentage(------)   /* METER AQUÍ EL VALOR PARA VER EL CAMBIO DE COLOR DEL WIDGET
 		const colorOp = [50, 70, 90];
 
 		if (percen >= colorOp[2]) {
 			setColorWidget('success');
+			setIconoWidget('mdi:face-kiss-outline');
 		} else if (percen >= colorOp[1] && percentage < colorOp[2]) {
 			setColorWidget('info');
+			setIconoWidget('mdi:emoji-happy');
 		} else if (percen >= colorOp[0] && percentage < colorOp[1]) {
 			setColorWidget('warning');
+			setIconoWidget('mdi:emoji-confused-outline');
 		} else {
 			setColorWidget('error');
+			setIconoWidget('mdi:emoji-cry-outline');
 		}
+	};
 
-		/* roundsPerRoutine.forEach(round => {
-				const exerPerRound = [...round?.execises];
-				console.log('exercises per routine', exerPerRound);
-			});
-			console.log('rounds per rutine', roundsPerRoutine); */
+	const satisfactionGraph = profRutines => {
+		const arrayRoutineSatisfaction = [];
+		profRutines.forEach(routine => {
+			routine?.satisfaction
+				? arrayRoutineSatisfaction.push(routine?.satisfaction)
+				: null;
+		});
+		const arraySatisfaction = arrayRoutineSatisfaction.reduce(
+			(elemento, index) => {
+				const contador = elemento[index] ?? 0;
+				return { ...elemento, [index]: contador + 1 };
+			},
+			{}
+		);
+
+		setSatisfaction(arraySatisfaction);
+		// const perfentageSatis = [arraySatisfaction[0]['1']]
+		console.log('array', arraySatisfaction);
+		return arraySatisfaction;
 	};
 
 	const user = localStorage.getItem('user');
@@ -147,14 +172,14 @@ export default function DashboardAppPage() {
 	return (
 		<>
 			<Helmet>
-				<title> Dashboard | Minimal UI </title>
+				<title>{`Dashboard | ${userJSON.name.toUpperCase()}`} </title>
 			</Helmet>
 
 			<Container maxWidth='xl'>
 				<Typography
 					variant='h4'
 					sx={{ mb: 5 }}>
-					Hola, Bienvenido!
+					{`PERFORMANCE PROFESSIONAL ${userJSON.name.toUpperCase()}`}
 				</Typography>
 
 				<Grid
@@ -191,7 +216,7 @@ export default function DashboardAppPage() {
 						sm={6}
 						md={3}>
 						<AppWidgetSummary
-							title='Total Rounds'
+							title='Total Exercices'
 							total={nExer}
 							color='warning'
 							icon={'healthicons:exercise-weights'}
@@ -207,7 +232,7 @@ export default function DashboardAppPage() {
 							title='Ratio Routines Completed'
 							total={`${percentage}%`}
 							color={colorWidget}
-							icon={'eos-icons:performance'}
+							icon={iconoWidget}
 						/>
 					</Grid>
 
@@ -217,8 +242,8 @@ export default function DashboardAppPage() {
 						md={6}
 						lg={8}>
 						<AppWebsiteVisits
-							title={`Performance Professional:  ${userJSON.name.toUpperCase()}`}
-							subheader='Routines Completed Index'
+							title='Routines Completed Index'
+							subheader='last 30 days'
 							chartLabels={chartLabels}
 							chartData={[
 								{
@@ -243,18 +268,20 @@ export default function DashboardAppPage() {
 						md={6}
 						lg={4}>
 						<AppCurrentVisits
-							title='Current Visits'
+							title='Satisfaction Index'
 							chartData={[
-								{ label: 'America', value: 4344 },
-								{ label: 'Asia', value: 5435 },
-								{ label: 'Europe', value: 1443 },
-								{ label: 'Africa', value: 4443 },
+								{ label: 'Bad', value: 1 },
+								{ label: 'Regular', value: 2 },
+								{ label: 'Normal', value: 1 },
+								{ label: 'Good', value: 2 },
+								{ label: 'Outstanding', value: 2 },
 							]}
 							chartColors={[
+								theme.palette.error.main,
+								theme.palette.warning.main,
 								theme.palette.primary.main,
 								theme.palette.info.main,
-								theme.palette.warning.main,
-								theme.palette.error.main,
+								theme.palette.success.main,
 							]}
 						/>
 					</Grid>
