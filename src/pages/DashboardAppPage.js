@@ -92,13 +92,13 @@ export default function DashboardAppPage() {
 			);
 			numberOfRoutinesPerDay.push(routinesPerDate.length);
 			setFullRutineExpected(numberOfRoutinesPerDay);
-			console.log(date, routinesPerDate, numberOfRoutinesPerDay);
+
 			const routinesCompletedPerDay = routinesPerDate.filter(
 				rut => rut.status === 'done'
 			);
 			numberOfRoutinesCompletedPerDay.push(routinesCompletedPerDay.length);
 			nCompl += routinesCompletedPerDay.length;
-			console.log('numbers completed', nCompl);
+
 			setFullRutineCompleted(numberOfRoutinesCompletedPerDay);
 		});
 
@@ -120,16 +120,17 @@ export default function DashboardAppPage() {
 		setNRounds(rounds.length);
 		seTNExer(numberOfExercises);
 		console.log('rutinas totals', profRutines.length);
-		setPercentage(95);
-		// setPercentage(Math.round((nCompl / profRutines.length) * 100));
-		console.log('percen', percentage);
-		const colorOp = [0.5, 0.7, 0.9];
+		// setPercentage(95);
+		const percen = Math.round((nCompl / profRutines.length) * 100);
+		setPercentage(percen);
+		console.log('percen', percen);
+		const colorOp = [50, 70, 90];
 
-		if (percentage >= colorOp[2]) {
-			setColorWidget('#C3F7BB');
-		} else if (percentage >= colorOp[1] && percentage < colorOp[2]) {
+		if (percen >= colorOp[2]) {
+			setColorWidget('success');
+		} else if (percen >= colorOp[1] && percentage < colorOp[2]) {
 			setColorWidget('info');
-		} else if (percentage >= colorOp[0] && percentage < colorOp[1]) {
+		} else if (percen >= colorOp[0] && percentage < colorOp[1]) {
 			setColorWidget('warning');
 		} else {
 			setColorWidget('error');
