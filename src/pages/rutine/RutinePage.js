@@ -117,11 +117,6 @@ export default function RutinePage(props) {
 
 	const navigate = useNavigate();
 
-	const user2 = localStorage.getItem('user');
-	const userJSON = JSON.parse(user2);
-
-	console.log('profesional', userJSON.id);
-
 	const {
 		action,
 		patien,
@@ -510,7 +505,7 @@ export default function RutinePage(props) {
 			console.log('roundModificados: ', roundModificados);
 
 			rutineToSave.rounds = roundModificados;
-			rutineToSave.professional = userJSON.id;
+
 			rutineToSave.name = rutineNameUS;
 			rutineToSave.day = rutineDateUS;
 			rutineToSave.user = patientUS._id;
@@ -972,8 +967,8 @@ export default function RutinePage(props) {
 		);
 	};
 
-	const prueba2 = () => {
-		console.log(rutineUS);
+	const prueba = () => {
+		console.log('startFeedbackUS: ', startFeedbackUS);
 	};
 
 	const handleClickRealizarRutinaButoon = () => {
@@ -995,21 +990,18 @@ export default function RutinePage(props) {
 		updateRutine(rutineToUpdate).then(response => {
 			if (response.status === 200) {
 				console.log('SE SE ACTUALIZÓ LA RUTINA');
-				setOpenFeedbackDialog(true);
-				/* setOpenDialog(false);
-				setIsLoading(true);
-				setMessageAlertUS(`Se modificó la rutina`);
+				setOpenFeedbackDialog(false);
+				setTextFeedbackUS();
+				setStartFeedbackUS();
+				setOpenRutineDialog(false);
+				setMessageAlertUS('Se completo la Rutina');
 				setOpenAlertUS(true);
-				setSeverityAlertUS('success'); */
+				setSeverityAlertUS('success');
 			} else {
 				console.log('NO SE ACTUALIZÓ LA RUTINA');
 				console.log('response: ', response);
 			}
 		});
-	};
-
-	const handleChangeTextFeddback = () => {
-		setTextFeedbackUS('');
 	};
 
 	const getTitle = () => {
@@ -1044,12 +1036,6 @@ export default function RutinePage(props) {
 							{getTitle()}
 						</Typography>
 					</Stack>
-					<Button
-						variant='contained'
-						color='success'
-						onClick={prueba2}>
-						mostrar Rutina
-					</Button>
 
 					<Card>
 						{localUserUS.type === 'profesional' ? (
@@ -1060,41 +1046,7 @@ export default function RutinePage(props) {
 									sx={{ m: 1 }}>
 									Paciente
 								</Typography>
-						{localUserUS.type === 'profesional' ? (
-							<Card>
-								<Typography
-									variant='h6'
-									textAlign='left'
-									sx={{ m: 1 }}>
-									Paciente
-								</Typography>
 
-								<FormControl sx={{ m: 1 }}>
-									<TextField
-										id='pacientName'
-										label='Nombre'
-										variant='outlined'
-										inputProps={{ readOnly: true }}
-										/* error={!!errorsUS.pacientName} */
-										value={patientUS.name}
-										onChange={handleChangePacienteNameTextField}
-									/>
-								</FormControl>
-								<FormControl sx={{ m: 1 }}>
-									<TextField
-										id='patientLasname'
-										label='Apellido'
-										variant='outlined'
-										inputProps={{ readOnly: true }}
-										/* error={!!errorsUS.pacientName} */
-										value={patientUS.lastName}
-										onChange={handleChangePacienteNameTextField}
-									/>
-								</FormControl>
-							</Card>
-						) : (
-							<></>
-						)}
 								<FormControl sx={{ m: 1 }}>
 									<TextField
 										id='pacientName'
@@ -1187,138 +1139,67 @@ export default function RutinePage(props) {
 											<></>
 										)}
 									</FormControl>
-						<Card>
-							{localUserUS.type === 'profesional' ? (
+
+									<LocalizationProvider dateAdapter={AdapterDayjs}>
+										<DatePicker
+											label='Fecha de la Rutina'
+											value={rutineDateUS}
+											views={['day', 'month', 'year']}
+											inputProps={{ readOnly: true }}
+											readOnly={actionUS !== 'newRutine'}
+											onChange={newValue => {
+												setValueDay(newValue);
+											}}
+											renderInput={params => (
+												<TextField
+													required={actionUS === 'newRutine'}
+													sx={{ m: 1 }}
+													{...params}
+													helperText={null}
+												/>
+											)}
+										/>
+									</LocalizationProvider>
+								</Grid>
 								<Grid
 									container
-									spacing={4}>
-									<Grid
-										item
-										xs={11}>
-										<Typography
-											variant='h6'
-											textAlign='left'
-											sx={{ m: 1 }}>
-											Rutina
-										</Typography>
-									</Grid>
-									<Grid
-										item
-										xs={1}>
-										{actionUS !== 'newRutine' ? (
-											<IconButton
-												size='large'
-												color='inherit'
-												onClick={handleOpenMenuRutine()}>
-												<Iconify icon={'eva:more-vertical-fill'} />
-											</IconButton>
+									justifyContent='center'
+									alignItems='flex-end'
+									xs={2}>
+									<Grid item>
+										{localUserUS.type === 'profesional' ? (
+											rutineUS.status === 'pending' ? (
+												<Chip
+													label='Rutina no realizada'
+													color='error'
+												/>
+											) : (
+												<Chip
+													label='Rutina Realiza'
+													color='success'
+												/>
+											)
 										) : (
-											<></>
+											<>
+												{rutineUS.status === 'pending' ? (
+													<Button
+														variant='contained'
+														value='cancelar'
+														color='success'
+														onClick={handleClickRealizarRutinaButoon}>
+														Realizar Rutina
+													</Button>
+												) : (
+													<Chip
+														label='Rutina Realiza'
+														color='success'
+													/>
+												)}
+											</>
 										)}
 									</Grid>
 								</Grid>
-							) : (
-								<></>
-							)}
-
-							<FormControl sx={{ m: 1 }}>
-								<TextField
-									id='rutineName'
-									label='Nombre Rutina'
-									variant='outlined'
-									required={actionUS === 'newRutine'}
-									inputProps={
-										actionUS === 'viewRutine'
-											? { readOnly: true }
-											: { readOnly: false }
-									}
-									error={!!errorsUS.rutineName}
-									value={rutineNameUS}
-									onChange={handleChangeRutineNameTextField}
-								/>
-								{errorsUS.rutineName ? (
-									<span style={{ color: 'red' }}>
-										El nombre de la rutina es obligatorio
-									</span>
-								) : (
-									<></>
-								)}
-							</FormControl>
-
-							<LocalizationProvider dateAdapter={AdapterDayjs}>
-								<DatePicker
-									label='Fecha de la Rutina'
-									value={rutineDateUS}
-									views={['day', 'month', 'year']}
-									inputProps={{ readOnly: true }}
-									readOnly={actionUS !== 'newRutine'}
-									onChange={newValue => {
-										setValueDay(newValue);
-									}}
-									renderInput={params => (
-										<TextField
-											required={actionUS === 'newRutine'}
-											sx={{ m: 1 }}
-											{...params}
-											helperText={null}
-										/>
-									)}
-								/>
-							</LocalizationProvider>
-
-							{localUserUS.type === 'profesional' ? (
-								<Typography
-									variant='h6'
-									textAlign='left'
-									color={rutineUS.status === 'pending' ? 'Red' : 'Green'}
-									sx={{ m: 1 }}>
-									{rutineUS.status === 'pending'
-										? 'Rutina No Realizada'
-										: 'Rutina SI realiza'}
-								</Typography>
-							) : (
-								<>
-									{rutineUS.status === 'pending' ? (
-										<Button
-											variant='contained'
-											value='cancelar'
-											color='success'
-											onClick={handleClickRealizarRutinaButoon}>
-											Realizar Rutina
-										</Button>
-									) : (
-										<Typography
-											variant='h6'
-											textAlign='left'
-											color='Green'
-											sx={{ m: 1 }}>
-											Rutina Realiza
-										</Typography>
-									)}
-								</>
-							)}
-
-							{/* {rutineUS.status==="pending"?
-							(
-								<Button
-										variant='contained'
-										value='cancelar'
-										color="success"
-										disabled
-										onClick={handleCloseDialog}>
-										Rutina Realizada
-							</Button>
-
-							):(
-								<Typography
-								variant='h6'
-								textAlign='left'
-								sx={{ m: 1 }}>
-								Rutina Realiza
-							</Typography>
-								
-
-							)}	 */}
+							</Grid>
 
 							<div>
 								{rutineUS.rounds.map(round => getAccordions(round))}
@@ -1423,31 +1304,6 @@ export default function RutinePage(props) {
 								</Button>
 							</DialogActions>
 						</Dialog>
-						{/* /////////////////// dialogo mostrar de ejercicio /////////////////// */}
-
-						<Dialog
-							open={openViewExerciseDialog}
-							onClose={handleCloseDialog}
-							aria-labelledby='alert-dialog-title'
-							aria-describedby='alert-dialog-description'
-							fullWidth='xl'
-							maxWidth='xl'>
-							<DialogContent>
-								<FormExercise
-									action={{
-										action: 'viewExercise',
-										exercise: exerciseToViewUS,
-									}}
-								/>
-							</DialogContent>
-							<DialogActions>
-								<Button
-									value='cancelar'
-									onClick={handleCloseDialog}>
-									Cerrar
-								</Button>
-							</DialogActions>
-						</Dialog>
 
 						{/* /////////////////// dialogo mostrar de ejercicio /////////////////// */}
 
@@ -1456,38 +1312,75 @@ export default function RutinePage(props) {
 							onClose={handleCloseDialog}
 							aria-labelledby='alert-dialog-title'
 							aria-describedby='alert-dialog-description'
-							fullWidth='xl'
+							/* fullWidth='xl' */
 							maxWidth='xl'>
 							<DialogContent>
-								<Typography component='legend'>Controlled</Typography>
-								<Rating
-									name='simple-controlled'
-									value={startFeedbackUS}
-									onChange={(event, newValue) => {
-										setStartFeedbackUS(newValue);
-									}}
-								/>
-								<FormControl fullWidth>
-									<InputLabel id='demo-simple-select-label'>Age</InputLabel>
-									<Select
-										labelId='demo-simple-select-label'
-										id='demo-simple-select'
-										value={textFeedbackUS}
-										label='Age'
-										onChange={handleChangeTextFeddback}>
-										<MenuItem value={'No termine'}>No termine</MenuItem>
-										<MenuItem value={'Bien'}>Bien</MenuItem>
-										<MenuItem value={'Necesito más'}>Necesito más</MenuItem>
-									</Select>
-								</FormControl>
+								<Grid
+									container
+									direction='column'
+									justifyContent='center'
+									alignItems='center'
+									rowSpacing={3}>
+									<Grid
+										item
+										xs={6}>
+										<Box textAlign='center'>
+											<Typography component='legend'>
+												¿Qué te parecio el entrenamiento?
+											</Typography>
+											<Rating
+												sx={{ mt: 1 }}
+												name='simple-controlled'
+												value={startFeedbackUS}
+												onChange={(event, newValue) => {
+													setStartFeedbackUS(newValue);
+												}}
+											/>
+										</Box>
+									</Grid>
+									<Grid
+										item
+										xs={6}>
+										<Box textAlign='center'>
+											<Typography component='legend'>
+												¿Cómo te sentiste en el entrenemiento?
+											</Typography>
+
+											<FormControl
+												fullWidth
+												sx={{ mt: 1 }}>
+												<InputLabel id='Sensacioneslabel'>
+													Sensaciones
+												</InputLabel>
+												<Select
+													labelId='Sensacioneslabel'
+													id='demo-simple-select'
+													value={textFeedbackUS}
+													label='Sensaciones'
+													onChange={handleChangeTextFeddback}>
+													<MenuItem value={'Casi me muero'}>
+														Casi me muero
+													</MenuItem>
+													<MenuItem value={'Algo pude hacer'}>
+														Algo pude hacer
+													</MenuItem>
+													<MenuItem value={'Estuvo bien'}>Estuvo bien</MenuItem>
+													<MenuItem value={'Necesito más'}>
+														Necesito más
+													</MenuItem>
+												</Select>
+											</FormControl>
+											<Button
+												sx={{ mt: 2 }}
+												value='Guardar'
+												variant='contained'
+												onClick={handleSaveFeedbackButton}>
+												Guardar
+											</Button>
+										</Box>
+									</Grid>
+								</Grid>
 							</DialogContent>
-							<DialogActions>
-								<Button
-									value='cancelar'
-									onClick={handleCloseDialog}>
-									Cerrar
-								</Button>
-							</DialogActions>
 						</Dialog>
 
 						<div>{getConfirmationDialog()}</div>
