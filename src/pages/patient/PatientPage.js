@@ -273,7 +273,7 @@ export default function PatientPage() {
 		return (
 			<>
 				<Helmet>
-					<title> Pacientes </title>
+					<title> Health Guru | Pacientes </title>
 				</Helmet>
 
 				<Container>
@@ -552,7 +552,7 @@ export default function PatientPage() {
 		return (
 			<>
 				<Helmet>
-					<title> Pacientes </title>
+					<title> Health Guru | Pacientes </title>
 				</Helmet>
 				<Container>
 					<Stack

@@ -381,7 +381,7 @@ export default function NewExercisePage(props) {
 	const getTitle = () => {
 		switch (actionUS.action) {
 			case 'newExercise':
-				return 'Nuevo Ejercicio';
+				return ' Nuevo Ejercicio';
 			case 'editExercise':
 				return 'Modificar Ejercicio';
 			case 'viewExercise':
@@ -395,7 +395,7 @@ export default function NewExercisePage(props) {
 		return (
 			<>
 				<Helmet>
-					<title>{getTitle()} </title>
+					<title>{`Health Guru | ${getTitle()}`} </title>
 				</Helmet>
 
 				<Container>
@@ -836,7 +836,7 @@ export default function NewExercisePage(props) {
 		return (
 			<>
 				<Helmet>
-					<title> Nuevo Ejercicio </title>
+				<title>{`Health Guru | ${getTitle()}`} </title>
 				</Helmet>
 				<Container>
 					<Stack
