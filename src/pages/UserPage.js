@@ -160,7 +160,7 @@ export default function UserPage() {
 	return (
 		<>
 			<Helmet>
-				<title> User | Minimal UI </title>
+				<title> Health Guru | User </title>
 			</Helmet>
 
 			<Container>

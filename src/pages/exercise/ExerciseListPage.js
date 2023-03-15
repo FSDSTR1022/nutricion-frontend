@@ -463,7 +463,7 @@ export default function ExerciseListPage(props) {
 	const getTitle = () => {
 		switch (actionUS) {
 			case 'selectExercise':
-				return 'Seleccionar ejercicios';
+				return 'Seleccionar ejercicios ';
 			case 'listExercise':
 				return 'Ejercicios';
 			default:
@@ -475,7 +475,7 @@ export default function ExerciseListPage(props) {
 		return (
 			<>
 				<Helmet>
-					<title> {getTitle()} </title>
+				<title>{`Health Guru | ${getTitle()}`} </title>
 				</Helmet>
 
 				<Container>
@@ -880,7 +880,7 @@ export default function ExerciseListPage(props) {
 		return (
 			<>
 				<Helmet>
-					<title> Ejercicios </title>
+				<title>{`Health Guru | ${getTitle()}`} </title>
 				</Helmet>
 				<Container>
 					<Stack

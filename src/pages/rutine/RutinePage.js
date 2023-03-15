@@ -1023,7 +1023,7 @@ export default function RutinePage(props) {
 		return (
 			<>
 				<Helmet>
-					<title>{getTitle()} </title>
+					<title>{`Health Guru | ${getTitle()}`} </title>
 				</Helmet>
 
 				<Container>

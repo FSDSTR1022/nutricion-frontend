@@ -224,7 +224,7 @@ const PatientCalendarPage = () => {
 	return (
 		<>
 			<Helmet>
-				<title> Paciente </title>
+				<title> Health Guru | Paciente </title>
 			</Helmet>
 
 		<Container>

@@ -52,7 +52,7 @@ export default function RegisterPage() {
 	return (
 		<>
 			<Helmet>
-				<title> Register | Minimal UI </title>
+				<title> Health Guru | Register </title>
 			</Helmet>
 
 			<StyledRoot>

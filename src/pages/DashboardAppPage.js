@@ -85,7 +85,7 @@ export default function DashboardAppPage() {
 	return (
 		<>
 			<Helmet>
-				<title> Dashboard | Minimal UI </title>
+				<title> Health Guru | Dashboard </title>
 			</Helmet>
 
 			<Container maxWidth='xl'>
