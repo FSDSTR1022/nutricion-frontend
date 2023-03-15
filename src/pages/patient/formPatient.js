@@ -181,7 +181,6 @@ const FormNewPatient = props => {
 					</FormControl>
 
 					<Button
-						sx={{}}
 						variant='contained'
 						onClick={() => {
 							registerAction();
