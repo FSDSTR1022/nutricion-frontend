@@ -4,7 +4,7 @@ import { TextField, FormControl, Button } from '@mui/material';
 // components
 import { registerUser } from '../../services/userService';
 
-const FormExercise = () => {
+const FormNewPatient = props => {
 	// conseguir datos del usuario
 	const user = JSON.parse(localStorage.getItem('user'));
 
@@ -81,12 +81,23 @@ const FormExercise = () => {
 	const errorMesage = type => `${type} es un campo obligatorío`;
 
 	const registerAction = () => {
+		if (!firstName.length) setFirstNameError(true);
+		if (!lastName.length) setLastNameError(true);
+		if (!firstName.length) setDniError(true);
+		if (!phone.length) setPhoneError(true);
+		if (!email.length) setEmailError(true);
+
 		if (
 			firstNameError ||
+			!firstName.length ||
 			lastNameError ||
+			!lastName.length ||
 			dniError ||
+			!dni.length ||
 			phoneError ||
-			emailError
+			!phone.length ||
+			emailError ||
+			!email.length
 		) {
 			return;
 		}
@@ -114,6 +125,7 @@ const FormExercise = () => {
 
 		// registerUser(userInfo).then(() => console.log('Hola'));
 		registerUser(userInfo);
+		props.onClose();
 	};
 	return (
 		<>
@@ -169,6 +181,7 @@ const FormExercise = () => {
 					</FormControl>
 
 					<Button
+						sx={{}}
 						variant='contained'
 						onClick={() => {
 							registerAction();
@@ -181,4 +194,4 @@ const FormExercise = () => {
 	);
 };
 
-export default FormExercise;
+export default FormNewPatient;
