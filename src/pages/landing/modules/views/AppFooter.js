@@ -57,15 +57,13 @@ export default function AppFooter() {
 							<Grid
 								item
 								sx={{ display: 'flex' }}>
-								<Box
-									sx={iconStyle}>
+								<Box sx={iconStyle}>
 									<img
 										src={instagram}
 										alt='Instagram'
 									/>
 								</Box>
-								<Box
-									sx={iconStyle}>
+								<Box sx={iconStyle}>
 									<img
 										src={twitter}
 										alt='Twitter'

@@ -38,7 +38,7 @@ import {
 	Item,
 	Rating,
 	InputLabel,
-	Select
+	Select,
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -111,9 +111,9 @@ export default function RutinePage(props) {
 	const [openPopoverRutineUS, setOpenPopoverRutineUS] = useState(null);
 	const [localUserUS, setLocalUserUS] = useState({});
 
-	const [openFeedbackDialog,setOpenFeedbackDialog] = useState(false)
-	const [startFeedbackUS, setStartFeedbackUS] = useState("1");
-	 const[textFeedbackUS, setTextFeedbackUS] = useState('');
+	const [openFeedbackDialog, setOpenFeedbackDialog] = useState(false);
+	const [startFeedbackUS, setStartFeedbackUS] = useState('1');
+	const [textFeedbackUS, setTextFeedbackUS] = useState('');
 
 	const navigate = useNavigate();
 
@@ -133,7 +133,7 @@ export default function RutinePage(props) {
 
 	useEffect(() => {
 		console.log('PROPS:', props);
-		setLocalUserUS(localUser)
+		setLocalUserUS(localUser);
 
 		switch (action) {
 			case undefined:
@@ -421,7 +421,7 @@ export default function RutinePage(props) {
 		setExerciseToAddUS([]);
 		setOpenViewExerciseDialog(false);
 
-		setOpenFeedbackDialog(false)
+		setOpenFeedbackDialog(false);
 	};
 
 	const handleClickShowexerciseButton = () => {
@@ -509,7 +509,7 @@ export default function RutinePage(props) {
 			rutineToSave.name = rutineNameUS;
 			rutineToSave.day = rutineDateUS;
 			rutineToSave.user = patientUS._id;
-			rutineToSave.status="pending";
+			rutineToSave.status = 'pending';
 
 			console.log('Rutina a guardar: ', rutineToSave);
 
@@ -967,44 +967,42 @@ export default function RutinePage(props) {
 		);
 	};
 
-	const prueba =() =>{
-		console.log("startFeedbackUS: ",startFeedbackUS)
-	}
+	const prueba = () => {
+		console.log('startFeedbackUS: ', startFeedbackUS);
+	};
 
 	const handleClickRealizarRutinaButoon = () => {
-		
-		setOpenFeedbackDialog(true)
-	}
+		setOpenFeedbackDialog(true);
+	};
 
-  const handleChangeTextFeddback = (event) => {
-    setTextFeedbackUS(event.target.value);
-  };
+	const handleChangeTextFeddback = event => {
+		setTextFeedbackUS(event.target.value);
+	};
 
-  const handleSaveFeedbackButton =()=>{
-		const rutineToUpdate={
-			_id:rutineUS._id,
-			status: "done",
-			satisfaction:startFeedbackUS,
-			feedback:textFeedbackUS
-		}
+	const handleSaveFeedbackButton = () => {
+		const rutineToUpdate = {
+			_id: rutineUS._id,
+			status: 'done',
+			satisfaction: startFeedbackUS,
+			feedback: textFeedbackUS,
+		};
 
 		updateRutine(rutineToUpdate).then(response => {
 			if (response.status === 200) {
 				console.log('SE SE ACTUALIZÓ LA RUTINA');
-				setOpenFeedbackDialog(false)
-				setTextFeedbackUS()
-				setStartFeedbackUS()
-				setOpenRutineDialog(false)
-				setMessageAlertUS("Se completo la Rutina")
-				setOpenAlertUS(true)
-				setSeverityAlertUS("success")		
-
+				setOpenFeedbackDialog(false);
+				setTextFeedbackUS();
+				setStartFeedbackUS();
+				setOpenRutineDialog(false);
+				setMessageAlertUS('Se completo la Rutina');
+				setOpenAlertUS(true);
+				setSeverityAlertUS('success');
 			} else {
 				console.log('NO SE ACTUALIZÓ LA RUTINA');
 				console.log('response: ', response);
 			}
 		});
-  }
+	};
 
 	const getTitle = () => {
 		switch (actionUS) {
@@ -1038,7 +1036,7 @@ export default function RutinePage(props) {
 							{getTitle()}
 						</Typography>
 					</Stack>
-					
+
 					<Card>
 						{localUserUS.type === 'profesional' ? (
 							<Card>
@@ -1168,23 +1166,19 @@ export default function RutinePage(props) {
 									justifyContent='center'
 									alignItems='flex-end'
 									xs={2}>
-									<Grid 
-										item
-										>
+									<Grid item>
 										{localUserUS.type === 'profesional' ? (
-											rutineUS.status === 'pending'
-													? (
-														<Chip
-															label='Rutina no realizada'
-															color='error'
-														/>
-													)
-													: (
-														<Chip
-															label='Rutina Realiza'
-															color='success'
-														/>
-													)
+											rutineUS.status === 'pending' ? (
+												<Chip
+													label='Rutina no realizada'
+													color='error'
+												/>
+											) : (
+												<Chip
+													label='Rutina Realiza'
+													color='success'
+												/>
+											)
 										) : (
 											<>
 												{rutineUS.status === 'pending' ? (
@@ -1313,68 +1307,79 @@ export default function RutinePage(props) {
 
 						{/* /////////////////// dialogo mostrar de ejercicio /////////////////// */}
 
-						<Dialog 
+						<Dialog
 							open={openFeedbackDialog}
 							onClose={handleCloseDialog}
 							aria-labelledby='alert-dialog-title'
 							aria-describedby='alert-dialog-description'
-						
 							/* fullWidth='xl' */
 							maxWidth='xl'>
 							<DialogContent>
 								<Grid
-									 container
-									 direction="column"
-									 justifyContent="center"
-									 alignItems="center"
-									 rowSpacing={3}
-									>
-										 <Grid 
-										 item 
-										 xs={6}>
-											<Box textAlign='center'>
-												<Typography component='legend'>¿Qué te parecio el entrenamiento?</Typography>
-													<Rating
-														sx={{ mt: 1 }}
-														name='simple-controlled'
-														value={startFeedbackUS}
-														onChange={(event, newValue) => {
-															setStartFeedbackUS(newValue);
-														}}
-													/>
-												</Box>
-																									
-										 </Grid>
-										 <Grid 
-										 	item
-											xs={6}>
-												<Box textAlign='center'>
-													<Typography component='legend'>¿Cómo te sentiste en el entrenemiento?</Typography>
-													
-													<FormControl fullWidth sx={{ mt: 1 }} >
-														<InputLabel id='Sensacioneslabel'>Sensaciones</InputLabel>
-														<Select														
-															labelId='Sensacioneslabel'
-															id='demo-simple-select'
-															value={textFeedbackUS}
-															label='Sensaciones'
-															onChange={handleChangeTextFeddback}>
-																<MenuItem value={'Casi me muero'}>Casi me muero</MenuItem>
-																<MenuItem value={'Algo pude hacer'}>Algo pude hacer</MenuItem>
-																<MenuItem value={'Estuvo bien'}>Estuvo bien</MenuItem>
-																<MenuItem value={'Necesito más'}>Necesito más</MenuItem>
-														</Select>
-													</FormControl>											
-													<Button
-														sx={{ mt: 2 }}
-														value='Guardar'
-														variant='contained'
-														onClick={handleSaveFeedbackButton}>
-														Guardar
-													</Button>
-												</Box>											
-										 </Grid>
-									</Grid>								
+									container
+									direction='column'
+									justifyContent='center'
+									alignItems='center'
+									rowSpacing={3}>
+									<Grid
+										item
+										xs={6}>
+										<Box textAlign='center'>
+											<Typography component='legend'>
+												¿Qué te parecio el entrenamiento?
+											</Typography>
+											<Rating
+												sx={{ mt: 1 }}
+												name='simple-controlled'
+												value={startFeedbackUS}
+												onChange={(event, newValue) => {
+													setStartFeedbackUS(newValue);
+												}}
+											/>
+										</Box>
+									</Grid>
+									<Grid
+										item
+										xs={6}>
+										<Box textAlign='center'>
+											<Typography component='legend'>
+												¿Cómo te sentiste en el entrenemiento?
+											</Typography>
+
+											<FormControl
+												fullWidth
+												sx={{ mt: 1 }}>
+												<InputLabel id='Sensacioneslabel'>
+													Sensaciones
+												</InputLabel>
+												<Select
+													labelId='Sensacioneslabel'
+													id='demo-simple-select'
+													value={textFeedbackUS}
+													label='Sensaciones'
+													onChange={handleChangeTextFeddback}>
+													<MenuItem value={'Casi me muero'}>
+														Casi me muero
+													</MenuItem>
+													<MenuItem value={'Algo pude hacer'}>
+														Algo pude hacer
+													</MenuItem>
+													<MenuItem value={'Estuvo bien'}>Estuvo bien</MenuItem>
+													<MenuItem value={'Necesito más'}>
+														Necesito más
+													</MenuItem>
+												</Select>
+											</FormControl>
+											<Button
+												sx={{ mt: 2 }}
+												value='Guardar'
+												variant='contained'
+												onClick={handleSaveFeedbackButton}>
+												Guardar
+											</Button>
+										</Box>
+									</Grid>
+								</Grid>
 							</DialogContent>
 						</Dialog>
 

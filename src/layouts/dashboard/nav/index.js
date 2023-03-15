@@ -166,12 +166,11 @@ export default function Nav({ openNav, onCloseNav }) {
 				</Link>
 			</Box>
 
-			{user.userType==="profesional"?
-			(<NavSection data={navConfigProfessional}/>)
-			:
-			(<NavSection data={navConfigPatient}/>)}
-			
-
+			{user.userType === 'profesional' ? (
+				<NavSection data={navConfigProfessional} />
+			) : (
+				<NavSection data={navConfigPatient} />
+			)}
 
 			<Box sx={{ flexGrow: 1 }} />
 		</Scrollbar>

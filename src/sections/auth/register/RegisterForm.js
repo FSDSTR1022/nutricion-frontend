@@ -88,15 +88,33 @@ export default function RegisterForm() {
 				break;
 			case 'password':
 				setPassword(value);
-				if (value.length) {
+				if (value === repeatPassword) {
 					setPasswordError(false);
+					setRepeatPasswordError(false);
 					break;
 				}
-				setPasswordError(true);
+				setRepeatPasswordError(true);
+				break;
+			case 'repeatPassword':
+				setRepeatPassword(value);
+				if (value === password) {
+					setPasswordError(false);
+					setPasswordError(false);
+					setRepeatPasswordError(false);
+					break;
+				}
+				setRepeatPasswordError(true);
 				break;
 			default:
-				setRepeatPassword(value);
-				if (value.length && value === password) {
+				if (!firstName?.length) setFirstNameError(true);
+				if (!lastName?.length) setLastNameError(true);
+				if (!dni?.length) setDniError(true);
+				if (!phone?.length) setPhoneError(true);
+				if (!email?.length) setEmailError(true);
+				if (!password?.length) setPasswordError(true);
+				if (repeatPassword === password) {
+					setPasswordError(false);
+					setPasswordError(false);
 					setRepeatPasswordError(false);
 					break;
 				}
@@ -136,6 +154,8 @@ export default function RegisterForm() {
 	const errorMesage = type => `${type} es un campo obligatorío`;
 
 	const registerAction = () => {
+		setValues('verificar');
+
 		if (
 			firstNameError ||
 			lastNameError ||
