@@ -66,7 +66,6 @@ export default function DashboardAppPage() {
 	};
 
 	const datosGraph = profRutines => {
-
 		const fechasRutinas = profRutines?.map(rut => moment(rut.day).format('L'));
 		const axis = [...new Set(fechasRutinas)];
 		setChartLabels(axis);

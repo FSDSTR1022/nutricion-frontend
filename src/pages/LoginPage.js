@@ -9,7 +9,7 @@ import useResponsive from '../hooks/useResponsive';
 import Logo from '../components/logo';
 // sections
 import { LoginForm } from '../sections/auth/login';
-import fitnessPeople from './image/fitnessPeople.png'
+import fitnessPeople from './image/fitnessPeople.png';
 
 // ----------------------------------------------------------------------
 

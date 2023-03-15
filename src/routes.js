@@ -32,7 +32,7 @@ export default function Router() {
 				{ element: <Navigate to='/dashboard/app' />, index: true },
 				{ path: 'app', element: <DashboardAppPage /> },
 				/* { path: 'user', element: <UserPage /> }, */
-			/* 	{ path: 'products', element: <ProductsPage /> }, */
+				/* 	{ path: 'products', element: <ProductsPage /> }, */
 				/* { path: 'blog', element: <BlogPage /> }, */
 				{ path: 'exercises', element: <ListExercise /> },
 				{ path: 'newexercise', element: <FormExercise /> },
@@ -72,7 +72,7 @@ export default function Router() {
 					replace
 				/>
 			),
-		}
+		},
 	]);
 
 	return routes;

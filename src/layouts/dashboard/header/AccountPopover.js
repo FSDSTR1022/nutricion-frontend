@@ -101,9 +101,8 @@ export default function AccountPopover() {
 					</Typography>
 					<Typography
 						variant='body2'
-						sx={{ color: 'text.secondary'}}
-						noWrap
-						>
+						sx={{ color: 'text.secondary' }}
+						noWrap>
 						{user.email}
 					</Typography>
 				</Box>
@@ -112,7 +111,7 @@ export default function AccountPopover() {
 
 				<Stack sx={{ p: 1 }}>
 					{MENU_OPTIONS.map(option => (
-						<MenuItem						
+						<MenuItem
 							key={option.label}
 							onClick={handleClose}>
 							{option.label}
