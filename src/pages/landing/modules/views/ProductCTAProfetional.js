@@ -2,11 +2,13 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
+import {useNavigate} from 'react-router-dom';
 import Typography from '../components/Typography';
 import Button from '../components/Button';
 import img10 from '../image/image-10.png';
 
 function ProductCTAProfetional() {
+	const navigate = useNavigate();
 	return (
 		<Container
 			component='section'
@@ -46,11 +48,12 @@ function ProductCTAProfetional() {
 								<br />
 							</Typography>
 							<Button
-								/* type='submit'
-								color='primary' */
 								variant='contained'
-								sx={{ width: '100%' }}>
-								Darse de alta como Profesional
+								sx={{ width: '100%' }}
+								onClick={()=>{
+									navigate('/register')
+								}}>
+								Registarse como Profesional
 							</Button>
 						</Box>
 					</Box>

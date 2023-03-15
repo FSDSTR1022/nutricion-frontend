@@ -14,7 +14,7 @@ function Copyright() {
 			<Link
 				color='inherit'
 				href='https://mui.com/'>
-				Nutricion
+				NOMBRE DE LA APLICACION
 			</Link>{' '}
 			{new Date().getFullYear()}
 		</>
@@ -29,9 +29,9 @@ const iconStyle = {
 	alignItems: 'center',
 	/* backgroundColor: 'warning.main', */
 	mr: 1,
-	'&:hover': {
+	/* '&:hover': {
 		bgcolor: 'warning.dark',
-	},
+	}, */
 };
 
 export default function AppFooter() {
@@ -58,8 +58,6 @@ export default function AppFooter() {
 								item
 								sx={{ display: 'flex' }}>
 								<Box
-									/* component='a'
-									href='https://mui.com/' */
 									sx={iconStyle}>
 									<img
 										src={instagram}
@@ -67,8 +65,6 @@ export default function AppFooter() {
 									/>
 								</Box>
 								<Box
-									/* component='a'
-									href='https://twitter.com/MUI_hq' */
 									sx={iconStyle}>
 									<img
 										src={twitter}
@@ -98,12 +94,12 @@ export default function AppFooter() {
 							<Box
 								component='li'
 								sx={{ py: 0.5 }}>
-								<Link href='/premium-themes/onepirate/terms/'>Terms</Link>
+								<Link href='/landing'>Terms</Link>
 							</Box>
 							<Box
 								component='li'
 								sx={{ py: 0.5 }}>
-								<Link href='/premium-themes/onepirate/privacy/'>Privacy</Link>
+								<Link href='/landing'>Privacy</Link>
 							</Box>
 						</Box>
 					</Grid>

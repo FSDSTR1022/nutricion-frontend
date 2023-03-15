@@ -39,7 +39,6 @@ import {
 	Rating,
 	InputLabel,
 	Select,
-	SelectChangeEvent,
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -129,7 +128,7 @@ export default function RutinePage(props) {
 		localUser,
 		date,
 		routineId,
-		setOpenDialog,
+		setOpenRutineDialog,
 		setMessageAlertUS,
 		setOpenAlertUS,
 		setSeverityAlertUS,
@@ -188,7 +187,7 @@ export default function RutinePage(props) {
 			default:
 				break;
 		}
-	}, []);
+	}, [openFeedbackDialog]);
 
 	const handleClosePopoverExercise = () => {
 		setOpenPopoverExerciseUS(null);
@@ -329,7 +328,7 @@ export default function RutinePage(props) {
 			setMessageAlertUS('Se elimino la rutina');
 			setSeverityAlertUS('success');
 			setOpenAlertUS(true);
-			setOpenDialog(false);
+			setOpenRutineDialog(false);
 		} else {
 			console.log('NO Se elimino la rutina');
 		}
@@ -523,7 +522,7 @@ export default function RutinePage(props) {
 				saveRutine(rutineToSave).then(response => {
 					if (response.status === 200) {
 						console.log('SE GUARDO CON EXITO');
-						setOpenDialog(false);
+						setOpenRutineDialog(false);
 						setIsLoading(true);
 						setMessageAlertUS(`Se creo la rutina para el dia ${date}`);
 						setOpenAlertUS(true);
@@ -538,7 +537,7 @@ export default function RutinePage(props) {
 				updateRutine(rutineToSave).then(response => {
 					if (response.status === 200) {
 						console.log('SE Edito CON EXITO');
-						setOpenDialog(false);
+						setOpenRutineDialog(false);
 						setIsLoading(true);
 						setMessageAlertUS(`Se modificó la rutina`);
 						setOpenAlertUS(true);
@@ -1016,10 +1015,6 @@ export default function RutinePage(props) {
 		}
 	};
 
-	const prueba = () => {
-		console.log(patientUS);
-	};
-
 	if (!isLoading) {
 		return (
 			<>
@@ -1055,6 +1050,14 @@ export default function RutinePage(props) {
 									sx={{ m: 1 }}>
 									Paciente
 								</Typography>
+						{localUserUS.type === 'profesional' ? (
+							<Card>
+								<Typography
+									variant='h6'
+									textAlign='left'
+									sx={{ m: 1 }}>
+									Paciente
+								</Typography>
 
 								<FormControl sx={{ m: 1 }}>
 									<TextField
@@ -1082,7 +1085,98 @@ export default function RutinePage(props) {
 						) : (
 							<></>
 						)}
+								<FormControl sx={{ m: 1 }}>
+									<TextField
+										id='pacientName'
+										label='Nombre'
+										variant='outlined'
+										inputProps={{ readOnly: true }}
+										/* error={!!errorsUS.pacientName} */
+										value={patientUS.name}
+										onChange={handleChangePacienteNameTextField}
+									/>
+								</FormControl>
+								<FormControl sx={{ m: 1 }}>
+									<TextField
+										id='patientLasname'
+										label='Apellido'
+										variant='outlined'
+										inputProps={{ readOnly: true }}
+										/* error={!!errorsUS.pacientName} */
+										value={patientUS.lastName}
+										onChange={handleChangePacienteNameTextField}
+									/>
+								</FormControl>
+							</Card>
+						) : (
+							<></>
+						)}
 
+						<Card>
+							{localUserUS.type === 'profesional' ? (
+								<Grid
+									container
+									spacing={4}>
+									<Grid
+										item
+										xs={11}>
+										<Typography
+											variant='h6'
+											textAlign='left'
+											sx={{ m: 1 }}>
+											Rutina
+										</Typography>
+									</Grid>
+									<Grid
+										item
+										xs={1}>
+										{actionUS !== 'newRutine' ? (
+											<IconButton
+												size='large'
+												color='inherit'
+												onClick={handleOpenMenuRutine()}>
+												<Iconify icon={'eva:more-vertical-fill'} />
+											</IconButton>
+										) : (
+											<></>
+										)}
+									</Grid>
+								</Grid>
+							) : (
+								<></>
+							)}
+
+							<Grid
+								container
+								spacing={1}>
+								<Grid
+									item
+									justifyContent='flex-start'
+									alignItems='center'
+									xs={10}>
+									<FormControl sx={{ m: 1 }}>
+										<TextField
+											id='rutineName'
+											label='Nombre Rutina'
+											variant='outlined'
+											required={actionUS === 'newRutine'}
+											inputProps={
+												actionUS === 'viewRutine'
+													? { readOnly: true }
+													: { readOnly: false }
+											}
+											error={!!errorsUS.rutineName}
+											value={rutineNameUS}
+											onChange={handleChangeRutineNameTextField}
+										/>
+										{errorsUS.rutineName ? (
+											<span style={{ color: 'red' }}>
+												El nombre de la rutina es obligatorio
+											</span>
+										) : (
+											<></>
+										)}
+									</FormControl>
 						<Card>
 							{localUserUS.type === 'profesional' ? (
 								<Grid
@@ -1294,6 +1388,31 @@ export default function RutinePage(props) {
 							</Dialog>
 						</div>
 
+						{/* /////////////////// dialogo mostrar de ejercicio /////////////////// */}
+
+						<Dialog
+							open={openViewExerciseDialog}
+							onClose={handleCloseDialog}
+							aria-labelledby='alert-dialog-title'
+							aria-describedby='alert-dialog-description'
+							fullWidth='xl'
+							maxWidth='xl'>
+							<DialogContent>
+								<FormExercise
+									action={{
+										action: 'viewExercise',
+										exercise: exerciseToViewUS,
+									}}
+								/>
+							</DialogContent>
+							<DialogActions>
+								<Button
+									value='cancelar'
+									onClick={handleCloseDialog}>
+									Cerrar
+								</Button>
+							</DialogActions>
+						</Dialog>
 						{/* /////////////////// dialogo mostrar de ejercicio /////////////////// */}
 
 						<Dialog
