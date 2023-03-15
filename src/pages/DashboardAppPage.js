@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -34,8 +35,21 @@ export default function DashboardAppPage() {
 	const [chartLabels, setChartLabels] = useState([]);
 	const [fullRutineExpected, setFullRutineExpected] = useState([]);
 	const [fullRutineCompleted, setFullRutineCompleted] = useState([]);
+	const [nRounds, setNRounds] = useState();
+	const [nExer, seTNExer] = useState();
+	const [numberOfRoutines, setNumberOfRoutines] = useState();
+	const [percentage, setPercentage] = useState('');
+	const [colorWidget, setColorWidget] = useState('success');
+	const [iconoWidget, setIconoWidget] = useState('');
+	const [satisfaction, setSatisfaction] = useState(
+		'ic:baseline-emoji-emotions'
+	);
 
 	useEffect(() => {
+		const user = localStorage.getItem('user');
+		const userJSON = JSON.parse(user);
+		console.log('usuario id', userJSON.id);
+
 		const getAllusers = async () => {
 			const response = await getAllUsers();
 			if (response.status === 200) {
@@ -48,10 +62,12 @@ export default function DashboardAppPage() {
 			if (response.status === 200) {
 				setRutinasList(response.data);
 				const rutProf = response.data.filter(
-					rut => rut.user.profetional === '640dadcf849d5a2688be06c2'
+					rut => rut.professional === userJSON.id
 				); // no se está guardando el "profetional" en la rutina. falta el id localstorage?
 				setUserRutinesList(rutProf);
+				setNumberOfRoutines(rutProf.length);
 				datosGraph(rutProf);
+				satisfactionGraph(rutProf);
 			}
 		};
 		getAllusers();
@@ -69,29 +85,101 @@ export default function DashboardAppPage() {
 		const fechasRutinas = profRutines?.map(rut => moment(rut.day).format('L'));
 		const axis = [...new Set(fechasRutinas)];
 		setChartLabels(axis);
-		const mm = [];
+		const numberOfRoutinesPerDay = [];
+		const numberOfRoutinesCompletedPerDay = [];
+		let exercisesTotalArray = [];
+		let numberOfExercises = 0;
+		let rounds = [];
+		let nCompl = 0;
+
 		axis.forEach(date => {
-			const m = profRutines?.filter(
+			const routinesPerDate = profRutines?.filter(
 				rut => moment(rut.day).format('L') === date
-			).length;
-			mm.push(m);
-			setFullRutineExpected(mm);
-			console.log(date, m, mm);
-			setFullRutineCompleted([1, 2, 0, 1, 1]);
+			);
+			numberOfRoutinesPerDay.push(routinesPerDate.length);
+			setFullRutineExpected(numberOfRoutinesPerDay);
+
+			const routinesCompletedPerDay = routinesPerDate.filter(
+				rut => rut.status === 'done'
+			);
+			numberOfRoutinesCompletedPerDay.push(routinesCompletedPerDay.length);
+			nCompl += routinesCompletedPerDay.length;
+
+			setFullRutineCompleted(numberOfRoutinesCompletedPerDay);
 		});
+
+		profRutines?.forEach(routine => {
+			const roundsPerRoutine = [...routine?.rounds];
+			console.log('rounds per routine', roundsPerRoutine);
+			rounds = [...rounds, ...roundsPerRoutine];
+			console.log('Rounds sum', rounds);
+		});
+
+		rounds?.forEach(round => {
+			const exerPerRound = [...round?.exercises];
+
+			exercisesTotalArray = [...exercisesTotalArray, ...exerPerRound];
+			numberOfExercises = exercisesTotalArray.length;
+		});
+
+		setNRounds(rounds.length);
+		seTNExer(numberOfExercises);
+
+		const percen = Math.round((nCompl / profRutines.length) * 100);
+		setPercentage(percen);
+		// setPercentage(------)   /* METER AQUÍ EL VALOR PARA VER EL CAMBIO DE COLOR DEL WIDGET
+		const colorOp = [50, 70, 90];
+
+		if (percen >= colorOp[2]) {
+			setColorWidget('success');
+			setIconoWidget('mdi:face-kiss-outline');
+		} else if (percen >= colorOp[1] && percentage < colorOp[2]) {
+			setColorWidget('info');
+			setIconoWidget('mdi:emoji-happy');
+		} else if (percen >= colorOp[0] && percentage < colorOp[1]) {
+			setColorWidget('warning');
+			setIconoWidget('mdi:emoji-confused-outline');
+		} else {
+			setColorWidget('error');
+			setIconoWidget('mdi:emoji-cry-outline');
+		}
 	};
+
+	const satisfactionGraph = profRutines => {
+		const arrayRoutineSatisfaction = [];
+		profRutines.forEach(routine => {
+			routine?.satisfaction
+				? arrayRoutineSatisfaction.push(routine?.satisfaction)
+				: null;
+		});
+		const arraySatisfaction = arrayRoutineSatisfaction.reduce(
+			(elemento, index) => {
+				const contador = elemento[index] ?? 0;
+				return { ...elemento, [index]: contador + 1 };
+			},
+			{}
+		);
+
+		setSatisfaction(arraySatisfaction);
+		// const perfentageSatis = [arraySatisfaction[0]['1']]
+		console.log('array', arraySatisfaction);
+		return arraySatisfaction;
+	};
+
+	const user = localStorage.getItem('user');
+	const userJSON = JSON.parse(user);
 
 	return (
 		<>
 			<Helmet>
-				<title> Health Guru | Dashboard </title>
+				<title>{`Dashboard | ${userJSON.name.toUpperCase()}`} </title>
 			</Helmet>
 
 			<Container maxWidth='xl'>
 				<Typography
 					variant='h4'
 					sx={{ mb: 5 }}>
-					Hola, Bienvenido!
+					{`PERFORMANCE PROFESSIONAL ${userJSON.name.toUpperCase()}`}
 				</Typography>
 
 				<Grid
@@ -128,8 +216,8 @@ export default function DashboardAppPage() {
 						sm={6}
 						md={3}>
 						<AppWidgetSummary
-							title='Total Exercises'
-							total={1723315}
+							title='Total Exercices'
+							total={nExer}
 							color='warning'
 							icon={'healthicons:exercise-weights'}
 						/>
@@ -141,10 +229,10 @@ export default function DashboardAppPage() {
 						sm={6}
 						md={3}>
 						<AppWidgetSummary
-							title='Bug Reports'
-							total={234}
-							color='error'
-							icon={'ant-design:bug-filled'}
+							title='Ratio Routines Completed'
+							total={`${percentage}%`}
+							color={colorWidget}
+							icon={iconoWidget}
 						/>
 					</Grid>
 
@@ -154,18 +242,18 @@ export default function DashboardAppPage() {
 						md={6}
 						lg={8}>
 						<AppWebsiteVisits
-							title='Performance'
-							subheader='Routines filled Index'
+							title='Routines Completed Index'
+							subheader='last 30 days'
 							chartLabels={chartLabels}
 							chartData={[
 								{
-									name: 'Routinas Filled',
+									name: 'Routinas Completed',
 									type: 'column',
 									fill: 'solid',
 									data: fullRutineCompleted,
 								},
 								{
-									name: 'Routinas Expected Filled',
+									name: 'Total Routinas',
 									type: 'column',
 									fill: 'solid',
 									data: fullRutineExpected,
@@ -180,18 +268,20 @@ export default function DashboardAppPage() {
 						md={6}
 						lg={4}>
 						<AppCurrentVisits
-							title='Current Visits'
+							title='Satisfaction Index'
 							chartData={[
-								{ label: 'America', value: 4344 },
-								{ label: 'Asia', value: 5435 },
-								{ label: 'Europe', value: 1443 },
-								{ label: 'Africa', value: 4443 },
+								{ label: 'Bad', value: 1 },
+								{ label: 'Regular', value: 2 },
+								{ label: 'Normal', value: 1 },
+								{ label: 'Good', value: 2 },
+								{ label: 'Outstanding', value: 2 },
 							]}
 							chartColors={[
+								theme.palette.error.main,
+								theme.palette.warning.main,
 								theme.palette.primary.main,
 								theme.palette.info.main,
-								theme.palette.warning.main,
-								theme.palette.error.main,
+								theme.palette.success.main,
 							]}
 						/>
 					</Grid>

@@ -7,7 +7,7 @@
 	"include": [
 		"src/**/*",
 		"Papelera/Calendarh.js",
-		"src/pages/patient/formPatient.jsx",
+		"src/pages/patient/formPatient.js",
 		"Papelera/NewRutina.js"
 	],
 	"exclude": ["node_modules"]
