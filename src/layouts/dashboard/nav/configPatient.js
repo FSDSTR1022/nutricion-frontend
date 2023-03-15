@@ -2,7 +2,7 @@
 /* eslint-disable import/no-mutable-exports */
 // component
 import SvgColor from '../../../components/svg-color';
-import calendar from './icon/calendar.svg'
+import calendar from './icon/calendar.svg';
 
 // ----------------------------------------------------------------------
 
@@ -15,11 +15,10 @@ const icon = () => (
 
 const navConfig = [
 	{
-			title: 'Rutinas',
-			path: '/dashboard/rutinecalendar',
-			icon: icon(),
-		},
-	];
-	
+		title: 'Rutinas',
+		path: '/dashboard/rutinecalendar',
+		icon: icon(),
+	},
+];
 
 export default navConfig;

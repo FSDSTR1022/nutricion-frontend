@@ -10,7 +10,7 @@ import Logo from '../components/logo';
 // sections
 import { RegisterForm } from '../sections/auth/register';
 // navigate
-import fitnessPeople from './image/fitnessPeople.png'
+import fitnessPeople from './image/fitnessPeople.png';
 
 // ----------------------------------------------------------------------
 
