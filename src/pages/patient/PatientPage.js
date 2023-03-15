@@ -43,6 +43,7 @@ import {
 	UserListHead,
 	UserListToolbar,
 } from '../../sections/@dashboard/exercise';
+import FormNewPatient from './formPatient';
 
 import { getAllUsers, updateUser } from '../../services/userService';
 
@@ -105,6 +106,7 @@ export default function PatientPage() {
 	const [patientsListUS, setPatientListUS] = useState([]);
 	const [openConfirmationUS, setOpenConfirmationUS] = useState(false);
 	const [patientToDeleteOrEditUS, setPatientToDeleteOrEditUS] = useState('');
+	const [openNewPatientForm, setOpenNewPatientForm] = useState(false);
 
 	const [openAlertUS, setOpenAlertUS] = useState(false);
 	const [messageAlertUS, setMessageAlertUS] = useState('');
@@ -113,15 +115,17 @@ export default function PatientPage() {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		const getAllusers = async () => {
-			const response = await getAllUsers();
-			if (response.status === 200) {
-				setPatientListUS(response.data);
-				setIsLoadingPatientsUS(false);
-			}
-		};
-		getAllusers();
+		getAllusersFunction();
 	}, []);
+
+	const getAllusersFunction = async () => {
+		setIsLoadingPatientsUS(true);
+		const response = await getAllUsers();
+		if (response.status === 200) {
+			setPatientListUS(response.data);
+			setIsLoadingPatientsUS(false);
+		}
+	};
 
 	const handleOpenMenu = id => event => {
 		setOpenUS({ _id: id, target: event.currentTarget });
@@ -252,6 +256,15 @@ export default function PatientPage() {
 		setOpenUS(null); */
 	};
 
+	const handleClickNewPatinetButton = () => {
+		setOpenNewPatientForm(true);
+	};
+
+	const handleCloseNewPatinetButton = () => {
+		setOpenNewPatientForm(false);
+		getAllusersFunction();
+	};
+
 	const handleClickEditPatient = (event, id) => {
 		console.log(`Ver paciente: ${id}`);
 		/* const excersiceToEdit = exerciseListUS.find(element => element._id === id);
@@ -273,7 +286,7 @@ export default function PatientPage() {
 		return (
 			<>
 				<Helmet>
-					<title> Pacientes </title>
+					<title> Health Guru | Pacientes </title>
 				</Helmet>
 
 				<Container>
@@ -289,7 +302,8 @@ export default function PatientPage() {
 						</Typography>
 						<Button
 							variant='contained'
-							startIcon={<Iconify icon='eva:plus-fill' />}>
+							startIcon={<Iconify icon='eva:plus-fill' />}
+							onClick={handleClickNewPatinetButton}>
 							Nuevo Paciente
 						</Button>
 					</Stack>
@@ -503,6 +517,26 @@ export default function PatientPage() {
 					</MenuItem>
 				</Popover>
 
+				{/* ///////////////////// Dialogo para agregar un nuevo paciente ///////////////////// */}
+				<Dialog
+					open={openNewPatientForm}
+					onClose={() => setOpenNewPatientForm(false)}
+					aria-labelledby='alert-dialog-title'
+					aria-describedby='alert-dialog-description'
+					maxWidth='lg'>
+					<DialogContent>
+						<FormNewPatient onClose={handleCloseNewPatinetButton} />
+					</DialogContent>
+					<DialogActions>
+						<Button
+							value='cancelar'
+							onClick={handleCloseNewPatinetButton}>
+							{' '}
+							Cancelar{' '}
+						</Button>
+					</DialogActions>
+				</Dialog>
+
 				{/* ///////////////////// Dialogo de confirmación  ///////////////////// */}
 				<Dialog
 					open={openConfirmationUS}
@@ -552,7 +586,7 @@ export default function PatientPage() {
 		return (
 			<>
 				<Helmet>
-					<title> Pacientes </title>
+					<title> Health Guru | Pacientes </title>
 				</Helmet>
 				<Container>
 					<Stack

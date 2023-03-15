@@ -28,7 +28,7 @@ export default function ProductsPage() {
 	return (
 		<>
 			<Helmet>
-				<title> Dashboard: Products | Minimal UI </title>
+				<title> Health Guru | Products </title>
 			</Helmet>
 
 			<Container>
