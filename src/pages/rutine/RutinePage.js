@@ -39,7 +39,6 @@ import {
 	Rating,
 	InputLabel,
 	Select,
-	SelectChangeEvent,
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -129,7 +128,7 @@ export default function RutinePage(props) {
 		localUser,
 		date,
 		routineId,
-		setOpenDialog,
+		setOpenRutineDialog,
 		setMessageAlertUS,
 		setOpenAlertUS,
 		setSeverityAlertUS,
@@ -188,7 +187,7 @@ export default function RutinePage(props) {
 			default:
 				break;
 		}
-	}, []);
+	}, [openFeedbackDialog]);
 
 	const handleClosePopoverExercise = () => {
 		setOpenPopoverExerciseUS(null);
@@ -329,7 +328,7 @@ export default function RutinePage(props) {
 			setMessageAlertUS('Se elimino la rutina');
 			setSeverityAlertUS('success');
 			setOpenAlertUS(true);
-			setOpenDialog(false);
+			setOpenRutineDialog(false);
 		} else {
 			console.log('NO Se elimino la rutina');
 		}
@@ -523,7 +522,7 @@ export default function RutinePage(props) {
 				saveRutine(rutineToSave).then(response => {
 					if (response.status === 200) {
 						console.log('SE GUARDO CON EXITO');
-						setOpenDialog(false);
+						setOpenRutineDialog(false);
 						setIsLoading(true);
 						setMessageAlertUS(`Se creo la rutina para el dia ${date}`);
 						setOpenAlertUS(true);
@@ -538,7 +537,7 @@ export default function RutinePage(props) {
 				updateRutine(rutineToSave).then(response => {
 					if (response.status === 200) {
 						console.log('SE Edito CON EXITO');
-						setOpenDialog(false);
+						setOpenRutineDialog(false);
 						setIsLoading(true);
 						setMessageAlertUS(`Se modificó la rutina`);
 						setOpenAlertUS(true);
@@ -973,34 +972,41 @@ export default function RutinePage(props) {
 		);
 	};
 
-	const prueba2 = () => {
-		console.log(rutineUS);
+	const prueba = () => {
+		console.log('startFeedbackUS: ', startFeedbackUS);
 	};
 
 	const handleClickRealizarRutinaButoon = () => {
+		setOpenFeedbackDialog(true);
+	};
+
+	const handleChangeTextFeddback = event => {
+		setTextFeedbackUS(event.target.value);
+	};
+
+	const handleSaveFeedbackButton = () => {
 		const rutineToUpdate = {
 			_id: rutineUS._id,
 			status: 'done',
+			satisfaction: startFeedbackUS,
+			feedback: textFeedbackUS,
 		};
 
 		updateRutine(rutineToUpdate).then(response => {
 			if (response.status === 200) {
 				console.log('SE SE ACTUALIZÓ LA RUTINA');
-				setOpenFeedbackDialog(true);
-				/* setOpenDialog(false);
-				setIsLoading(true);
-				setMessageAlertUS(`Se modificó la rutina`);
+				setOpenFeedbackDialog(false);
+				setTextFeedbackUS();
+				setStartFeedbackUS();
+				setOpenRutineDialog(false);
+				setMessageAlertUS('Se completo la Rutina');
 				setOpenAlertUS(true);
-				setSeverityAlertUS('success'); */
+				setSeverityAlertUS('success');
 			} else {
 				console.log('NO SE ACTUALIZÓ LA RUTINA');
 				console.log('response: ', response);
 			}
 		});
-	};
-
-	const handleChangeTextFeddback = () => {
-		setTextFeedbackUS('');
 	};
 
 	const getTitle = () => {
@@ -1014,10 +1020,6 @@ export default function RutinePage(props) {
 			default:
 				return <></>;
 		}
-	};
-
-	const prueba = () => {
-		console.log(patientUS);
 	};
 
 	if (!isLoading) {
@@ -1039,12 +1041,6 @@ export default function RutinePage(props) {
 							{getTitle()}
 						</Typography>
 					</Stack>
-					<Button
-						variant='contained'
-						color='success'
-						onClick={prueba2}>
-						mostrar Rutina
-					</Button>
 
 					<Card>
 						{localUserUS.type === 'profesional' ? (
@@ -1117,104 +1113,98 @@ export default function RutinePage(props) {
 								<></>
 							)}
 
-							<FormControl sx={{ m: 1 }}>
-								<TextField
-									id='rutineName'
-									label='Nombre Rutina'
-									variant='outlined'
-									required={actionUS === 'newRutine'}
-									inputProps={
-										actionUS === 'viewRutine'
-											? { readOnly: true }
-											: { readOnly: false }
-									}
-									error={!!errorsUS.rutineName}
-									value={rutineNameUS}
-									onChange={handleChangeRutineNameTextField}
-								/>
-								{errorsUS.rutineName ? (
-									<span style={{ color: 'red' }}>
-										El nombre de la rutina es obligatorio
-									</span>
-								) : (
-									<></>
-								)}
-							</FormControl>
-
-							<LocalizationProvider dateAdapter={AdapterDayjs}>
-								<DatePicker
-									label='Fecha de la Rutina'
-									value={rutineDateUS}
-									views={['day', 'month', 'year']}
-									inputProps={{ readOnly: true }}
-									readOnly={actionUS !== 'newRutine'}
-									onChange={newValue => {
-										setValueDay(newValue);
-									}}
-									renderInput={params => (
+							<Grid
+								container
+								spacing={1}>
+								<Grid
+									item
+									justifyContent='flex-start'
+									alignItems='center'
+									xs={10}>
+									<FormControl sx={{ m: 1 }}>
 										<TextField
+											id='rutineName'
+											label='Nombre Rutina'
+											variant='outlined'
 											required={actionUS === 'newRutine'}
-											sx={{ m: 1 }}
-											{...params}
-											helperText={null}
+											inputProps={
+												actionUS === 'viewRutine'
+													? { readOnly: true }
+													: { readOnly: false }
+											}
+											error={!!errorsUS.rutineName}
+											value={rutineNameUS}
+											onChange={handleChangeRutineNameTextField}
 										/>
-									)}
-								/>
-							</LocalizationProvider>
+										{errorsUS.rutineName ? (
+											<span style={{ color: 'red' }}>
+												El nombre de la rutina es obligatorio
+											</span>
+										) : (
+											<></>
+										)}
+									</FormControl>
 
-							{localUserUS.type === 'profesional' ? (
-								<Typography
-									variant='h6'
-									textAlign='left'
-									color={rutineUS.status === 'pending' ? 'Red' : 'Green'}
-									sx={{ m: 1 }}>
-									{rutineUS.status === 'pending'
-										? 'Rutina No Realizada'
-										: 'Rutina SI realiza'}
-								</Typography>
-							) : (
-								<>
-									{rutineUS.status === 'pending' ? (
-										<Button
-											variant='contained'
-											value='cancelar'
-											color='success'
-											onClick={handleClickRealizarRutinaButoon}>
-											Realizar Rutina
-										</Button>
-									) : (
-										<Typography
-											variant='h6'
-											textAlign='left'
-											color='Green'
-											sx={{ m: 1 }}>
-											Rutina Realiza
-										</Typography>
-									)}
-								</>
-							)}
-
-							{/* {rutineUS.status==="pending"?
-							(
-								<Button
-										variant='contained'
-										value='cancelar'
-										color="success"
-										disabled
-										onClick={handleCloseDialog}>
-										Rutina Realizada
-							</Button>
-
-							):(
-								<Typography
-								variant='h6'
-								textAlign='left'
-								sx={{ m: 1 }}>
-								Rutina Realiza
-							</Typography>
-								
-
-							)}	 */}
+									<LocalizationProvider dateAdapter={AdapterDayjs}>
+										<DatePicker
+											label='Fecha de la Rutina'
+											value={rutineDateUS}
+											views={['day', 'month', 'year']}
+											inputProps={{ readOnly: true }}
+											readOnly={actionUS !== 'newRutine'}
+											onChange={newValue => {
+												setValueDay(newValue);
+											}}
+											renderInput={params => (
+												<TextField
+													required={actionUS === 'newRutine'}
+													sx={{ m: 1 }}
+													{...params}
+													helperText={null}
+												/>
+											)}
+										/>
+									</LocalizationProvider>
+								</Grid>
+								<Grid
+									container
+									justifyContent='center'
+									alignItems='flex-end'
+									xs={2}>
+									<Grid item>
+										{localUserUS.type === 'profesional' ? (
+											rutineUS.status === 'pending' ? (
+												<Chip
+													label='Rutina no realizada'
+													color='error'
+												/>
+											) : (
+												<Chip
+													label='Rutina Realiza'
+													color='success'
+												/>
+											)
+										) : (
+											<>
+												{rutineUS.status === 'pending' ? (
+													<Button
+														variant='contained'
+														value='cancelar'
+														color='success'
+														onClick={handleClickRealizarRutinaButoon}>
+														Realizar Rutina
+													</Button>
+												) : (
+													<Chip
+														label='Rutina Realiza'
+														color='success'
+													/>
+												)}
+											</>
+										)}
+									</Grid>
+								</Grid>
+							</Grid>
 
 							<div>
 								{rutineUS.rounds.map(round => getAccordions(round))}
@@ -1327,38 +1317,75 @@ export default function RutinePage(props) {
 							onClose={handleCloseDialog}
 							aria-labelledby='alert-dialog-title'
 							aria-describedby='alert-dialog-description'
-							fullWidth='xl'
+							/* fullWidth='xl' */
 							maxWidth='xl'>
 							<DialogContent>
-								<Typography component='legend'>Controlled</Typography>
-								<Rating
-									name='simple-controlled'
-									value={startFeedbackUS}
-									onChange={(event, newValue) => {
-										setStartFeedbackUS(newValue);
-									}}
-								/>
-								<FormControl fullWidth>
-									<InputLabel id='demo-simple-select-label'>Age</InputLabel>
-									<Select
-										labelId='demo-simple-select-label'
-										id='demo-simple-select'
-										value={textFeedbackUS}
-										label='Age'
-										onChange={handleChangeTextFeddback}>
-										<MenuItem value={'No termine'}>No termine</MenuItem>
-										<MenuItem value={'Bien'}>Bien</MenuItem>
-										<MenuItem value={'Necesito más'}>Necesito más</MenuItem>
-									</Select>
-								</FormControl>
+								<Grid
+									container
+									direction='column'
+									justifyContent='center'
+									alignItems='center'
+									rowSpacing={3}>
+									<Grid
+										item
+										xs={6}>
+										<Box textAlign='center'>
+											<Typography component='legend'>
+												¿Qué te parecio el entrenamiento?
+											</Typography>
+											<Rating
+												sx={{ mt: 1 }}
+												name='simple-controlled'
+												value={startFeedbackUS}
+												onChange={(event, newValue) => {
+													setStartFeedbackUS(newValue);
+												}}
+											/>
+										</Box>
+									</Grid>
+									<Grid
+										item
+										xs={6}>
+										<Box textAlign='center'>
+											<Typography component='legend'>
+												¿Cómo te sentiste en el entrenemiento?
+											</Typography>
+
+											<FormControl
+												fullWidth
+												sx={{ mt: 1 }}>
+												<InputLabel id='Sensacioneslabel'>
+													Sensaciones
+												</InputLabel>
+												<Select
+													labelId='Sensacioneslabel'
+													id='demo-simple-select'
+													value={textFeedbackUS}
+													label='Sensaciones'
+													onChange={handleChangeTextFeddback}>
+													<MenuItem value={'Casi me muero'}>
+														Casi me muero
+													</MenuItem>
+													<MenuItem value={'Algo pude hacer'}>
+														Algo pude hacer
+													</MenuItem>
+													<MenuItem value={'Estuvo bien'}>Estuvo bien</MenuItem>
+													<MenuItem value={'Necesito más'}>
+														Necesito más
+													</MenuItem>
+												</Select>
+											</FormControl>
+											<Button
+												sx={{ mt: 2 }}
+												value='Guardar'
+												variant='contained'
+												onClick={handleSaveFeedbackButton}>
+												Guardar
+											</Button>
+										</Box>
+									</Grid>
+								</Grid>
 							</DialogContent>
-							<DialogActions>
-								<Button
-									value='cancelar'
-									onClick={handleCloseDialog}>
-									Cerrar
-								</Button>
-							</DialogActions>
 						</Dialog>
 
 						<div>{getConfirmationDialog()}</div>
