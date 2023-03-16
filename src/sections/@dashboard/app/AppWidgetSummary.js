@@ -65,7 +65,13 @@ export default function AppWidgetSummary({
 				/>
 			</StyledIcon>
 
-			<Typography variant='h3'>{fShortenNumber(total)}</Typography>
+			{title === 'Ratio Routines Completed' ? (
+				<Typography variant='h3'>{total}%</Typography>
+			) : (
+				<Typography variant='h3'>
+					{total ? fShortenNumber(total) : total}
+				</Typography>
+			)}
 
 			<Typography
 				variant='subtitle2'
