@@ -43,13 +43,14 @@ export default function AppCurrentVisits({
 	subheader,
 	chartColors,
 	chartData,
+	satisfaction,
 	...other
 }) {
 	const theme = useTheme();
 
 	const chartLabels = chartData.map(i => i.label);
 
-	const chartSeries = chartData.map(i => i.value);
+	const chartSeries = satisfaction;
 
 	const chartOptions = useChart({
 		colors: chartColors,

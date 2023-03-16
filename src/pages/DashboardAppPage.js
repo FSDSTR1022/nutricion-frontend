@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
@@ -42,6 +43,7 @@ export default function DashboardAppPage() {
 	const [colorWidget, setColorWidget] = useState('success');
 	const [iconoWidget, setIconoWidget] = useState('ic:baseline-emoji-emotions');
 	const [satisfaction, setSatisfaction] = useState([]);
+	const [feedBack, setFeedBack] = useState([]);
 
 	useEffect(() => {
 		const user = localStorage.getItem('user');
@@ -61,11 +63,12 @@ export default function DashboardAppPage() {
 				setRutinasList(response.data);
 				const rutProf = response.data.filter(
 					rut => rut.professional === userJSON.id
-				); // no se está guardando el "profetional" en la rutina. falta el id localstorage?
+				);
 				setUserRutinesList(rutProf);
 				setNumberOfRoutines(rutProf.length);
 				datosGraph(rutProf);
 				satisfactionGraph(rutProf);
+				feedBackGraph(rutProf);
 			}
 		};
 		getAllusers();
@@ -142,25 +145,49 @@ export default function DashboardAppPage() {
 		}
 	};
 
+	const feedBackGraph = profRutines => {
+		const allFeedBack = profRutines
+			?.map(e => (!e.feedback ? null : e.feedback))
+			.filter(e => e !== null);
+		const arrayFeedBack = allFeedBack.reduce((elemento, index) => {
+			const contador = elemento[index] ?? 0;
+			return { ...elemento, [index]: contador + 1 };
+		}, {});
+		setFeedBack(arrayFeedBack);
+
+		console.log('feedback', arrayFeedBack);
+	};
 	const satisfactionGraph = profRutines => {
 		const arrayRoutineSatisfaction = [];
-		profRutines.forEach(routine => {
+		profRutines?.forEach(routine => {
 			routine?.satisfaction
 				? arrayRoutineSatisfaction.push(routine?.satisfaction)
 				: null;
 		});
+
+		// console.log('arrayRoutineSatis', arrayRoutineSatisfaction);
 		const arraySatisfaction = arrayRoutineSatisfaction.reduce(
 			(elemento, index) => {
 				const contador = elemento[index] ?? 0;
+
 				return { ...elemento, [index]: contador + 1 };
 			},
 			{}
 		);
+		// console.log('arraysatisfaction', arraySatisfaction);
+		const arr = [];
+		for (let i = 1; i <= 5; i++) {
+			!arraySatisfaction[i] ? arr.push(0) : arr.push(arraySatisfaction[i]);
+			// console.log('arr in loop', arr);
+		}
 
-		setSatisfaction(arraySatisfaction);
+		// console.log('arr final', arr);
+		setSatisfaction(arr);
+		// console.log("arr total", arr)
+
+		// setSatisfaction(arraySatisfaction);
+		// <console.log('satisfaction', satisfaction);
 		// const perfentageSatis = [arraySatisfaction[0]['1']]
-
-		return arraySatisfaction;
 	};
 
 	const user = localStorage.getItem('user');
@@ -265,13 +292,14 @@ export default function DashboardAppPage() {
 						md={6}
 						lg={4}>
 						<AppCurrentVisits
+							satisfaction={satisfaction}
 							title='Satisfaction Index'
 							chartData={[
-								{ label: 'Bad', value: 1 },
-								{ label: 'Regular', value: 2 },
-								{ label: 'Normal', value: 1 },
-								{ label: 'Good', value: 2 },
-								{ label: 'Outstanding', value: 2 },
+								{ label: 'Bad' },
+								{ label: 'Regular' },
+								{ label: 'Normal' },
+								{ label: 'Good' },
+								{ label: 'Outstanding' },
 							]}
 							chartColors={[
 								theme.palette.error.main,
@@ -289,20 +317,9 @@ export default function DashboardAppPage() {
 						md={6}
 						lg={8}>
 						<AppConversionRates
-							title='Conversion Rates'
-							subheader='(+43%) than last year'
-							chartData={[
-								{ label: 'Italy', value: 400 },
-								{ label: 'Japan', value: 430 },
-								{ label: 'China', value: 448 },
-								{ label: 'Canada', value: 470 },
-								{ label: 'France', value: 540 },
-								{ label: 'Germany', value: 580 },
-								{ label: 'South Korea', value: 690 },
-								{ label: 'Netherlands', value: 1100 },
-								{ label: 'United States', value: 1200 },
-								{ label: 'United Kingdom', value: 1380 },
-							]}
+							title='FeedBack Accurate Load'
+							subheader='Total Routines'
+							feedBack={feedBack}
 						/>
 					</Grid>
 

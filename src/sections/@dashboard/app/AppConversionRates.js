@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types';
 import ReactApexChart from 'react-apexcharts';
-// @mui
 import { Box, Card, CardHeader } from '@mui/material';
+import { fontWeight } from '@mui/system';
+
+// @mui
 // utils
 import { fNumber } from '../../../utils/formatNumber';
 // components
@@ -18,12 +20,23 @@ AppConversionRates.propTypes = {
 export default function AppConversionRates({
 	title,
 	subheader,
-	chartData,
+	feedBack,
+
 	...other
 }) {
-	const chartLabels = chartData.map(i => i.label);
+	const chartLabels = [
+		Object.getOwnPropertyNames(feedBack)[1],
+		Object.getOwnPropertyNames(feedBack)[3],
+		Object.getOwnPropertyNames(feedBack)[0],
+		Object.getOwnPropertyNames(feedBack)[2],
+	];
 
-	const chartSeries = chartData.map(i => i.value);
+	const chartSeries = [
+		feedBack['Casi me muero'],
+		feedBack['Algo pude hacer'],
+		feedBack['Estuvo bien'],
+		feedBack['Necesito más'],
+	];
 
 	const chartOptions = useChart({
 		tooltip: {
@@ -37,6 +50,10 @@ export default function AppConversionRates({
 		},
 		plotOptions: {
 			bar: { horizontal: true, barHeight: '28%', borderRadius: 2 },
+			legend: {
+				fontSize: '100px',
+				fontWeight: 700,
+			},
 		},
 		xaxis: {
 			categories: chartLabels,
