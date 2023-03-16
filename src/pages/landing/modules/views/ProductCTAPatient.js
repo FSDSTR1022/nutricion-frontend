@@ -2,7 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Typography from '../components/Typography';
 import Button from '../components/Button';
 import img11 from '../image/image-11.png';
@@ -47,10 +47,10 @@ function ProductCTAPatient() {
 							<Button
 								variant='contained'
 								sx={{ width: '100%' }}
-								onClick={()=>{
-									navigate('/login')
+								onClick={() => {
+									navigate('/login');
 								}}>
-									ya soy paciente
+								ya soy paciente
 							</Button>
 						</Box>
 					</Box>

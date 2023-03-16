@@ -129,12 +129,11 @@ export default function ExerciseListPage(props) {
 
 	const { action, exercisesToAdd, setExerciseToAdd } = props;
 
-	const redireccionar = ()=>{
-		Navigate("/404")
-	}
+	const redireccionar = () => {
+		Navigate('/404');
+	};
 
 	useEffect(() => {
-
 		/* const user = localStorage.getItem('user');
 		const userJSON = JSON.parse(user)
 		console.log("USER:",userJSON)
@@ -144,8 +143,6 @@ export default function ExerciseListPage(props) {
 			console.log("Entro")
 			redireccionar()
 		} */
-		
-
 
 		if (action === undefined) {
 			setActionUS('listExercise');
@@ -475,7 +472,7 @@ export default function ExerciseListPage(props) {
 		return (
 			<>
 				<Helmet>
-				<title>{`Health Guru | ${getTitle()}`} </title>
+					<title>{`Health Guru | ${getTitle()}`} </title>
 				</Helmet>
 
 				<Container>
@@ -880,7 +877,7 @@ export default function ExerciseListPage(props) {
 		return (
 			<>
 				<Helmet>
-				<title>{`Health Guru | ${getTitle()}`} </title>
+					<title>{`Health Guru | ${getTitle()}`} </title>
 				</Helmet>
 				<Container>
 					<Stack

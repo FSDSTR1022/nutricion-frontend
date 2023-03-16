@@ -1,9 +1,11 @@
+/* eslint-disable no-unused-vars */
 import PropTypes from 'prop-types';
 import { forwardRef } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Box, Link } from '@mui/material';
+import { Box, Link,Typography } from '@mui/material';
+import logoHG from './Icon/healthGuruLogo.png'
 
 // ----------------------------------------------------------------------
 
@@ -18,15 +20,22 @@ const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
 
 	// OR using local (public folder)
 	// -------------------------------------------------------
-	// const logo = (
-	//   <Box
-	//     component="img"
-	//     src="/logo/logo_single.svg" => your path
-	//     sx={{ width: 40, height: 40, cursor: 'pointer', ...sx }}
-	//   />
-	// );
-
 	const logo = (
+	  <><Box
+	     component="img"
+	     src={logoHG}
+	     sx={{ width: 40, height: 40, cursor: 'pointer', ...sx }}
+	   />
+	   <Typography
+									variant='h4'
+									textAlign='left'
+									sx={{ m: 0.5 }}>
+									Health Guru
+								</Typography>
+	   </>
+	 );
+
+	/* const logo = (
 		<Box
 			ref={ref}
 			component='div'
@@ -111,8 +120,8 @@ const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
 					/>
 				</g>
 			</svg>
-		</Box>
-	);
+		</Box> 
+	); */
 
 	if (disabledLink) {
 		return <>{logo}</>;

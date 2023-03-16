@@ -12,7 +12,7 @@ import {
 	Typography,
 	Card,
 	Grid,
-	Item
+	Item,
 } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 import { LoadingButton } from '@mui/lab';
@@ -169,215 +169,207 @@ export default function UserProfile() {
 		<>
 			{!user._id ? (
 				<>
-				<Helmet>
-					<title>{`Health Guru | Mi Perfil`} </title>
-				</Helmet>
-				<Container>
-				<Stack
-						direction='row'
-						alignItems='center'
-						justifyContent='space-between'
-						mb={5}>
-						<Typography
-							variant='h4'
-							gutterBottom>
-							Mi Perfil
-						</Typography>
-					</Stack>
-					<Card>
-						<Box
-							sx={{
-								with: '100vw',
-								height: '50vh',
-								display: 'flex',
-								justifyContent: 'center',
-								alignItems: 'center',
-							}}>
-							<CircularProgress />
-						</Box>
-					</Card>
-
-				</Container>
+					<Helmet>
+						<title>{`Health Guru | Mi Perfil`} </title>
+					</Helmet>
+					<Container>
+						<Stack
+							direction='row'
+							alignItems='center'
+							justifyContent='space-between'
+							mb={5}>
+							<Typography
+								variant='h4'
+								gutterBottom>
+								Mi Perfil
+							</Typography>
+						</Stack>
+						<Card>
+							<Box
+								sx={{
+									with: '100vw',
+									height: '50vh',
+									display: 'flex',
+									justifyContent: 'center',
+									alignItems: 'center',
+								}}>
+								<CircularProgress />
+							</Box>
+						</Card>
+					</Container>
 				</>
-				
 			) : (
 				<>
-				<Helmet>
-					<title>{`Health Guru | Mi Perfil`} </title>
-				</Helmet>
-				<Container>
-				<Stack
-						direction='row'
-						alignItems='center'
-						justifyContent='space-between'
-						mb={5}>
-						<Typography
-							variant='h4'
-							gutterBottom>
-							Mi Perfil
-						</Typography>
-					</Stack>
-					<Card>
-						<Stack 
-							spacing={2}
-							sx={{ p: 3 }}
-							>
-							<TextField
-								name='firstName'
-								label={'Nombre'}
-								defaultValue={user.name}
-								onChange={event => setValues('firstName', event.target.value)}
-							/>
-							<TextField
-								name='lastName'
-								label={'Apellidos'}
-								defaultValue={user.lastName}
-								onChange={event => setValues('lastName', event.target.value)}
-							/>
-
-							<TextField
-								name='dni'
-								label={'DNI'}
-								defaultValue={user.dni}
-								onChange={event => setValues('dni', event.target.value)}
-							/>
-
-							<TextField
-								name='phone'
-								label={'Teléfono'}
-								defaultValue={user.phone}
-								onChange={event => setValues('phone', event.target.value)}
-							/>
-
-							<TextField
-								name='email'
-								label={'Correo elecrónico'}
-								defaultValue={user.email}
-								onChange={event => setValues('email', event.target.value)}
-							/>
-
-							<TextField
-								name='password'
-								label={'Cambiar Contraseña'}
-								type={showPassword ? 'text' : 'password'}
-								onChange={event => setValues('password', event.target.value)}
-								InputProps={{
-									endAdornment: (
-										<InputAdornment position='end'>
-											<IconButton
-												onClick={() => setShowPassword(!showPassword)}
-												edge='end'>
-												<Iconify
-													icon={
-														showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'
-													}
-												/>
-											</IconButton>
-										</InputAdornment>
-									),
-								}}
-							/>
-
-							<TextField
-								name='repeatPassword'
-								label={
-									repeatPasswordError
-										? 'Las contraseñas deben ser iguales'
-										: 'Repetir Contraseña'
-								}
-								error={repeatPasswordError}
-								type={showRepeatPassword ? 'text' : 'password'}
-								onChange={event =>
-									setValues('repeatPassword', event.target.value)
-								}
-								InputProps={{
-									endAdornment: (
-										<InputAdornment position='end'>
-											<IconButton
-												onClick={() => setShowRepeatPassword(!showRepeatPassword)}
-												edge='end'>
-												<Iconify
-													icon={
-														showRepeatPassword
-															? 'eva:eye-fill'
-															: 'eva:eye-off-fill'
-													}
-												/>
-											</IconButton>
-										</InputAdornment>
-									),
-								}}
-							/>
-							<Grid 
-								container
-								direction="row"
-								justifyContent="center"
-								alignItems="center"
-								>
-									<Box
-								sx={{
-									width: 300,
-									display: 'flex',
-									flexDirection: 'column',
-									alignItems: 'center',
-									marginTop: '15px',									
-									border: 'solid 1px  #D3D3D3',
-									p: 1
-									
-								}}>
-								<span>Imagen de perfil</span>
-								<img
-									style={{
-										marginTop: 10,
-										width: 220,
-										height: 220,
-										objectFit: 'cover',
-									}}
-									src={imgUrl !== '' ? imgUrl : user.imgUrl}
-									alt={'IMGEN USUARIO'}
-									loading='lazy'
+					<Helmet>
+						<title>{`Health Guru | Mi Perfil`} </title>
+					</Helmet>
+					<Container>
+						<Stack
+							direction='row'
+							alignItems='center'
+							justifyContent='space-between'
+							mb={5}>
+							<Typography
+								variant='h4'
+								gutterBottom>
+								Mi Perfil
+							</Typography>
+						</Stack>
+						<Card>
+							<Stack
+								spacing={2}
+								sx={{ p: 3 }}>
+								<TextField
+									name='firstName'
+									label={'Nombre'}
+									defaultValue={user.name}
+									onChange={event => setValues('firstName', event.target.value)}
 								/>
-								<br />
-								<Button
-									style={{ width: 160 }}
-									id='imagenButton'
+								<TextField
+									name='lastName'
+									label={'Apellidos'}
+									defaultValue={user.lastName}
+									onChange={event => setValues('lastName', event.target.value)}
+								/>
+
+								<TextField
+									name='dni'
+									label={'DNI'}
+									defaultValue={user.dni}
+									onChange={event => setValues('dni', event.target.value)}
+								/>
+
+								<TextField
+									name='phone'
+									label={'Teléfono'}
+									defaultValue={user.phone}
+									onChange={event => setValues('phone', event.target.value)}
+								/>
+
+								<TextField
+									name='email'
+									label={'Correo elecrónico'}
+									defaultValue={user.email}
+									onChange={event => setValues('email', event.target.value)}
+								/>
+
+								<TextField
+									name='password'
+									label={'Cambiar Contraseña'}
+									type={showPassword ? 'text' : 'password'}
+									onChange={event => setValues('password', event.target.value)}
+									InputProps={{
+										endAdornment: (
+											<InputAdornment position='end'>
+												<IconButton
+													onClick={() => setShowPassword(!showPassword)}
+													edge='end'>
+													<Iconify
+														icon={
+															showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'
+														}
+													/>
+												</IconButton>
+											</InputAdornment>
+										),
+									}}
+								/>
+
+								<TextField
+									name='repeatPassword'
+									label={
+										repeatPasswordError
+											? 'Las contraseñas deben ser iguales'
+											: 'Repetir Contraseña'
+									}
+									error={repeatPasswordError}
+									type={showRepeatPassword ? 'text' : 'password'}
+									onChange={event =>
+										setValues('repeatPassword', event.target.value)
+									}
+									InputProps={{
+										endAdornment: (
+											<InputAdornment position='end'>
+												<IconButton
+													onClick={() =>
+														setShowRepeatPassword(!showRepeatPassword)
+													}
+													edge='end'>
+													<Iconify
+														icon={
+															showRepeatPassword
+																? 'eva:eye-fill'
+																: 'eva:eye-off-fill'
+														}
+													/>
+												</IconButton>
+											</InputAdornment>
+										),
+									}}
+								/>
+								<Grid
+									container
+									direction='row'
+									justifyContent='center'
+									alignItems='center'>
+									<Box
+										sx={{
+											width: 300,
+											display: 'flex',
+											flexDirection: 'column',
+											alignItems: 'center',
+											marginTop: '15px',
+											border: 'solid 1px  #D3D3D3',
+											p: 1,
+										}}>
+										<span>Imagen de perfil</span>
+										<img
+											style={{
+												marginTop: 10,
+												width: 220,
+												height: 220,
+												objectFit: 'cover',
+											}}
+											src={imgUrl !== '' ? imgUrl : user.imgUrl}
+											alt={'IMGEN USUARIO'}
+											loading='lazy'
+										/>
+										<br />
+										<Button
+											style={{ width: 160 }}
+											id='imagenButton'
+											variant='contained'
+											component='label'>
+											Cargar imagen
+											<input
+												hidden
+												onChange={file => upLoadImage(file.target.files[0])}
+												accept='image/*'
+												multiple
+												type='file'
+											/>
+										</Button>
+									</Box>
+								</Grid>
+							</Stack>
+
+							<Grid
+								container
+								direction='row'
+								justifyContent='center'
+								alignItems='center'>
+								<LoadingButton
+									sx={{ my: 5 }}
+									size='large'
+									type='submit'
 									variant='contained'
-									component='label'>
-									Cargar imagen
-									<input
-										hidden
-										onChange={file => upLoadImage(file.target.files[0])}
-										accept='image/*'
-										multiple
-										type='file'
-									/>
-								</Button>
-							</Box>
-								</Grid>						
-							
-					</Stack>
-
-					<Grid 
-						container
-						direction="row"
-						justifyContent="center"
-						alignItems="center"
-						>
-							<LoadingButton
-								sx={{ my: 5 }}
-								size='large'
-								type='submit'
-								variant='contained'
-								onClick={updateAction}>
-								Actualizar Información
-							</LoadingButton>
-					</Grid>
-
-					
-				</Card>
-			</Container>				
-					
-			</>
+									onClick={updateAction}>
+									Actualizar Información
+								</LoadingButton>
+							</Grid>
+						</Card>
+					</Container>
+				</>
 			)}
 		</>
 	);
