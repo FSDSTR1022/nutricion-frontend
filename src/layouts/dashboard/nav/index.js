@@ -108,7 +108,7 @@ export default function Nav({ openNav, onCloseNav }) {
 				<Logo />
 			</Box>
 
-			<Box sx={{ mb: 5, mx: 2.5 }}>
+			<Box sx={{ mb: 5, mx: 2.5,cursor: 'pointer' }}>
 				<Link underline='none'>
 					<StyledAccount onClick={handleOpen}>
 						<Avatar
