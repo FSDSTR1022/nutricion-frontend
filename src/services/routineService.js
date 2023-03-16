@@ -74,10 +74,4 @@ const deleteRutine = async data => {
 	}
 };
 
-module.exports = {
-	saveRutine,
-	getRutines,
-	updateRutine,
-	deleteRutine,
-	getRutineById,
-};
+export { saveRutine, getRutines, updateRutine, deleteRutine, getRutineById };
