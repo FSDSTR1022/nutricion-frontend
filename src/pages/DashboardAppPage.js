@@ -36,9 +36,9 @@ export default function DashboardAppPage() {
 	const [fullRutineExpected, setFullRutineExpected] = useState([]);
 	const [fullRutineCompleted, setFullRutineCompleted] = useState([]);
 	const [nRounds, setNRounds] = useState();
-	const [nExer, seTNExer] = useState();
+	const [nExer, seTNExer] = useState(0);
 	const [numberOfRoutines, setNumberOfRoutines] = useState();
-	const [percentage, setPercentage] = useState('');
+	const [percentage, setPercentage] = useState(0);
 	const [colorWidget, setColorWidget] = useState('success');
 	const [iconoWidget, setIconoWidget] = useState('');
 	const [satisfaction, setSatisfaction] = useState(
@@ -125,7 +125,12 @@ export default function DashboardAppPage() {
 		setNRounds(rounds.length);
 		seTNExer(numberOfExercises);
 
-		const percen = Math.round((nCompl / profRutines.length) * 100);
+		let percen = 0;
+
+		if (nCompl > 0 && profRutines.length > 0) {
+			percen = Math.round((nCompl / profRutines.length) * 100);
+		}
+
 		setPercentage(percen);
 		// setPercentage(------)   /* METER AQUÍ EL VALOR PARA VER EL CAMBIO DE COLOR DEL WIDGET
 		const colorOp = [50, 70, 90];
@@ -204,7 +209,7 @@ export default function DashboardAppPage() {
 						md={3}>
 						<AppWidgetSummary
 							title='Total Routines'
-							total={userRutinesList.length}
+							total={userRutinesList.length || 0}
 							color='info'
 							icon={'fluent-mdl2:processing-run'}
 						/>
@@ -217,7 +222,7 @@ export default function DashboardAppPage() {
 						md={3}>
 						<AppWidgetSummary
 							title='Total Exercices'
-							total={nExer}
+							total={nExer || 0}
 							color='warning'
 							icon={'healthicons:exercise-weights'}
 						/>
@@ -230,7 +235,7 @@ export default function DashboardAppPage() {
 						md={3}>
 						<AppWidgetSummary
 							title='Ratio Routines Completed'
-							total={`${percentage}%`}
+							total={percentage}
 							color={colorWidget}
 							icon={iconoWidget}
 						/>
