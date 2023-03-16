@@ -344,7 +344,7 @@ export default function DashboardAppPage() {
 						md={6}
 						lg={4}>
 						<AppCurrentSubject
-							title='Current Subject'
+							title='Muscle Involvement'
 							chartLabels={[
 								'Glúteo mayor',
 								'Glúteo menor',
