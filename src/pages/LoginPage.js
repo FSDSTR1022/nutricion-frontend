@@ -55,13 +55,6 @@ export default function LoginPage() {
 			</Helmet>
 
 			<StyledRoot>
-				{/* <Logo
-					sx={{
-						position: 'fixed',
-						top: { xs: 16, sm: 24, md: 40 },
-						left: { xs: 16, sm: 24, md: 40 },
-					}}
-				/> */}
 
 				{mdUp && (
 					<StyledSection>
@@ -77,13 +70,6 @@ export default function LoginPage() {
 								  ml:20
 								  }}
 						/>
-						{/* <Typography
-							variant='h4'
-							textAlign='left'
-							sx={{ m: 2 }}>
-								Health Guru
-						</Typography> */}
-
 						<Typography
 							variant='h3'
 							sx={{ px: 5,
