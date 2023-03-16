@@ -40,7 +40,7 @@ export default function AppConversionRates({
 
 	const chartOptions = useChart({
 		tooltip: {
-			marker: { show: false },
+			marker: { show: true },
 			y: {
 				formatter: seriesName => fNumber(seriesName),
 				title: {
@@ -49,10 +49,22 @@ export default function AppConversionRates({
 			},
 		},
 		plotOptions: {
-			bar: { horizontal: true, barHeight: '28%', borderRadius: 2 },
-			legend: {
-				fontSize: '100px',
-				fontWeight: 700,
+			bar: {
+				horizontal: true,
+				barHeight: '28%',
+				borderRadius: 2,
+			},
+		},
+
+		colors: ['#2E93fA', '#546E7A', '#E91E63', '#FF9800'],
+
+		yaxis: {
+			labels: {
+				style: {
+					fontSize: '15px',
+					fontWeight: 700,
+					colors: ['#E91E63', '#FF9800', '#2E93fA', '#54FF9d'],
+				},
 			},
 		},
 		xaxis: {
@@ -72,7 +84,11 @@ export default function AppConversionRates({
 				dir='ltr'>
 				<ReactApexChart
 					type='bar'
-					series={[{ data: chartSeries }]}
+					series={[
+						{
+							data: chartSeries,
+						},
+					]}
 					options={chartOptions}
 					height={364}
 				/>

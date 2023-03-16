@@ -53,6 +53,19 @@ export default function AppCurrentVisits({
 	const chartSeries = satisfaction;
 
 	const chartOptions = useChart({
+		animations: {
+			enabled: true,
+			easing: 'easeinout',
+			speed: 800,
+			animateGradually: {
+				enabled: true,
+				delay: 150,
+			},
+			dynamicAnimation: {
+				enabled: true,
+				speed: 350,
+			},
+		},
 		colors: chartColors,
 		labels: chartLabels,
 		stroke: { colors: [theme.palette.background.paper] },
@@ -67,9 +80,6 @@ export default function AppCurrentVisits({
 				},
 			},
 		},
-		plotOptions: {
-			pie: { donut: { labels: { show: false } } },
-		},
 	});
 
 	return (
@@ -81,7 +91,7 @@ export default function AppCurrentVisits({
 
 			<StyledChartWrapper dir='ltr'>
 				<ReactApexChart
-					type='pie'
+					type='donut'
 					series={chartSeries}
 					options={chartOptions}
 					height={280}

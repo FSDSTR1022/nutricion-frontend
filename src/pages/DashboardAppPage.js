@@ -33,6 +33,7 @@ export default function DashboardAppPage() {
 	const [isLoadingPatientsUS, setIsLoadingPatientsUS] = useState(true);
 	const [rutinasList, setRutinasList] = useState([]);
 	const [userRutinesList, setUserRutinesList] = useState([]);
+	const [patientListOfUser, setPatientListOfIUser] = useState([]);
 	const [chartLabels, setChartLabels] = useState([]);
 	const [fullRutineExpected, setFullRutineExpected] = useState([]);
 	const [fullRutineCompleted, setFullRutineCompleted] = useState([]);
@@ -54,6 +55,10 @@ export default function DashboardAppPage() {
 			const response = await getAllUsers();
 			if (response.status === 200) {
 				setPatientListUS(response.data);
+				const userPatientList = response.data.filter(
+					patient => patient.professional === userJSON.id
+				);
+				setPatientListOfIUser(userPatientList);
 				setIsLoadingPatientsUS(false);
 			}
 		};
@@ -121,7 +126,12 @@ export default function DashboardAppPage() {
 			exercisesTotalArray = [...exercisesTotalArray, ...exerPerRound];
 			numberOfExercises = exercisesTotalArray.length;
 		});
+		/* console.log('todos exe', exercisesTotalArray);
+		const musclesAllArray = exercisesTotalArray?.map(exer => exer.muscles);
+		const musclesAll = musclesAllArray.map(exer => exer.muscles);
 
+		console.log('muscle all', musclesAllArray);
+		console.log('muscle all alal', musclesAll);  */
 		setNRounds(rounds.length);
 		seTNExer(numberOfExercises);
 
@@ -216,7 +226,7 @@ export default function DashboardAppPage() {
 						md={3}>
 						<AppWidgetSummary
 							title='Total Patients'
-							total={patientsListUS.length}
+							total={patientListOfUser.length}
 							icon={'fa6-solid:people-group'}
 						/>
 					</Grid>
@@ -267,7 +277,7 @@ export default function DashboardAppPage() {
 						lg={8}>
 						<AppWebsiteVisits
 							title='Routines Completed Index'
-							subheader='last 30 days'
+							subheader='Total routines'
 							chartLabels={chartLabels}
 							chartData={[
 								{
@@ -317,7 +327,7 @@ export default function DashboardAppPage() {
 						md={6}
 						lg={8}>
 						<AppConversionRates
-							title='FeedBack Accurate Load'
+							title='Feedback Accurate Load'
 							subheader='Total Routines'
 							feedBack={feedBack}
 						/>
@@ -331,133 +341,19 @@ export default function DashboardAppPage() {
 						<AppCurrentSubject
 							title='Current Subject'
 							chartLabels={[
-								'English',
-								'History',
-								'Physics',
-								'Geography',
-								'Chinese',
-								'Math',
+								'Glúteo mayor',
+								'Glúteo menor',
+								'biceps',
+								'triceps',
+								'cuadriceps',
+								'Tibial anterior',
 							]}
 							chartData={[
-								{ name: 'Series 1', data: [80, 50, 30, 40, 100, 20] },
-								{ name: 'Series 2', data: [20, 30, 40, 80, 20, 80] },
-								{ name: 'Series 3', data: [44, 76, 78, 13, 43, 10] },
+								{ name: 'exercises', data: [44, 76, 78, 13, 43, 10] },
 							]}
 							chartColors={[...Array(6)].map(
 								() => theme.palette.text.secondary
 							)}
-						/>
-					</Grid>
-
-					<Grid
-						item
-						xs={12}
-						md={6}
-						lg={8}>
-						<AppNewsUpdate
-							title='News Update'
-							list={[...Array(5)].map((_, index) => ({
-								id: faker.datatype.uuid(),
-								title: faker.name.jobTitle(),
-								description: faker.name.jobTitle(),
-								image: `/assets/images/covers/cover_${index + 1}.jpg`,
-								postedAt: faker.date.recent(),
-							}))}
-						/>
-					</Grid>
-
-					<Grid
-						item
-						xs={12}
-						md={6}
-						lg={4}>
-						<AppOrderTimeline
-							title='Order Timeline'
-							list={[...Array(5)].map((_, index) => ({
-								id: faker.datatype.uuid(),
-								title: [
-									'1983, orders, $4220',
-									'12 Invoices have been paid',
-									'Order #37745 from September',
-									'New order placed #XF-2356',
-									'New order placed #XF-2346',
-								][index],
-								type: `order${index + 1}`,
-								time: faker.date.past(),
-							}))}
-						/>
-					</Grid>
-
-					<Grid
-						item
-						xs={12}
-						md={6}
-						lg={4}>
-						<AppTrafficBySite
-							title='Traffic by Site'
-							list={[
-								{
-									name: 'FaceBook',
-									value: 323234,
-									icon: (
-										<Iconify
-											icon={'eva:facebook-fill'}
-											color='#1877F2'
-											width={32}
-										/>
-									),
-								},
-								{
-									name: 'Google',
-									value: 341212,
-									icon: (
-										<Iconify
-											icon={'eva:google-fill'}
-											color='#DF3E30'
-											width={32}
-										/>
-									),
-								},
-								{
-									name: 'Linkedin',
-									value: 411213,
-									icon: (
-										<Iconify
-											icon={'eva:linkedin-fill'}
-											color='#006097'
-											width={32}
-										/>
-									),
-								},
-								{
-									name: 'Twitter',
-									value: 443232,
-									icon: (
-										<Iconify
-											icon={'eva:twitter-fill'}
-											color='#1C9CEA'
-											width={32}
-										/>
-									),
-								},
-							]}
-						/>
-					</Grid>
-
-					<Grid
-						item
-						xs={12}
-						md={6}
-						lg={8}>
-						<AppTasks
-							title='Tasks'
-							list={[
-								{ id: '1', label: 'Create FireStone Logo' },
-								{ id: '2', label: 'Add SCSS and JS files if required' },
-								{ id: '3', label: 'Stakeholder Meeting' },
-								{ id: '4', label: 'Scoping & Estimations' },
-								{ id: '5', label: 'Sprint Showcase' },
-							]}
 						/>
 					</Grid>
 				</Grid>
