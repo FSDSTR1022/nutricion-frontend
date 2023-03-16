@@ -93,7 +93,7 @@ export default function AccountPopover() {
 						},
 					},
 				}}>
-				<Box sx={{ my: 1.5, px: 2.5 }}>
+				<Box sx={{ my: 1.5, px: 2.5,cursor: 'pointer'}}>
 					<Typography
 						variant='subtitle2'
 						noWrap>
