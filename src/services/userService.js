@@ -39,6 +39,7 @@ const registerUser = async data => {
 		);
 		return { data: response.json(), status: response.status };
 	} catch (error) {
+		console.log(error)
 		return error;
 	}
 };
