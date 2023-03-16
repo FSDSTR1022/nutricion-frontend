@@ -40,10 +40,8 @@ export default function DashboardAppPage() {
 	const [numberOfRoutines, setNumberOfRoutines] = useState();
 	const [percentage, setPercentage] = useState('');
 	const [colorWidget, setColorWidget] = useState('success');
-	const [iconoWidget, setIconoWidget] = useState('');
-	const [satisfaction, setSatisfaction] = useState(
-		'ic:baseline-emoji-emotions'
-	);
+	const [iconoWidget, setIconoWidget] = useState('ic:baseline-emoji-emotions');
+	const [satisfaction, setSatisfaction] = useState([]);
 
 	useEffect(() => {
 		const user = localStorage.getItem('user');
@@ -110,9 +108,8 @@ export default function DashboardAppPage() {
 
 		profRutines?.forEach(routine => {
 			const roundsPerRoutine = [...routine?.rounds];
-			console.log('rounds per routine', roundsPerRoutine);
+
 			rounds = [...rounds, ...roundsPerRoutine];
-			console.log('Rounds sum', rounds);
 		});
 
 		rounds?.forEach(round => {
@@ -162,7 +159,7 @@ export default function DashboardAppPage() {
 
 		setSatisfaction(arraySatisfaction);
 		// const perfentageSatis = [arraySatisfaction[0]['1']]
-		console.log('array', arraySatisfaction);
+
 		return arraySatisfaction;
 	};
 
