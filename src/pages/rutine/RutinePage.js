@@ -132,7 +132,6 @@ export default function RutinePage(props) {
 	/* 	const theme = useTheme(); */
 
 	useEffect(() => {
-		console.log('PROPS:', props);
 		setLocalUserUS(localUser);
 
 		switch (action) {
@@ -314,18 +313,18 @@ export default function RutinePage(props) {
 	};
 
 	const deleteRutinee = async () => {
-		console.log('Borrar rutina: ', rutineUS._id);
-
 		const response = await deleteRutine(rutineUS);
 
 		if (response.status === 200) {
-			console.log('Se elimino la rutina');
 			setMessageAlertUS('Se elimino la rutina');
 			setSeverityAlertUS('success');
 			setOpenAlertUS(true);
 			setOpenRutineDialog(false);
 		} else {
-			console.log('NO Se elimino la rutina');
+			setMessageAlertUS('Se se pudo eliminar la rutina');
+			setSeverityAlertUS('error');
+			setOpenAlertUS(true);
+			setOpenRutineDialog(false);
 		}
 	};
 
@@ -424,18 +423,6 @@ export default function RutinePage(props) {
 		setOpenFeedbackDialog(false);
 	};
 
-	const handleClickShowexerciseButton = () => {
-		console.log('Ejercicios a agregar: ', exerciseToAddUS);
-	};
-
-	const handleClickShowRutineButton = () => {
-		console.log('rutineUS: ', rutineUS);
-	};
-
-	const handleClickAddpatientButton = () => {
-		console.log('seleccionar paciente');
-	};
-
 	const handleClickViewExercise = (event, id, roundOrder) => {
 		const round = rutineUS.rounds.find(round => round.order === roundOrder);
 		const detalleEjercicio = round.exercises.find(
@@ -459,7 +446,6 @@ export default function RutinePage(props) {
 	};
 
 	const handleClickDelteExercise = (event, id, roundOrder) => {
-		console.log('eliminar ejericico');
 		setRoundToEdit(roundOrder);
 		setExerciseToViewUS(id);
 		setConfirmationAcionUS('deleteExercise');
@@ -480,7 +466,6 @@ export default function RutinePage(props) {
 
 	const handleClickSaveRutineButton = () => {
 		if (checkForm()) {
-			console.log('GUARDAR RUTINA');
 
 			const rutineToSave = {};
 
@@ -502,8 +487,6 @@ export default function RutinePage(props) {
 				}
 			});
 
-			console.log('roundModificados: ', roundModificados);
-
 			rutineToSave.rounds = roundModificados;
 
 			rutineToSave.name = rutineNameUS;
@@ -511,12 +494,11 @@ export default function RutinePage(props) {
 			rutineToSave.user = patientUS._id;
 			rutineToSave.status = 'pending';
 
-			console.log('Rutina a guardar: ', rutineToSave);
+
 
 			if (actionUS === 'newRutine') {
 				saveRutine(rutineToSave).then(response => {
 					if (response.status === 200) {
-						console.log('SE GUARDO CON EXITO');
 						setOpenRutineDialog(false);
 						setIsLoading(true);
 						setMessageAlertUS(`Se creo la rutina para el dia ${date}`);
@@ -598,20 +580,7 @@ export default function RutinePage(props) {
 
 		return errors;
 	};
-
-	const mostrarDay = () => {
-		console.log(valueDay);
-		console.log(valueDay.$D);
-	};
-
-	const handleOnClickEditRoutine = para => event => {
-		console.log('Editar rutina: ', para);
-	};
-
-	const handleClickDeleteRutine = para => event => {
-		console.log('delete rutina', para);
-	};
-
+	
 	const getAccordions = round => {
 		const RoundAcordions = (
 			<>
@@ -967,10 +936,6 @@ export default function RutinePage(props) {
 		);
 	};
 
-	const prueba = () => {
-		console.log('startFeedbackUS: ', startFeedbackUS);
-	};
-
 	const handleClickRealizarRutinaButoon = () => {
 		setOpenFeedbackDialog(true);
 	};
@@ -989,7 +954,6 @@ export default function RutinePage(props) {
 
 		updateRutine(rutineToUpdate).then(response => {
 			if (response.status === 200) {
-				console.log('SE SE ACTUALIZÓ LA RUTINA');
 				setOpenFeedbackDialog(false);
 				setTextFeedbackUS();
 				setStartFeedbackUS();
@@ -1167,19 +1131,22 @@ export default function RutinePage(props) {
 									alignItems='flex-end'
 									xs={2}>
 									<Grid item>
-										{localUserUS.type === 'profesional' ? (
-											rutineUS.status === 'pending' ? (
-												<Chip
-													label='Rutina no realizada'
-													color='error'
-												/>
+										{actionUS!=='newRutine'?
+										(
+											localUserUS.type === 'profesional' ? 
+											(
+												rutineUS.status === 'pending' ? (
+													<Chip
+														label='Rutina no realizada'
+														color='error'
+													/>
+												) : (
+													<Chip
+														label='Rutina Realiza'
+														color='success'
+													/>
+												)
 											) : (
-												<Chip
-													label='Rutina Realiza'
-													color='success'
-												/>
-											)
-										) : (
 											<>
 												{rutineUS.status === 'pending' ? (
 													<Button
@@ -1196,7 +1163,9 @@ export default function RutinePage(props) {
 													/>
 												)}
 											</>
-										)}
+										)):(<></>)
+										}
+										
 									</Grid>
 								</Grid>
 							</Grid>
