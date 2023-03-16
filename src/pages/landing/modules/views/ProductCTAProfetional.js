@@ -7,7 +7,7 @@ import Typography from '../components/Typography';
 import Button from '../components/Button';
 import img10 from '../image/image-10.png';
 
-function ProductCTAProfetional() {
+function ProductCTAProfessional() {
 	const navigate = useNavigate();
 	return (
 		<Container
@@ -100,4 +100,4 @@ function ProductCTAProfetional() {
 	);
 }
 
-export default ProductCTAProfetional;
+export default ProductCTAProfessional;
