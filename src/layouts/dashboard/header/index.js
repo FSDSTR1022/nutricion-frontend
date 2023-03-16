@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import PropTypes from 'prop-types';
 // @mui
 import { styled } from '@mui/material/styles';
@@ -56,7 +57,7 @@ export default function Header({ onOpenNav }) {
 					<Iconify icon='eva:menu-2-fill' />
 				</IconButton>
 
-				<Searchbar />
+				{/* <Searchbar /> */}
 				<Box sx={{ flexGrow: 1 }} />
 
 				<Stack
