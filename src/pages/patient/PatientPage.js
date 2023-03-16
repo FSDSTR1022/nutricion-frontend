@@ -114,6 +114,9 @@ export default function PatientPage() {
 
 	const navigate = useNavigate();
 
+	const user = localStorage.getItem('user');
+	const userJSON = JSON.parse(user);
+
 	useEffect(() => {
 		getAllusersFunction();
 	}, []);
@@ -122,7 +125,10 @@ export default function PatientPage() {
 		setIsLoadingPatientsUS(true);
 		const response = await getAllUsers();
 		if (response.status === 200) {
-			setPatientListUS(response.data);
+			const profPatientList = response.data.filter(
+				patient => patient.professional === userJSON.id
+			);
+			setPatientListUS(profPatientList);
 			setIsLoadingPatientsUS(false);
 		}
 	};
