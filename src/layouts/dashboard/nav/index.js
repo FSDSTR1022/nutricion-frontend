@@ -64,6 +64,15 @@ export default function Nav({ openNav, onCloseNav }) {
 				navigate('/login', { replace: true });
 				return;
 			}
+
+			if (
+				localUser.type === 'patient' &&
+				(window.location.pathname !== '/dashboard/rutinecalendar' ||
+					window.location.pathname !== '/dashboard/profile')
+			) {
+				navigate('/dashboard/rutinecalendar', { replace: true });
+			}
+
 			setUser(await getUserById(localUser.id));
 		}
 		searchUser();
@@ -108,7 +117,7 @@ export default function Nav({ openNav, onCloseNav }) {
 				<Logo />
 			</Box>
 
-			<Box sx={{ mb: 5, mx: 2.5,cursor: 'pointer' }}>
+			<Box sx={{ mb: 5, mx: 2.5, cursor: 'pointer' }}>
 				<Link underline='none'>
 					<StyledAccount onClick={handleOpen}>
 						<Avatar
