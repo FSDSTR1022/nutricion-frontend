@@ -88,8 +88,9 @@ export default function DashboardAppPage() {
 	};
 
 	const datosGraph = profRutines => {
-		const fechasRutinas = profRutines?.map(rut => moment(rut.day).format('L'));
+		const fechasRutinas = profRutines?.map(rut => moment(rut.day).isoWeek()); // format('L'));
 		const axis = [...new Set(fechasRutinas)];
+		console.log('axis', axis);
 		setChartLabels(axis);
 		const numberOfRoutinesPerDay = [];
 		const numberOfRoutinesCompletedPerDay = [];
@@ -100,8 +101,9 @@ export default function DashboardAppPage() {
 
 		axis.forEach(date => {
 			const routinesPerDate = profRutines?.filter(
-				rut => moment(rut.day).format('L') === date
+				rut => moment(rut.day).isoWeek() === date
 			);
+			console.log(numberOfRoutinesPerDay);
 			numberOfRoutinesPerDay.push(routinesPerDate.length);
 			setFullRutineExpected(numberOfRoutinesPerDay);
 
@@ -286,7 +288,7 @@ export default function DashboardAppPage() {
 						lg={8}>
 						<AppWebsiteVisits
 							title='Routines Completed Index'
-							subheader='Total routines'
+							subheader='Routines per Week'
 							chartLabels={chartLabels}
 							chartData={[
 								{

@@ -25,10 +25,10 @@ export default function AppConversionRates({
 	...other
 }) {
 	const chartLabels = [
-		Object.getOwnPropertyNames(feedBack)[1],
+		Object.getOwnPropertyNames(feedBack)[2],
 		Object.getOwnPropertyNames(feedBack)[3],
 		Object.getOwnPropertyNames(feedBack)[0],
-		Object.getOwnPropertyNames(feedBack)[2],
+		Object.getOwnPropertyNames(feedBack)[1],
 	];
 
 	const chartSeries = [
