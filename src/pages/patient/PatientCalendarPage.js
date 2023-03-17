@@ -54,16 +54,10 @@ const PatientCalendarPage = () => {
 	const [openAlertUS, setOpenAlertUS] = useState(false);
 	const [messageAlertUS, setMessageAlertUS] = useState('');
 	const [severityAlertUS, setSeverityAlertUS] = useState('success');
-	/* 	const [idUserUS,setIdUserUS] = useState('') */
 	const [localUserUS, setLocalUserUS] = useState({});
 
 	const { id } = useParams();
 
-	/* 	const user2 = localStorage.getItem('user');
-	const userJSON = JSON.parse(user2)
- */
-	/* 
-	console.log("USER de localStorage: ",userJSON) */
 
 	useEffect(() => {
 		const localUser = JSON.parse(localStorage.getItem('user'));
@@ -90,7 +84,6 @@ const PatientCalendarPage = () => {
 		const localUser = JSON.parse(localStorage.getItem('user'));
 
 		if (response.status === 200) {
-			/* console.log("Rutinas:",response.data) */
 			setRutinasListUS(response.data);
 
 			const userRutines = response.data.filter(rut => rut.user._id === id);
@@ -114,7 +107,6 @@ const PatientCalendarPage = () => {
 				}				
 
 				if (localUser.type === 'profesional') {
-					/* console.log("Es editable") */
 					evento.editable = true;
 				} else {
 					evento.editable = false;
@@ -148,10 +140,6 @@ const PatientCalendarPage = () => {
 		}
 	};
 
-	const handleNewRutinaClose = () => {
-		setOpenRutineDialogUS(false);
-	};
-
 	const today = Date.now() - 86400000;
 
 	const handleNextRutines = async () => {
@@ -166,7 +154,7 @@ const PatientCalendarPage = () => {
 		/* console.log('localUserUS.type: ', localUserUS.type); */
 
 		if (localUserUS.type === 'profesional') {
-			const rutineUrl = `${process.env.REACT_APP_BACK_URL}rutines?id=`;
+			const rutineUrl = `${process.env.REACT_APP_BACK_URL}/rutines?id=`;
 
 			return fetch(`${rutineUrl}${id}`, {
 				method: 'PUT',
