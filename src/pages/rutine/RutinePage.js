@@ -493,8 +493,7 @@ export default function RutinePage(props) {
 			rutineToSave.day = rutineDateUS;
 			rutineToSave.user = patientUS._id;
 			rutineToSave.status = 'pending';
-
-
+			rutineToSave.professional=localUserUS.id
 
 			if (actionUS === 'newRutine') {
 				saveRutine(rutineToSave).then(response => {
