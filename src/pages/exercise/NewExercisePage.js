@@ -746,7 +746,7 @@ export default function NewExercisePage(props) {
 								<Grid>
 									<Item>
 										<img
-											style={{ width: 120, height: 120, objectFit: 'cover' }}
+											style={{ width: 180, height: 125, objectFit: 'cover' }}
 											src={
 												!excerciseToEditODeleteUS.photo
 													? !cloudUrlImg
@@ -781,7 +781,7 @@ export default function NewExercisePage(props) {
 									<Grid>
 										<Item>
 											<img
-												style={{ width: 120, height: 120, objectFit: 'cover' }}
+												style={{ width: 150, height: 120, objectFit: 'cover' }}
 												src={
 													!excerciseToEditODeleteUS.video
 														? !cloudUrlVid
