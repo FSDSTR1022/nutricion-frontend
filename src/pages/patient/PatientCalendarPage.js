@@ -72,7 +72,7 @@ const PatientCalendarPage = () => {
 
 		if (id !== undefined) {
 			setPatient(id);
-			getRoutines(id);
+		 	getRoutines(id,localUser);
 		} else {
 			setPatient(localUser.id);
 			getRoutines(localUser.id);
@@ -80,14 +80,17 @@ const PatientCalendarPage = () => {
 	}, [openAlertUS, render]);
 
 	async function setPatient(id) {
-		console.log('USER BD: ', await getUserById(id));
+		/* console.log('USER BD: ', await getUserById(id)); */
 		setPatientUS(await getUserById(id));
 	}
 
-	const getRoutines = async id => {
+	const getRoutines = async (id) => {
+		/* console.log("localUser: ",localUser) */
 		const response = await getRutines();
+		const localUser = JSON.parse(localStorage.getItem('user'));
+
 		if (response.status === 200) {
-			console.log(response);
+			/* console.log("Rutinas:",response.data) */
 			setRutinasListUS(response.data);
 
 			const userRutines = response.data.filter(rut => rut.user._id === id);
@@ -108,9 +111,10 @@ const PatientCalendarPage = () => {
 					evento.color = 'green';
 				} else {
 					evento.color = 'red';
-				}
+				}				
 
-				if (localUserUS.type === 'profesional') {
+				if (localUser.type === 'profesional') {
+					/* console.log("Es editable") */
 					evento.editable = true;
 				} else {
 					evento.editable = false;
@@ -159,7 +163,7 @@ const PatientCalendarPage = () => {
 
 	// eslint-disable-next-line consistent-return
 	function putDropEvent(id, date) {
-		console.log('localUserUS.type: ', localUserUS.type);
+		/* console.log('localUserUS.type: ', localUserUS.type); */
 
 		if (localUserUS.type === 'profesional') {
 			const rutineUrl = 'http://localhost:3000/rutines?id=';
@@ -187,16 +191,18 @@ const PatientCalendarPage = () => {
 		color: theme.palette.text.secondary,
 	}));
 
-	const handleClickAceptButton = async event => {
-		setOpenRutineDialogUS(false);
-	};
-
 	const handleClickCancelButton = async event => {
 		setOpenRutineDialogUS(false);
 	};
 
 	const handleCloseFormExerciseDialog = evento => {
 		setOpenRutineDialogUS(false);
+	};
+
+	
+
+	const prueba = evento => {
+		console.log(eventsCalendar)
 	};
 
 	const handleCloseMessage = (event, reason) => {
@@ -224,6 +230,11 @@ const PatientCalendarPage = () => {
 					Paciente: {`${patientUS.name} ${patientUS.lastName}`}
 				</Typography>
 			</Stack> */}
+			<Button
+						value='cancelar'
+						onClick={prueba}>
+						mostrar eventos de calendario
+					</Button>
 
 				<Card>
 					<Box sx={{ flexGrow: 3 }}>
@@ -321,9 +332,7 @@ const PatientCalendarPage = () => {
 						initialView='dayGridMonth'
 						editable='true'
 						events={eventsCalendar}
-						eventClick={info =>
-							handleEventClick(info.event.id, info.event.startStr)
-						}
+						eventClick={info => handleEventClick(info.event.id, info.event.startStr)}
 						dateClick={info => handleDateClick(info.dateStr)}
 						eventDrop={info => putDropEvent(info.event.id, info.event.start)}
 					/>
