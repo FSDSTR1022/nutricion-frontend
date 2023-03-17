@@ -166,7 +166,7 @@ const PatientCalendarPage = () => {
 		/* console.log('localUserUS.type: ', localUserUS.type); */
 
 		if (localUserUS.type === 'profesional') {
-			const rutineUrl = 'http://localhost:3000/rutines?id=';
+			const rutineUrl = `${process.env.REACT_APP_BACK_URL}rutines?id=`;
 
 			return fetch(`${rutineUrl}${id}`, {
 				method: 'PUT',
