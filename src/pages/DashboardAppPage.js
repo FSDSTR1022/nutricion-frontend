@@ -89,7 +89,8 @@ export default function DashboardAppPage() {
 
 	const datosGraph = profRutines => {
 		const fechasRutinas = profRutines?.map(rut => moment(rut.day).isoWeek()); // format('L'));
-		const axis = [...new Set(fechasRutinas)];
+		const axisD = [...new Set(fechasRutinas)];
+		const axis = axisD.sort((a, b) => a - b);
 		console.log('axis', axis);
 		setChartLabels(axis);
 		const numberOfRoutinesPerDay = [];
@@ -103,7 +104,7 @@ export default function DashboardAppPage() {
 			const routinesPerDate = profRutines?.filter(
 				rut => moment(rut.day).isoWeek() === date
 			);
-			console.log(numberOfRoutinesPerDay);
+			console.log(routinesPerDate);
 			numberOfRoutinesPerDay.push(routinesPerDate.length);
 			setFullRutineExpected(numberOfRoutinesPerDay);
 

@@ -265,7 +265,9 @@ const PatientCalendarPage = () => {
 									<Typography
 										variant='h5'
 										textAlign='left'>
-										{`Paciente desde: ${moment(patientUS.Date).format('LL')}`}
+										{`Paciente desde: ${moment(patientUS.createdAt).format(
+											'LL'
+										)}`}
 									</Typography>
 								</Item>
 							</Grid>
