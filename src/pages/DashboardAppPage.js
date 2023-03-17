@@ -138,7 +138,11 @@ export default function DashboardAppPage() {
 		let percen = 0;
 
 		if (nCompl > 0 && profRutines.length > 0) {
-			percen = Math.round((nCompl / profRutines.length) * 100);
+			const pastRoutines = profRutines?.filter(
+				routine => moment(routine.day) < moment(new Date())
+			);
+			console.log('routines pasadas', pastRoutines);
+			percen = Math.round((nCompl / pastRoutines.length) * 100);
 		}
 
 		setPercentage(percen);
