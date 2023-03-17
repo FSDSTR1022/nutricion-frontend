@@ -1,12 +1,14 @@
+/* eslint-disable no-unused-vars */
 import { Helmet } from 'react-helmet-async';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Link, Container, Typography } from '@mui/material';
+import { Link, Container, Typography,Box } from '@mui/material';
 // hooks
 import { useNavigate } from 'react-router-dom';
 import useResponsive from '../hooks/useResponsive';
 // components
 import Logo from '../components/logo';
+import LogoHG from './icon/healthGuruLogo.png'
 // sections
 import { RegisterForm } from '../sections/auth/register';
 // navigate
@@ -56,20 +58,36 @@ export default function RegisterPage() {
 			</Helmet>
 
 			<StyledRoot>
-				<Logo
+				{/* <Logo
 					sx={{
 						position: 'fixed',
 						top: { xs: 16, sm: 24, md: 40 },
 						left: { xs: 16, sm: 24, md: 40 },
 					}}
-				/>
+				/> */}
 
 				{mdUp && (
 					<StyledSection>
+						<Box
+							component="img"
+							src={LogoHG}
+							sx={{ 
+								width: 90,
+								 height: 100,
+								/*  px: 5,  */
+								 mt: 5,
+								  mb: 3,
+								  ml:20
+								  }}
+						/>
 						<Typography
 							variant='h3'
-							sx={{ px: 5, mt: 10, mb: 5 }}>
-							Hola, Bienvenido!
+							sx={{ px: 5,
+								mb: 5,
+								ml:10,
+								color:"#2065D1"
+							/*  mt: 10, */ }}>
+						Health Guru
 						</Typography>
 						<img
 							src={fitnessPeople}
