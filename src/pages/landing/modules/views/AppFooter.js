@@ -14,7 +14,7 @@ function Copyright() {
 			<Link
 				color='inherit'
 				href='https://mui.com/'>
-				NOMBRE DE LA APLICACION
+				Health Guru
 			</Link>{' '}
 			{new Date().getFullYear()}
 		</>

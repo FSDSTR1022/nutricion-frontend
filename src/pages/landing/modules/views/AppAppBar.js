@@ -22,7 +22,7 @@ function AppAppBar() {
 						color='inherit'
 						href='/premium-themes/onepirate/'
 						sx={{ fontSize: 24 }}>
-						{'EL MOMBRE DE NUESTRA APP'}
+						{'Health Guru'}
 					</Link>
 					<Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
 						<Link
