@@ -25,10 +25,10 @@ export default function AppConversionRates({
 	...other
 }) {
 	const chartLabels = [
-		Object.getOwnPropertyNames(feedBack)[1],
+		Object.getOwnPropertyNames(feedBack)[2],
 		Object.getOwnPropertyNames(feedBack)[3],
 		Object.getOwnPropertyNames(feedBack)[0],
-		Object.getOwnPropertyNames(feedBack)[2],
+		Object.getOwnPropertyNames(feedBack)[1],
 	];
 
 	const chartSeries = [
@@ -56,14 +56,14 @@ export default function AppConversionRates({
 			},
 		},
 
-		colors: ['#2E93fA', '#546E7A', '#E91E63', '#FF9800'],
+		colors: ['#2E93fA'],
 
 		yaxis: {
 			labels: {
 				style: {
 					fontSize: '15px',
 					fontWeight: 700,
-					colors: ['#E91E63', '#FF9800', '#2E93fA', '#54FF9d'],
+					colors: ['#2E93fA'],
 				},
 			},
 		},
