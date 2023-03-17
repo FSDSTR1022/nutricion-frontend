@@ -475,7 +475,7 @@ export default function ExerciseListPage(props) {
 					<title>{`Health Guru | ${getTitle()}`} </title>
 				</Helmet>
 
-				<Container>
+				<Container maxWidth='xl'>
 					<Stack
 						direction='row'
 						alignItems='center'
