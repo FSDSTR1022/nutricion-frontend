@@ -218,12 +218,7 @@ const PatientCalendarPage = () => {
 					Paciente: {`${patientUS.name} ${patientUS.lastName}`}
 				</Typography>
 			</Stack> */}
-			<Button
-						value='cancelar'
-						onClick={prueba}>
-						mostrar eventos de calendario
-					</Button>
-
+			
 				<Card>
 					<Box sx={{ flexGrow: 3 }}>
 						<Grid
